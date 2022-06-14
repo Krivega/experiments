@@ -1,0 +1,348 @@
+include:
+  - '/gitlab-ci/.gitlab-ci-init.yml'
+  - '/gitlab-ci/.gitlab-ci-build.yml'
+  - '/gitlab-ci/.gitlab-ci-test-unit.yml'
+  - '/gitlab-ci/.gitlab-ci-test-integration.yml'
+  - '/gitlab-ci/.gitlab-ci-release.yml'
+
+cache: &cache-global
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules
+    - packages/**/node_modules
+    - packages/apps/**/node_modules
+    - packages/apps/web-client/public
+    - packages/ui/src/components/**/style.css
+    - public # Required to keep artifacts from old builds, e.g. from master
+  policy: pull
+
+.except: &global-except
+  refs:
+    - tags
+
+stages:
+  - init
+  - lint
+  - build
+  - test
+  - statistics
+  - deploy
+
+#### START: REGULAR CHECK  ###
+
+install-dependencies:
+  extends: .install-dependencies
+  tags:
+    - dev-git-runner
+  stage: init
+  except:
+    <<: *global-except
+    variables:
+      - $CI_SKIP =~ /(^|, | |)(install)/
+      - $CI_RUN_CY =~ /[\s\S]+/
+      - $CI_RUN_BUILD =~ /[\s\S]+/
+      - $CI_RUN_STYLE_GUIDE
+  cache:
+    <<: *cache-global
+    policy: pull-push
+
+lint:
+  extends: .lint
+  tags:
+    - dev-git-runner
+  stage: lint
+  cache:
+    <<: *cache-global
+    policy: pull-push
+  except:
+    <<: *global-except
+    variables:
+      - $CI_SKIP =~ /tests/
+      - $CI_RUN_BUILD
+      - $CI_RUN_CY
+      - $CI_RUN_STYLE_GUIDE
+
+build-web-client:
+  extends: .build-web-client
+  tags:
+    - dev-git-runner
+  stage: build
+  except:
+    <<: *global-except
+    variables:
+      - $CI_SKIP =~ /(^|, | |)(build)/
+      - $CI_RUN_BUILD
+      - $CI_RUN_CY
+      - $CI_RUN_STYLE_GUIDE
+
+build-desktop-client-web:
+  extends: .build-desktop-client-web
+  tags:
+    - dev-git-runner
+  stage: build
+  except:
+    <<: *global-except
+    variables:
+      - $CI_SKIP =~ /(^|, | |)(build)/
+      - $CI_RUN_BUILD
+      - $CI_RUN_CY
+      - $CI_RUN_STYLE_GUIDE
+
+build-video-player-web:
+  extends: .build-video-player-web
+  tags:
+    - dev-git-runner
+  stage: build
+  except:
+    <<: *global-except
+    variables:
+      - $CI_SKIP =~ /(^|, | |)(build)/
+      - $CI_RUN_BUILD
+      - $CI_RUN_CY
+      - $CI_RUN_STYLE_GUIDE
+      - $CI_RUN_STYLE_GUIDE
+
+build-desktop-client-loader:
+  extends: .build-desktop-client-loader
+  tags:
+    - dev-git-runner
+  stage: build
+  except:
+    <<: *global-except
+    variables:
+      - $CI_SKIP =~ /(^|, | |)(build)/
+      - $CI_RUN_BUILD
+      - $CI_RUN_CY
+      - $CI_RUN_STYLE_GUIDE
+
+build-screencast-web:
+  extends: .build-screencast-web
+  tags:
+    - dev-git-runner
+  stage: build
+  except:
+    <<: *global-except
+    variables:
+      - $CI_SKIP =~ /(^|, | |)(build)/
+      - $CI_RUN_BUILD
+      - $CI_RUN_CY
+      - $CI_RUN_STYLE_GUIDE
+
+tests-unit:
+  extends: .tests-unit
+  tags:
+    - dev-git-runner
+  stage: test
+  cache:
+    <<: *cache-global
+    policy: pull-push
+    paths:
+      - packages/store-creators/coverage/
+  except:
+    <<: *global-except
+    variables:
+      - $CI_SKIP =~ /tests/
+      - $CI_RUN_BUILD
+      - $CI_RUN_CY
+      - $CI_RUN_STYLE_GUIDE
+
+tests-unit-pages:
+  extends: .tests-unit-pages
+  dependencies:
+    - tests-unit
+  tags:
+    - dev-git-runner
+  stage: deploy
+  except:
+    <<: *global-except
+    variables:
+      - $CI_SKIP =~ /tests/
+      - $CI_RUN_BUILD
+      - $CI_RUN_CY
+      - $CI_RUN_STYLE_GUIDE
+
+#### END: REGULAR CHECK  ###
+
+#### START: INTEGRATION TEST  ###
+
+tests-integration-install-dependencies:
+  tags:
+    - kds-test-srv
+  stage: init
+  only:
+    variables:
+      - $CI_RUN_CY =~ /[\s\S]+/
+  script:
+    - yarn install
+    - pm2 delete all
+  allow_failure: true
+  cache:
+    <<: *cache-global
+    policy: pull-push
+
+build-for-tests-integration-web-client:
+  extends: .build-for-tests-integration-web-client
+  tags:
+    - kds-test-srv
+  stage: build
+  only:
+    variables:
+      - $CI_RUN_CY =~ /(^|, | |)(web-client)/
+  cache:
+    <<: *cache-global
+    paths:
+      - node_modules
+      - packages/**/node_modules
+      - packages/apps/**/node_modules
+      - packages/ui/src/components/**/style.css
+      - packages/apps/web-client/build
+    policy: pull-push
+
+tests-integration-web-client:
+  extends: .tests-integration-web-client
+  tags:
+    - kds-test-srv
+  stage: test
+  only:
+    variables:
+      - $CI_RUN_CY =~ /(^|, | |)(web-client)/
+  cache:
+    <<: *cache-global
+    paths:
+      - node_modules
+      - packages/**/node_modules
+      - packages/apps/**/node_modules
+      - packages/ui/src/components/**/style.css
+      - packages/apps/web-client/build
+    policy: pull
+
+build-for-tests-integration-desktop-client:
+  extends: .build-for-tests-integration-desktop-client
+  tags:
+    - kds-test-srv
+  stage: build
+  only:
+    variables:
+      - $CI_RUN_CY =~ /(^|, | |)(desktop-client)/
+  cache:
+    <<: *cache-global
+    paths:
+      - node_modules
+      - packages/**/node_modules
+      - packages/apps/**/node_modules
+      - packages/ui/src/components/**/style.css
+      - packages/apps/desktop-client-web/build
+    policy: pull-push
+
+tests-integration-desktop-client-no-parallel:
+  extends: .tests-integration-desktop-client-no-parallel
+  tags:
+    - kds-test-srv
+  stage: test
+  only:
+    variables:
+      - ($CI_RUN_CY =~ /(^|, | |)(desktop-client)/) && ($CI_RUN_CY_DESKTOP_NO_PARALLEL == "true" || $CI_RUN_CY_DESKTOP_NO_PARALLEL == "1")
+  cache:
+    <<: *cache-global
+    paths:
+      - node_modules
+      - packages/**/node_modules
+      - packages/apps/**/node_modules
+      - packages/ui/src/components/**/style.css
+      - packages/apps/desktop-client-web/build
+    policy: pull
+
+tests-integration-desktop-client:
+  extends: .tests-integration-desktop-client
+  tags:
+    - kds-test-srv
+  stage: test
+  parallel: 6
+  only:
+    variables:
+      - $CI_RUN_CY =~ /(^|, | |)(desktop-client)/
+  except:
+    variables:
+      - $CI_RUN_CY_DESKTOP_NO_PARALLEL
+  cache:
+    <<: *cache-global
+    paths:
+      - node_modules
+      - packages/**/node_modules
+      - packages/apps/**/node_modules
+      - packages/ui/src/components/**/style.css
+      - packages/apps/desktop-client-web/build
+    policy: pull
+
+build-for-tests-integration-screencast:
+  extends: .build-for-tests-integration-screencast
+  tags:
+    - kds-test-srv
+  stage: build
+  only:
+    variables:
+      - $CI_RUN_CY =~ /(^|, | |)(screencast)/
+  cache:
+    <<: *cache-global
+    paths:
+      - node_modules
+      - packages/**/node_modules
+      - packages/apps/**/node_modules
+      - packages/ui/src/components/**/style.css
+      - packages/apps/screencast/build
+    policy: pull-push
+
+tests-integration-screencast:
+  extends: .tests-integration-screencast
+  tags:
+    - kds-test-srv
+  stage: test
+  only:
+    variables:
+      - $CI_RUN_CY =~ /(^|, | |)(screencast)/
+  cache:
+    <<: *cache-global
+    paths:
+      - node_modules
+      - packages/**/node_modules
+      - packages/apps/**/node_modules
+      - packages/ui/src/components/**/style.css
+      - packages/apps/screencast/build
+    policy: pull
+
+#### END: INTEGRATION TEST  ###
+
+#### START: RELEASE BUILD  ###
+
+desktop-client-release-mac:
+  extends: .desktop-client-release-mac
+  tags:
+    - macos-runner
+  stage: deploy
+  only:
+    variables:
+      - $CI_RUN_BUILD =~ /(^|, | |)(desktop-client)/
+
+#### END: RELEASE BUILD  ###
+
+#### START: STYLE GUIDE  ###
+
+styleguide:
+  tags:
+    - macos-runner
+  stage: deploy
+  script:
+    - yarn install
+    - mkdir -p public/$CI_COMMIT_BRANCH
+    - yarn build:styleguide
+    - cp -r packages/ui/styleguide public/$CI_COMMIT_BRANCH # provided from gitlab https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+    - scp -r packages/ui/styleguide $USER_FRONTEND_SERVER@$HOST_FRONTEND_SERVER:$CI_STYLEGUIDE_PUBLIC_DIR/$CI_COMMIT_BRANCH
+    - rm -rf packages/ui/styleguide
+  only:
+    variables:
+      - $CI_RUN_STYLE_GUIDE =~ /[\s\S]+/
+  artifacts:
+    paths:
+      - public # GitLab pages serve from a 'public' directory
+
+#### END: STYLE GUIDE  ###

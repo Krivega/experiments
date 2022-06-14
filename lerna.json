@@ -1,0 +1,28 @@
+{
+  "packages": [
+    "packages/apps/*"
+  ],
+  "useWorkspaces": true,
+  "npmClient": "yarn",
+  "command": {
+    "run": {
+      "npmClient": "yarn"
+    },
+    "publish": {
+      "conventionalCommits": true
+    },
+    "version": {
+      "message": "chore(release): publish",
+      "conventionalCommits": true,
+      "ignoreChanges": [
+        "**/__mocs__/**",
+        "**/__fixtures__/**",
+        "**/__tests__/**",
+        "**/__tests-utils__/**",
+        "**/*.md",
+        "package.json"
+      ]
+    }
+  },
+  "version": "3.1.0"
+}

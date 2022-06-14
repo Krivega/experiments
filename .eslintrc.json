@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "./.eslintrc.base"
+  ],
+  "parserOptions": {
+    "project": "tsconfig.json",
+    "sourceType": "module",
+    "tsconfigRootDir": "."
+  }
+}

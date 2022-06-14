@@ -1,0 +1,21 @@
+{
+  "reject": [
+    "@vinteo/*",
+    "jest",
+    "@types/jest",
+    "eslint",
+    "eslint-plugin-import",
+    "bem-cn",
+    "pdfjs-dist",
+    "history",
+    "react-router",
+    "lint-staged",
+    "core-js",
+    "rc-slider",
+    "eslint-plugin-react-hooks",
+    "material-components-web",
+    "lerna",
+    "@lerna/filter-options",
+    "vinteo.screencast"
+  ]
+}

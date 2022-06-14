@@ -1,0 +1,14 @@
+**/node_modules/**
+**/dist/**
+**/storybook-static/**
+**/coverage/**
+**/build/**
+**/.git/**
+**/public/**
+!.eslintrc.js
+package.json
+package-lock.json
+jsconfig.json
+manifest.json
+**/CHANGELOG.md
+**/desktop-client/src/config.json

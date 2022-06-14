@@ -1,0 +1,108 @@
+{
+  "prettier.requireConfig": true,
+  "workbench.colorTheme": "Monokai Pro (Filter Spectrum)",
+  "workbench.iconTheme": "Monokai Pro (Filter Spectrum) Icons",
+  "turboConsoleLog.quote": "'",
+  "eslint.alwaysShowStatus": true,
+  "eslint.packageManager": "yarn",
+  "eslint.probe": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "html",
+    "vue",
+    "markdown",
+    "scss",
+    "ts"
+  ],
+  "eslint.options": {},
+  "eslint.lintTask.enable": true,
+  "cSpell.userWords": [
+    "Autorun",
+    "Chainable",
+    "Combinator",
+    "covid",
+    "Dialpad",
+    "Dmitriy",
+    "jssip",
+    "keypoint",
+    "Keypoints",
+    "krivega",
+    "ldap",
+    "middlewares",
+    "mobx",
+    "ontrack",
+    "Pconnector",
+    "peerconnection",
+    "posenet",
+    "precommit",
+    "preload",
+    "registrator",
+    "screencast",
+    "Scroller",
+    "Signalizator",
+    "Tabindex",
+    "tensorflow",
+    "Testid",
+    "tfjs",
+    "Unmount",
+    "videocam",
+    "vinteo",
+    "Webrtc",
+    "workerize",
+    "YOUCANRECEIVECONTENT"
+  ],
+  "workbench.startupEditor": "newUntitledFile",
+  "diffEditor.renderSideBySide": true,
+  "explorer.confirmDelete": false,
+  "git.autofetch": true,
+  "editor.fontFamily": "'JetBrains Mono', JetBrains Mono, 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+  "editor.fontSize": 13,
+  "editor.letterSpacing": 1.2,
+  "editor.lineHeight": 22,
+  "editor.fontLigatures": true,
+  "editor.padding.bottom": 1.2,
+  "editor.padding.top": 1.2,
+  "npm.packageManager": "yarn",
+  "npm.exclude": "node_modules",
+  "explorer.confirmDragAndDrop": false,
+  "editor.tabSize": 2,
+  "gitlens.hovers.annotations.details": false,
+  "tabnine.experimentalAutoImports": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "git.confirmSync": false,
+  "js/ts.implicitProjectConfig.checkJs": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[xml]": {
+    "editor.defaultFormatter": "DotJoshJohnson.xml"
+  },
+  "[plist]": {
+    "editor.defaultFormatter": "DotJoshJohnson.xml"
+  },
+  "git.enableSmartCommit": true,
+  "security.workspace.trust.untrustedFiles": "open",
+  "redhat.telemetry.enabled": true,
+  "tabnine.receiveBetaChannelUpdates": true,
+  "stylelint.validate": ["css", "scss"],
+  "stylelint.packageManager": "yarn",
+  "stylelint.snippet": ["css", "less", "postcss", "scss", "sass"],
+  "eslint.format.enable": true,
+  "liveshare.presence": true,
+  "editor.formatOnSave": true
+}

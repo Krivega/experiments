@@ -1,0 +1,33 @@
+{
+  "recommendations": [
+    "steoates.autoimport",
+    "mgmcdermott.vscode-language-babel",
+    "dnicolson.binary-plist",
+    "wmaurer.change-case",
+    "streetsidesoftware.code-spell-checker",
+    "josefbiehler.cypress-fixture-intellisense",
+    "shelex.vscode-cy-helper",
+    "andrew-codes.cypress-snippets",
+    "nixon.env-cmd-file-syntax",
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
+    "t7yang.hyper-javascript-snippets",
+    "xabikos.javascriptsnippets",
+    "andys8.jest-snippets",
+    "ms-vsliveshare.vsliveshare",
+    "davidanson.vscode-markdownlint",
+    "monokai.theme-monokai-pro-vscode",
+    "eg2.vscode-npm-script",
+    "esbenp.prettier-vscode",
+    "ms-ceintl.vscode-language-pack-ru",
+    "fabiospampinato.vscode-search-open-all-results",
+    "unional.vscode-sort-package-json",
+    "stylelint.vscode-stylelint",
+    "tabnine.tabnine-vscode",
+    "chakrounanas.turbo-console-log",
+    "redhat.vscode-yaml",
+    "vlazh.yarn-update-deps",
+    "orta.vscode-jest",
+    "DotJoshJohnson.xml"
+  ]
+}
