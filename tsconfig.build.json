@@ -2,7 +2,16 @@
   "compilerOptions": {
     "target": "ES2019",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["node", "filesystem", "history", "jest", "lodash", "react", "react-dom"],
+    "types": [
+      "node",
+      "filesystem",
+      "history",
+      "jest",
+      "lodash",
+      "react",
+      "react-dom",
+      "offscreencanvas"
+    ],
     "allowJs": true,
     "checkJs": true,
     "esModuleInterop": true,
@@ -20,9 +29,5 @@
     "jsx": "react"
   },
 
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build"
-  ]
+  "exclude": ["node_modules", "dist", "build"]
 }

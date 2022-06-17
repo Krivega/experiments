@@ -75,7 +75,7 @@
   "js/ts.implicitProjectConfig.checkJs": true,
   "typescript.updateImportsOnFileMove.enabled": "always",
   "[javascript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
