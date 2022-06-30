@@ -8,8 +8,7 @@
         "paths": ["node_modules"],
         "extensions": [".js", ".jsx", ".ts", ".tsx", ".cjs"]
       }
-    },
-    "import/core-modules": ["electron"]
+    }
   },
   "rules": {
     "arrow-body-style": ["error", "always"],
