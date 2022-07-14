@@ -1,6 +1,6 @@
 import * as tensorflowBodySegmentation from '@tensorflow-models/body-segmentation';
 import type { Segmentation } from '@tensorflow-models/body-segmentation/dist/shared/calculators/interfaces/common_interfaces';
-import { renderImageDataToCanvas, createOffScreenCanvas } from '../../../../utils/canvas';
+import { renderImageDataToCanvas, createOffScreenCanvas } from '@vinteo/utils/src/canvas';
 
 let offScreenCanvases = {};
 

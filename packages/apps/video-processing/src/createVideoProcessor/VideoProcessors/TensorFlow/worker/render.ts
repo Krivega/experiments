@@ -6,7 +6,7 @@ import {
   renderImageDataToCanvas,
   drawAndBlurImageOnOffScreenCanvas,
   imageBitmapToImageData as _imageBitmapToImageData,
-} from '../../../../utils/canvas';
+} from '@vinteo/utils/src/canvas';
 
 let offScreenCanvases = {};
 

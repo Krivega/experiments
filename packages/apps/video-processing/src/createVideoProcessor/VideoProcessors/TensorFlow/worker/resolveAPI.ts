@@ -1,5 +1,5 @@
 import { memoize } from 'lodash';
-import { resolveActionWithWaitConfirm } from '../../../../utils/worker';
+import { resolveActionWithWaitConfirm } from '@vinteo/utils/src/worker';
 
 memoize.Cache = WeakMap;
 

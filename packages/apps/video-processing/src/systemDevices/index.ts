@@ -6,9 +6,9 @@ import {
   catchResolve,
   combineThenCombinator,
   tapThenCombinator,
-} from '../utils/functions';
-import stopTracksMediaStream from '../mediastreamApi/stopTracksMediaStream';
-import { getMediaStreamOrigin } from '../mediastreamApi';
+} from '@vinteo/utils/src/functions';
+import stopTracksMediaStream from '@vinteo/mediastream-api/src/stopTracksMediaStream';
+import { getMediaStreamOrigin } from '@vinteo/mediastream-api';
 import createStateDeviceFromSystemDevice from './createStateDeviceFromSystemDevice';
 import { VIDEO_KIND, AUDIO_INPUT_KIND } from './constants';
 import {

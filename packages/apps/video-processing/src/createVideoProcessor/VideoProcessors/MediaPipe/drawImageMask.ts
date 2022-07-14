@@ -1,5 +1,5 @@
-import { getContext, drawWithCompositing } from '../../../utils/canvas';
-import type { TCanvas } from '../../../utils/canvas';
+import { getContext, drawWithCompositing } from '@vinteo/utils/src/canvas';
+import type { TCanvas } from '@vinteo/utils/src/canvas';
 
 const drawImageMask = ({
   videoSource,
