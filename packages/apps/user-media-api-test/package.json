@@ -1,0 +1,71 @@
+{
+  "name": "user-media-app-test",
+  "version": "0.0.0",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": " react-scripts build",
+    "build:stats": "yarn build --stats",
+    "format": "prettier --write \"src/**/*.{js,ts,tsx,json}\"",
+    "lint": "yarn lint:js && yarn lint:ts",
+    "lint:js": "eslint src/. --ext .js,.jsx,.ts,.tsx",
+    "lint:ts": "tsc",
+    "precommit": "lint-staged",
+    "start": "react-scripts start",
+    "test": "react-scripts test --verbose=false",
+    "test:circular": "madge --circular src/index.tsx",
+    "test:nowatch": "yarn test --watchAll=false"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!<rootDir>/node_modules/",
+      "!src/*.{js,jsx}",
+      "!src/containers/Root/*.{js,jsx}",
+      "!src/store/*.{js,jsx}",
+      "!**/__tests-utils__/**",
+      "!**/__mocks__/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
+      }
+    }
+  },
+  "dependencies": {
+    "@krivega/cancelable-promise": "^0.3.0",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
+    "@mediapipe/camera_utils": "0.3.1640029074",
+    "@mediapipe/control_utils": "0.6.1629159505",
+    "@mediapipe/drawing_utils": "0.3.1620248257",
+    "@mediapipe/selfie_segmentation": "0.1.1632777926",
+    "@tensorflow-models/body-segmentation": "1.0.1",
+    "@tensorflow/tfjs-backend-webgl": "3.18.0",
+    "@tensorflow/tfjs-converter": "3.18.0",
+    "@tensorflow/tfjs-core": "3.18.0",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^14.2.0",
+    "@vinteo/components": "^0.0.0",
+    "@vinteo/mediastream-api": "^0.0.0",
+    "@vinteo/utils": "^0.0.0",
+    "lodash": "^4.17.21",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "repeated-calls": "^1.3.2",
+    "request-animation-runner": "^0.3.2",
+    "stats-js": "^1.0.1",
+    "styled-components": "^5.3.5",
+    "web-vitals": "^2.1.4",
+    "webrtc-adapter": "^8.1.1"
+  },
+  "devDependencies": {
+    "lint-staged": "12.1.7",
+    "madge": "^5.0.1",
+    "monorepo-react-scripts": "5.0.0-alpha.0"
+  }
+}

@@ -1,6 +1,9 @@
 {
   "packages": [
-    "packages/apps/*"
+    "packages/apps/*",
+    "packages/components",
+    "packages/mediastream-api",
+    "packages/utils"
   ],
   "useWorkspaces": true,
   "npmClient": "yarn",
