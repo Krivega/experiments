@@ -2,20 +2,26 @@ import AnimationRequest from 'request-animation-runner';
 import { Camera } from '@mediapipe/camera_utils';
 import { SelfieSegmentation } from '@mediapipe/selfie_segmentation';
 import type { ResultsListener } from '@mediapipe/selfie_segmentation';
-import mediaStreamToVideo from '@vinteo/utils/src/mediaStreamToVideo';
 import createFpsMeter from '@vinteo/utils/src/createFpsMeter';
+import createFPSCounter from '@vinteo/utils/src/createFPSCounter';
+import mediaStreamToVideo from '@vinteo/utils/src/mediaStreamToVideo';
 import { createCanvas } from '@vinteo/utils/src/canvas';
-import type { TResolveProcessVideo, TModelSelection } from '../../../typings';
+import type { TResolveProcessVideo, TModelSelection } from '../../typings';
 import drawImageMask from '../MediaPipe/drawImageMask';
 
-const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
+const resolveProcessVideoMediaPipeOptimized: TResolveProcessVideo = ({
   imageBitmapMask360p,
   imageBitmapMask720p,
   imageBitmapMask1080p,
 }) => {
+  const selfieSegmentation = new SelfieSegmentation({
+    locateFile: (file) => {
+      return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
+    },
+  });
   const fpsMeter = createFpsMeter();
+  const fpsCounter = createFPSCounter();
   const animationRequest = new AnimationRequest();
-  let requestIDBodySegmentationFrame;
   let videoSource: HTMLVideoElement;
   let canvasTarget: HTMLCanvasElement;
 
@@ -40,8 +46,15 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
       check();
     });
   };
-  const startVideoProcessing = ({ modelSelection }: { modelSelection: TModelSelection }) => {
+  const startVideoProcessing = ({
+    modelSelection,
+    edgeBlurAmount,
+  }: {
+    modelSelection: TModelSelection;
+    edgeBlurAmount: number;
+  }) => {
     const { width, height } = videoSource;
+
     let imageBitmapMask: HTMLImageElement;
 
     fpsMeter.init();
@@ -59,23 +72,24 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
         break;
     }
 
-    const onResults: ResultsListener = (results) => {
+    let personMask: ImageBitmap | undefined;
+
+    const targetVideoFrame = () => {
       drawImageMask({
-        // @ts-ignore
-        personMask: results.segmentationMask,
+        edgeBlurAmount,
+        personMask,
+        videoSource,
         imageMask: imageBitmapMask,
         canvas: canvasTarget,
-        // @ts-ignore
-        videoSource: results.image,
       });
       fpsMeter.end();
+      fpsCounter.tick();
     };
 
-    const selfieSegmentation = new SelfieSegmentation({
-      locateFile: (file) => {
-        return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
-      },
-    });
+    const onResults: ResultsListener = (results) => {
+      personMask = results.segmentationMask as ImageBitmap;
+      targetVideoFrame();
+    };
 
     const GENERAL = 0;
     const LANDSCAPE = 1;
@@ -95,21 +109,34 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
     });
 
     camera.start();
+
+    animationRequest.activate();
+    animationRequest.run(() => {
+      if (fpsCounter.value < 60 && personMask) {
+        // targetVideoFrame();
+        console.log(
+          '🚀 ~ file: index.ts ~ line 117 ~ animationRequest.run ~ targetVideoFrame',
+          fpsCounter.value
+        );
+      }
+    }, 60);
   };
 
   const start = ({
     mediaStream,
     modelSelection,
+    edgeBlurAmount,
   }: {
     mediaStream: MediaStream;
     modelSelection: TModelSelection;
+    edgeBlurAmount: number;
   }) => {
     return createVideo(mediaStream).then(() => {
       const { width, height } = videoSource;
 
       canvasTarget = createCanvas(width, height);
 
-      startVideoProcessing({ modelSelection });
+      startVideoProcessing({ modelSelection, edgeBlurAmount });
 
       const mediaStreamOutput = canvasTarget.captureStream();
 
@@ -117,11 +144,12 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
     });
   };
   const stopVideoProcessing = () => {
-    window.cancelAnimationFrame(requestIDBodySegmentationFrame);
     animationRequest.deactivate();
     fpsMeter.reset();
 
     return checkEndProgressVideoProcessing();
+
+    // return selfieSegmentation.close().then(checkEndProgressVideoProcessing);
   };
   const stop = () => {
     return stopVideoProcessing().then(() => {
@@ -131,28 +159,37 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
     });
   };
 
-  const changeParams = ({ modelSelection }: { modelSelection: TModelSelection }) => {
+  const changeParams = ({
+    modelSelection,
+    edgeBlurAmount,
+  }: {
+    modelSelection: TModelSelection;
+    edgeBlurAmount: number;
+  }) => {
     return stopVideoProcessing()
       .then(() => {})
       .then(() => {
-        return startVideoProcessing({ modelSelection });
+        return startVideoProcessing({ modelSelection, edgeBlurAmount });
       });
   };
   const restart = ({
     mediaStream,
     modelSelection,
+    edgeBlurAmount,
   }: {
     mediaStream: MediaStream;
     modelSelection: TModelSelection;
+    edgeBlurAmount: number;
   }) => {
     return stop().then(() => {
       return start({
         mediaStream,
         modelSelection,
+        edgeBlurAmount,
       });
     });
   };
 
   return { start, restart, changeParams, stop };
 };
-export default resolveProcessVideoMediaPipe;
+export default resolveProcessVideoMediaPipeOptimized;

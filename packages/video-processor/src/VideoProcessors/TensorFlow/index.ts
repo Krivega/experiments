@@ -2,7 +2,7 @@ import AnimationRequest from 'request-animation-runner';
 import createFpsMeter from '@vinteo/utils/src/createFpsMeter';
 import mediaStreamToVideo from '@vinteo/utils/src/mediaStreamToVideo';
 import { createCanvas, createOffScreenCanvas, imageToImageBitmap } from '@vinteo/utils/src/canvas';
-import type { TResolveProcessVideo, TModelSelection } from '../../../typings';
+import type { TResolveProcessVideo, TModelSelection } from '../../typings';
 import drawImageMask from './drawImageMask';
 import runtime from './runtime';
 

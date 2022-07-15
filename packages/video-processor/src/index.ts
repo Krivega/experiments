@@ -1,5 +1,5 @@
 import loadImage from '@vinteo/utils/src/loadImage';
-import type { TProcessVideo, TResolveProcessVideo, TArchitecture } from '../typings';
+import type { TProcessVideo, TResolveProcessVideo, TArchitecture } from './typings';
 import mask360pSrc from './mask360p.jpg';
 import mask720pSrc from './mask720p.jpg';
 import mask1080pSrc from './mask1080p.jpg';

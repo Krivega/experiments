@@ -21,8 +21,12 @@ import useNoneInitialEffect from '@vinteo/components/src/useNoneInitialEffect';
 import resolutionsListAll, { ID_720P } from '@vinteo/system-devices/src/resolutionsList';
 import type { TResolution } from '@vinteo/system-devices/src/resolutionsList';
 import RequesterDevices from '@vinteo/system-devices';
-import type { TProcessVideo, TModelSelection, TArchitecture } from './typings';
-import createVideoProcessor from './createVideoProcessor';
+import createVideoProcessor from '@vinteo/video-processor';
+import type {
+  TProcessVideo,
+  TModelSelection,
+  TArchitecture,
+} from '@vinteo/video-processor/src/typings';
 
 const useStyles = makeStyles((theme) => {
   return {

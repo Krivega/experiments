@@ -8,6 +8,7 @@
       "packages/components",
       "packages/mediastream-api",
       "packages/system-devices",
+      "packages/video-processor",
       "packages/utils"
     ],
     "nohoist": [

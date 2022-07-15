@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "UNLICENSED",
   "scripts": {
-    "build": " react-scripts build",
+    "build": "react-scripts build",
     "build:stats": "yarn build --stats",
     "format": "prettier --write \"src/**/*.{js,ts,tsx,json}\"",
     "lint": "yarn lint:js && yarn lint:ts",
@@ -61,8 +61,7 @@
     "request-animation-runner": "^0.3.2",
     "stats-js": "^1.0.1",
     "styled-components": "^5.3.5",
-    "web-vitals": "^2.1.4",
-    "webrtc-adapter": "^8.1.1"
+    "web-vitals": "^2.1.4"
   },
   "devDependencies": {
     "lint-staged": "12.1.7",

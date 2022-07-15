@@ -3,7 +3,7 @@ import '@tensorflow/tfjs-backend-webgl';
 import * as tensorflowBodySegmentation from '@tensorflow-models/body-segmentation';
 import type { BodySegmenter } from '@tensorflow-models/body-segmentation/dist/body_segmenter';
 import '@tensorflow/tfjs-converter';
-import type { TModelSelection } from '../../../../typings';
+import type { TModelSelection } from '../../../typings';
 // import '@mediapipe/selfie_segmentation';
 import { resetOffScreenCanvases } from './render';
 import bodySegmentation from './bodySegmentation';

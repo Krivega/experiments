@@ -35,6 +35,12 @@
       }
     }
   },
+  "dependencies": {
+    "@krivega/cancelable-promise": "^0.3.0",
+    "@vinteo/mediastream-api": "^0.0.0",
+    "@vinteo/utils": "^0.0.0",
+    "lodash": "^4.17.21"
+  },
   "devDependencies": {
     "lint-staged": "12.1.7"
   },

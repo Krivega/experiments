@@ -1,4 +1,4 @@
-import type { TModelSelection } from '../../../../typings';
+import type { TModelSelection } from '../../../typings';
 
 type TState = {
   modelSelection?: TModelSelection;

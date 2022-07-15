@@ -1,15 +1,13 @@
-import AnimationRequest from 'request-animation-runner';
 import { Camera } from '@mediapipe/camera_utils';
 import { SelfieSegmentation } from '@mediapipe/selfie_segmentation';
 import type { ResultsListener } from '@mediapipe/selfie_segmentation';
 import createFpsMeter from '@vinteo/utils/src/createFpsMeter';
-import createFPSCounter from '@vinteo/utils/src/createFPSCounter';
 import mediaStreamToVideo from '@vinteo/utils/src/mediaStreamToVideo';
 import { createCanvas } from '@vinteo/utils/src/canvas';
-import type { TResolveProcessVideo, TModelSelection } from '../../../typings';
-import drawImageMask from '../MediaPipe/drawImageMask';
+import type { TResolveProcessVideo, TModelSelection } from '../../typings';
+import drawImageMask from './drawImageMask';
 
-const resolveProcessVideoMediaPipeOptimized: TResolveProcessVideo = ({
+const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
   imageBitmapMask360p,
   imageBitmapMask720p,
   imageBitmapMask1080p,
@@ -20,8 +18,6 @@ const resolveProcessVideoMediaPipeOptimized: TResolveProcessVideo = ({
     },
   });
   const fpsMeter = createFpsMeter();
-  const fpsCounter = createFPSCounter();
-  const animationRequest = new AnimationRequest();
   let videoSource: HTMLVideoElement;
   let canvasTarget: HTMLCanvasElement;
 
@@ -30,20 +26,6 @@ const resolveProcessVideoMediaPipeOptimized: TResolveProcessVideo = ({
       videoSource = video;
 
       return videoSource;
-    });
-  };
-  const isInProgressVideoProcessing = false;
-  const checkEndProgressVideoProcessing = () => {
-    return new Promise<void>((resolve) => {
-      const check = () => {
-        if (isInProgressVideoProcessing === false) {
-          resolve();
-        } else {
-          setTimeout(check, 100);
-        }
-      };
-
-      check();
     });
   };
   const startVideoProcessing = ({
@@ -72,23 +54,15 @@ const resolveProcessVideoMediaPipeOptimized: TResolveProcessVideo = ({
         break;
     }
 
-    let personMask: ImageBitmap | undefined;
-
-    const targetVideoFrame = () => {
+    const onResults: ResultsListener = (results) => {
       drawImageMask({
         edgeBlurAmount,
-        personMask,
-        videoSource,
+        personMask: results.segmentationMask as ImageBitmap,
         imageMask: imageBitmapMask,
         canvas: canvasTarget,
+        videoSource: results.image as unknown as HTMLVideoElement,
       });
       fpsMeter.end();
-      fpsCounter.tick();
-    };
-
-    const onResults: ResultsListener = (results) => {
-      personMask = results.segmentationMask as ImageBitmap;
-      targetVideoFrame();
     };
 
     const GENERAL = 0;
@@ -109,17 +83,6 @@ const resolveProcessVideoMediaPipeOptimized: TResolveProcessVideo = ({
     });
 
     camera.start();
-
-    animationRequest.activate();
-    animationRequest.run(() => {
-      if (fpsCounter.value < 60 && personMask) {
-        // targetVideoFrame();
-        console.log(
-          '🚀 ~ file: index.ts ~ line 117 ~ animationRequest.run ~ targetVideoFrame',
-          fpsCounter.value
-        );
-      }
-    }, 60);
   };
 
   const start = ({
@@ -143,13 +106,12 @@ const resolveProcessVideoMediaPipeOptimized: TResolveProcessVideo = ({
       return mediaStreamOutput;
     });
   };
-  const stopVideoProcessing = () => {
-    animationRequest.deactivate();
+  const stopVideoProcessing = (): Promise<void> => {
     fpsMeter.reset();
 
-    return checkEndProgressVideoProcessing();
+    return Promise.resolve();
 
-    // return selfieSegmentation.close().then(checkEndProgressVideoProcessing);
+    // return selfieSegmentation.close();
   };
   const stop = () => {
     return stopVideoProcessing().then(() => {
@@ -192,4 +154,4 @@ const resolveProcessVideoMediaPipeOptimized: TResolveProcessVideo = ({
 
   return { start, restart, changeParams, stop };
 };
-export default resolveProcessVideoMediaPipeOptimized;
+export default resolveProcessVideoMediaPipe;
