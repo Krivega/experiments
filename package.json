@@ -15,7 +15,6 @@
       "**/webpack-dev-server",
       "**/cross-env",
       "**/npm-run-all",
-      "**/node-sass-chokidar",
       "**/cp-cli",
       "**/rollup",
       "**/typescript",

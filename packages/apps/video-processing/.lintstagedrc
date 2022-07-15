@@ -3,10 +3,6 @@
     "prettier --write",
     "eslint --fix"
   ],
-  "*scripts/**/*.{js,json}": [
-    "prettier --write",
-    "eslint --fix"
-  ],
   "*.md": [
     "prettier --write"
   ]
