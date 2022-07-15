@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Slider from '@material-ui/core/Slider';
 import ListItem from '@material-ui/core/ListItem';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -16,12 +14,9 @@ import { getMediaStream } from '@vinteo/mediastream-api';
 import stopTracksMediaStream from '@vinteo/mediastream-api/src/stopTracksMediaStream';
 import { getVideoDevices } from '@vinteo/utils/src/devicesResolvers';
 import Media from '@vinteo/components/src/Media';
-import useMemoizedDebounce from '@vinteo/components/src/useMemoizedDebounce';
-import useNoneInitialEffect from '@vinteo/components/src/useNoneInitialEffect';
 import resolutionsListAll, { ID_720P } from '@vinteo/system-devices/src/resolutionsList';
 import type { TResolution } from '@vinteo/system-devices/src/resolutionsList';
 import RequesterDevices from '@vinteo/system-devices/src';
-import type { TProcessVideo, TModelSelection, TArchitecture } from './typings';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -80,12 +75,6 @@ const resolveHandleChangeInput = (handler) => {
   };
 };
 
-const resolveHandleInputChange = (handler) => {
-  return (event, newValue) => {
-    handler(newValue);
-  };
-};
-
 const parseItemDevice = (device) => {
   return {
     label: device.label,
@@ -123,8 +112,6 @@ const getVideoTracks = (mediaStream) => {
 
 const defaultState = {
   resolutionId: ID_720P,
-  architecture: 'MediaPipe' as TArchitecture,
-  modelSelection: 'landscape' as TModelSelection,
   videoDeviceId: '',
   edgeBlurAmount: 4,
 };
@@ -142,34 +129,19 @@ const App = () => {
   const [videoDeviceId, setVideoDeviceFromId] = useState<string>(initialState.videoDeviceId);
   const [resolutionList, setResolutionList] = useState<TResolution[]>([]);
   const [resolutionId, setResolutionId] = useState<string>(initialState.resolutionId);
-  const [architecture, setArchitecture] = useState<TArchitecture>(initialState.architecture);
-  const [modelSelection, setModelSelection] = useState<TModelSelection>(
-    initialState.modelSelection
-  );
-  const [edgeBlurAmount, setEdgeBlurAmount] = useState<number>(initialState.edgeBlurAmount);
 
   useEffect(() => {
     const state = {
       resolutionId,
-      architecture,
-      modelSelection,
       videoDeviceId,
-      edgeBlurAmount,
     };
 
     localStorage.setItem('state', JSON.stringify(state));
-  }, [architecture, modelSelection, resolutionId, videoDeviceId, edgeBlurAmount]);
+  }, [resolutionId, videoDeviceId]);
 
   const resetState = useCallback(() => {
     setResolutionId(defaultState.resolutionId);
-    setArchitecture(defaultState.architecture);
-    setModelSelection(defaultState.modelSelection);
-    setEdgeBlurAmount(defaultState.edgeBlurAmount);
   }, []);
-
-  useNoneInitialEffect(() => {
-    window.location.reload();
-  }, [architecture]);
 
   useEffect(() => {
     requesterDevices.request([]).then((devices) => {
@@ -270,56 +242,6 @@ const App = () => {
                   >
                     {resolutionList.map(renderItemResolution)}
                   </Select>
-                </FormControl>
-              </ListItem>
-              <ListItem>
-                <FormControl variant="filled" className={classes.formControl}>
-                  <InputLabel htmlFor="resolution">Architecture</InputLabel>
-                  <Select
-                    native
-                    value={architecture}
-                    onChange={resolveHandleChangeInput(setArchitecture)}
-                    inputProps={{
-                      name: 'architecture',
-                      id: 'architecture',
-                    }}
-                  >
-                    <option value="MediaPipe">MediaPipe</option>
-                    <option value="MediaPipeOptimized">MediaPipe optimized</option>
-                    {/* <option value="MediaPipeWorker">MediaPipe worker</option> */}
-                    <option value="TensorFlow">TensorFlow</option>
-                  </Select>
-                </FormControl>
-              </ListItem>
-              <ListItem>
-                <FormControl variant="filled" className={classes.formControl}>
-                  <InputLabel htmlFor="outputStride">Model type</InputLabel>
-                  <Select
-                    native
-                    value={modelSelection}
-                    onChange={resolveHandleChangeInput(setModelSelection)}
-                    inputProps={{
-                      name: 'modelSelection',
-                      id: 'modelSelection',
-                    }}
-                  >
-                    <option value="general">general</option>
-                    <option value="landscape">landscape</option>
-                  </Select>
-                </FormControl>
-              </ListItem>
-              <ListItem>
-                <FormControl variant="filled" className={classes.formControl}>
-                  <Typography gutterBottom>Edge blur amount</Typography>
-                  <Slider
-                    marks
-                    valueLabelDisplay="on"
-                    min={0}
-                    step={1}
-                    max={20}
-                    value={edgeBlurAmount}
-                    onChange={resolveHandleInputChange(setEdgeBlurAmount)}
-                  />
                 </FormControl>
               </ListItem>
             </List>
