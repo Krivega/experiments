@@ -1,32 +1,22 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Slider from '@material-ui/core/Slider';
 import ListItem from '@material-ui/core/ListItem';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fab from '@material-ui/core/Fab';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
 import { getMediaStream } from '@experiments/mediastream-api';
+import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
 import { getVideoDevices } from '@experiments/utils/src/devicesResolvers';
 import Media from '@experiments/components/src/Media';
-import useMemoizedDebounce from '@experiments/components/src/useMemoizedDebounce';
-import useNoneInitialEffect from '@experiments/components/src/useNoneInitialEffect';
 import resolutionsListAll, { ID_720P } from '@experiments/system-devices/src/resolutionsList';
 import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
-import RequesterDevices from '@experiments/system-devices';
-import createVideoProcessor from '@experiments/video-processor';
-import type {
-  TProcessVideo,
-  TModelSelection,
-  TArchitecture,
-} from '@experiments/video-processor/src/typings';
+import RequesterDevices from '@experiments/system-devices/src';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -85,12 +75,6 @@ const resolveHandleChangeInput = (handler) => {
   };
 };
 
-const resolveHandleInputChange = (handler) => {
-  return (event, newValue) => {
-    handler(newValue);
-  };
-};
-
 const parseItemDevice = (device) => {
   return {
     label: device.label,
@@ -128,8 +112,6 @@ const getVideoTracks = (mediaStream) => {
 
 const defaultState = {
   resolutionId: ID_720P,
-  architecture: 'MediaPipe' as TArchitecture,
-  modelSelection: 'landscape' as TModelSelection,
   videoDeviceId: '',
   edgeBlurAmount: 4,
 };
@@ -139,7 +121,6 @@ const initialState = { ...defaultState, ...storedState };
 
 const App = () => {
   const classes = useStyles();
-  const videoProcessorRef = useRef<TProcessVideo | null>(null);
   const [isInitialized, setInitialized] = React.useState<boolean>(false);
   const [isLoading, setLoading] = React.useState<boolean>(true);
   const [mediaStreamOriginal, setMediaStreamOriginal] = useState<MediaStream | null>(null);
@@ -148,40 +129,19 @@ const App = () => {
   const [videoDeviceId, setVideoDeviceFromId] = useState<string>(initialState.videoDeviceId);
   const [resolutionList, setResolutionList] = useState<TResolution[]>([]);
   const [resolutionId, setResolutionId] = useState<string>(initialState.resolutionId);
-  const [architecture, setArchitecture] = useState<TArchitecture>(initialState.architecture);
-  const [modelSelection, setModelSelection] = useState<TModelSelection>(
-    initialState.modelSelection
-  );
-  const [edgeBlurAmount, setEdgeBlurAmount] = useState<number>(initialState.edgeBlurAmount);
-
-  useEffect(() => {
-    createVideoProcessor(architecture).then((videoProcessor) => {
-      videoProcessorRef.current = videoProcessor;
-    });
-  }, [architecture]);
 
   useEffect(() => {
     const state = {
       resolutionId,
-      architecture,
-      modelSelection,
       videoDeviceId,
-      edgeBlurAmount,
     };
 
     localStorage.setItem('state', JSON.stringify(state));
-  }, [architecture, modelSelection, resolutionId, videoDeviceId, edgeBlurAmount]);
+  }, [resolutionId, videoDeviceId]);
 
   const resetState = useCallback(() => {
     setResolutionId(defaultState.resolutionId);
-    setArchitecture(defaultState.architecture);
-    setModelSelection(defaultState.modelSelection);
-    setEdgeBlurAmount(defaultState.edgeBlurAmount);
   }, []);
-
-  useNoneInitialEffect(() => {
-    window.location.reload();
-  }, [architecture]);
 
   useEffect(() => {
     requesterDevices.request([]).then((devices) => {
@@ -243,77 +203,6 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoDeviceId, resolutionId, videoDeviceList.length]);
 
-  useEffect(() => {
-    if (videoProcessorRef.current && mediaStreamOriginal && !mediaStreamProcessed) {
-      setLoading(true);
-      videoProcessorRef.current
-        .start({
-          modelSelection,
-          edgeBlurAmount,
-          mediaStream: mediaStreamOriginal,
-        })
-        .then(setMediaStreamProcessed)
-        .then(() => {
-          setLoading(false);
-        });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mediaStreamOriginal]);
-
-  const updateProcessingDebounced = useMemoizedDebounce(
-    () => {
-      if (videoProcessorRef.current && mediaStreamOriginal && mediaStreamProcessed) {
-        // update processing
-
-        setLoading(true);
-        videoProcessorRef.current
-          .changeParams({
-            modelSelection,
-            edgeBlurAmount,
-          })
-          .then(() => {
-            setLoading(false);
-          });
-      }
-    },
-    300,
-    [modelSelection, edgeBlurAmount, mediaStreamOriginal, mediaStreamProcessed]
-  );
-
-  const restartDebounced = useMemoizedDebounce(
-    () => {
-      if (videoProcessorRef.current && mediaStreamOriginal && mediaStreamProcessed) {
-        setLoading(true);
-        videoProcessorRef.current
-          .restart({
-            modelSelection,
-            edgeBlurAmount,
-            mediaStream: mediaStreamOriginal,
-          })
-          .then(setMediaStreamProcessed)
-          .then(() => {
-            setLoading(false);
-          });
-      }
-    },
-    300,
-    [modelSelection, edgeBlurAmount, mediaStreamOriginal, mediaStreamProcessed]
-  );
-
-  useEffect(() => {
-    updateProcessingDebounced();
-  }, [modelSelection, updateProcessingDebounced]);
-
-  useEffect(() => {
-    if (videoProcessorRef.current && mediaStreamProcessed && mediaStreamOriginal) {
-      // reload model
-
-      updateProcessingDebounced.cancel();
-      restartDebounced();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mediaStreamOriginal, modelSelection]);
-
   return (
     <div>
       <Backdrop className={classes.backdrop} open={isLoading}>
@@ -353,56 +242,6 @@ const App = () => {
                   >
                     {resolutionList.map(renderItemResolution)}
                   </Select>
-                </FormControl>
-              </ListItem>
-              <ListItem>
-                <FormControl variant="filled" className={classes.formControl}>
-                  <InputLabel htmlFor="resolution">Architecture</InputLabel>
-                  <Select
-                    native
-                    value={architecture}
-                    onChange={resolveHandleChangeInput(setArchitecture)}
-                    inputProps={{
-                      name: 'architecture',
-                      id: 'architecture',
-                    }}
-                  >
-                    <option value="MediaPipe">MediaPipe</option>
-                    <option value="MediaPipeOptimized">MediaPipe optimized</option>
-                    {/* <option value="MediaPipeWorker">MediaPipe worker</option> */}
-                    <option value="TensorFlow">TensorFlow</option>
-                  </Select>
-                </FormControl>
-              </ListItem>
-              <ListItem>
-                <FormControl variant="filled" className={classes.formControl}>
-                  <InputLabel htmlFor="outputStride">Model type</InputLabel>
-                  <Select
-                    native
-                    value={modelSelection}
-                    onChange={resolveHandleChangeInput(setModelSelection)}
-                    inputProps={{
-                      name: 'modelSelection',
-                      id: 'modelSelection',
-                    }}
-                  >
-                    <option value="general">general</option>
-                    <option value="landscape">landscape</option>
-                  </Select>
-                </FormControl>
-              </ListItem>
-              <ListItem>
-                <FormControl variant="filled" className={classes.formControl}>
-                  <Typography gutterBottom>Edge blur amount</Typography>
-                  <Slider
-                    marks
-                    valueLabelDisplay="on"
-                    min={0}
-                    step={1}
-                    max={20}
-                    value={edgeBlurAmount}
-                    onChange={resolveHandleInputChange(setEdgeBlurAmount)}
-                  />
                 </FormControl>
               </ListItem>
             </List>

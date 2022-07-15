@@ -1,6 +1,6 @@
 {
-  "short_name": "Video Processing",
-  "name": "Video Processing Platform",
+  "short_name": "User Media Api",
+  "name": "User Media Api Test",
   "icons": [
     {
       "src": "favicon.ico",

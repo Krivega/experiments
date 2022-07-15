@@ -1,6 +1,11 @@
 {
   "packages": [
-    "packages/apps/*"
+    "packages/apps/*",
+    "packages/components",
+    "packages/mediastream-api",
+    "packages/system-devices",
+    "packages/video-processor",
+    "packages/utils"
   ],
   "useWorkspaces": true,
   "npmClient": "yarn",
