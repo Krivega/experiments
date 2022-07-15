@@ -10,6 +10,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fab from '@material-ui/core/Fab';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import { getMediaStream } from '@experiments/mediastream-api';
 import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
 import { getVideoDevices } from '@experiments/utils/src/devicesResolvers';
@@ -122,9 +123,8 @@ const initialState = { ...defaultState, ...storedState };
 const App = () => {
   const classes = useStyles();
   const [isInitialized, setInitialized] = React.useState<boolean>(false);
-  const [isLoading, setLoading] = React.useState<boolean>(true);
-  const [mediaStreamOriginal, setMediaStreamOriginal] = useState<MediaStream | null>(null);
-  const [mediaStreamProcessed, setMediaStreamProcessed] = useState<MediaStream | null>(null);
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
   const [videoDeviceList, setVideoDeviceList] = useState<MediaDeviceInfo[]>([]);
   const [videoDeviceId, setVideoDeviceFromId] = useState<string>(initialState.videoDeviceId);
   const [resolutionList, setResolutionList] = useState<TResolution[]>([]);
@@ -156,8 +156,8 @@ const App = () => {
   }, [videoDeviceList, videoDeviceId]);
 
   useEffect(() => {
-    if (mediaStreamOriginal) {
-      const videoTrack = getVideoTracks(mediaStreamOriginal)[0];
+    if (mediaStream) {
+      const videoTrack = getVideoTracks(mediaStream)[0];
 
       if (videoTrack.getCapabilities) {
         const capabilities = videoTrack.getCapabilities();
@@ -167,16 +167,22 @@ const App = () => {
         setInitialized(true);
       }
     }
-  }, [mediaStreamOriginal]);
+  }, [mediaStream]);
 
   useEffect(() => {
+    setIsLoading(true);
+
     if (!videoDeviceId || !resolutionId || videoDeviceList.length === 0) {
+      setIsLoading(false);
+
       return;
     }
 
     const resolution = getResolutionById(resolutionId);
 
     if (!resolution) {
+      setIsLoading(false);
+
       return;
     }
 
@@ -184,8 +190,8 @@ const App = () => {
 
     Promise.resolve()
       .then(() => {
-        if (mediaStreamOriginal) {
-          return stopTracksMediaStream(mediaStreamOriginal);
+        if (mediaStream) {
+          return stopTracksMediaStream(mediaStream);
         }
 
         return undefined;
@@ -199,67 +205,73 @@ const App = () => {
           height,
         });
       })
-      .then(setMediaStreamOriginal);
+      .then(setMediaStream)
+      .finally(() => {
+        setIsLoading(false);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoDeviceId, resolutionId, videoDeviceList.length]);
 
   return (
-    <div>
-      <Backdrop className={classes.backdrop} open={isLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-      {isInitialized && (
-        <Drawer open anchor="right" variant="persistent">
-          <div className={classes.drawer}>
-            <List>
-              <ListItem>
-                <FormControl variant="filled" className={classes.formControl}>
-                  <InputLabel htmlFor="cam">Cam</InputLabel>
-                  <Select
-                    native
-                    value={videoDeviceId}
-                    onChange={resolveHandleChangeInput(setVideoDeviceFromId)}
-                    inputProps={{
-                      name: 'cam',
-                      id: 'cam',
-                    }}
-                  >
-                    {videoDeviceList.map(renderItemDevice)}
-                  </Select>
-                </FormControl>
-              </ListItem>
-              <ListItem>
-                <FormControl variant="filled" className={classes.formControl}>
-                  <InputLabel htmlFor="resolution">Resolution</InputLabel>
-                  <Select
-                    native
-                    value={resolutionId}
-                    onChange={resolveHandleChangeInput(setResolutionId)}
-                    inputProps={{
-                      name: 'resolution',
-                      id: 'resolution',
-                    }}
-                  >
-                    {resolutionList.map(renderItemResolution)}
-                  </Select>
-                </FormControl>
-              </ListItem>
-            </List>
-            <div className={classes.flex}>
-              <Fab variant="extended" color="primary" onClick={resetState}>
-                <RotateLeftIcon className={classes.extendedIcon} />
-                Reset
-              </Fab>
+    <React.Fragment>
+      <CssBaseline />
+      <div>
+        <Backdrop className={classes.backdrop} open={isLoading}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
+        {isInitialized && (
+          <Drawer open anchor="right" variant="persistent">
+            <div className={classes.drawer}>
+              <List>
+                <ListItem>
+                  <FormControl variant="filled" className={classes.formControl}>
+                    <InputLabel htmlFor="cam">Cam</InputLabel>
+                    <Select
+                      native
+                      value={videoDeviceId}
+                      onChange={resolveHandleChangeInput(setVideoDeviceFromId)}
+                      inputProps={{
+                        name: 'cam',
+                        id: 'cam',
+                      }}
+                    >
+                      {videoDeviceList.map(renderItemDevice)}
+                    </Select>
+                  </FormControl>
+                </ListItem>
+                <ListItem>
+                  <FormControl variant="filled" className={classes.formControl}>
+                    <InputLabel htmlFor="resolution">Resolution</InputLabel>
+                    <Select
+                      native
+                      value={resolutionId}
+                      onChange={resolveHandleChangeInput(setResolutionId)}
+                      inputProps={{
+                        name: 'resolution',
+                        id: 'resolution',
+                      }}
+                    >
+                      {resolutionList.map(renderItemResolution)}
+                    </Select>
+                  </FormControl>
+                </ListItem>
+              </List>
+              <div className={classes.flex}>
+                <Fab variant="extended" color="primary" onClick={resetState}>
+                  <RotateLeftIcon className={classes.extendedIcon} />
+                  Reset
+                </Fab>
+              </div>
             </div>
+          </Drawer>
+        )}
+        {mediaStream && (
+          <div className={classes.video}>
+            <Media mediaStream={mediaStream} />
           </div>
-        </Drawer>
-      )}
-      {mediaStreamProcessed && (
-        <div className={classes.video}>
-          <Media mediaStream={mediaStreamProcessed} />
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </React.Fragment>
   );
 };
 export default App;
