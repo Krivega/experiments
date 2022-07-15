@@ -3,6 +3,7 @@
     "packages/apps/*",
     "packages/components",
     "packages/mediastream-api",
+    "packages/system-devices",
     "packages/utils"
   ],
   "useWorkspaces": true,

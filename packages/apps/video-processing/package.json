@@ -51,6 +51,7 @@
     "@testing-library/user-event": "^14.2.0",
     "@vinteo/components": "^0.0.0",
     "@vinteo/mediastream-api": "^0.0.0",
+    "@vinteo/system-devices": "^0.0.0",
     "@vinteo/utils": "^0.0.0",
     "lodash": "^4.17.21",
     "prop-types": "^15.8.1",

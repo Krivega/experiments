@@ -18,9 +18,9 @@ import { getVideoDevices } from '@vinteo/utils/src/devicesResolvers';
 import Media from '@vinteo/components/src/Media';
 import useMemoizedDebounce from '@vinteo/components/src/useMemoizedDebounce';
 import useNoneInitialEffect from '@vinteo/components/src/useNoneInitialEffect';
-import resolutionsListAll, { ID_720P } from './systemDevices/resolutionsList';
-import type { TResolution } from './systemDevices/resolutionsList';
-import RequesterDevices from './systemDevices';
+import resolutionsListAll, { ID_720P } from '@vinteo/system-devices/src/resolutionsList';
+import type { TResolution } from '@vinteo/system-devices/src/resolutionsList';
+import RequesterDevices from '@vinteo/system-devices/src';
 import type { TProcessVideo, TModelSelection, TArchitecture } from './typings';
 
 const useStyles = makeStyles((theme) => {
