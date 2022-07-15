@@ -1,5 +1,5 @@
 {
-  "name": "@vinteo/video-processor",
+  "name": "@experiments/video-processor",
   "version": "0.0.0",
   "private": true,
   "license": "UNLICENSED",
@@ -44,10 +44,10 @@
     "@tensorflow/tfjs-backend-webgl": "3.18.0",
     "@tensorflow/tfjs-converter": "3.18.0",
     "@tensorflow/tfjs-core": "3.18.0",
-    "@vinteo/components": "^0.0.0",
-    "@vinteo/mediastream-api": "^0.0.0",
-    "@vinteo/system-devices": "^0.0.0",
-    "@vinteo/utils": "^0.0.0",
+    "@experiments/components": "^0.0.0",
+    "@experiments/mediastream-api": "^0.0.0",
+    "@experiments/system-devices": "^0.0.0",
+    "@experiments/utils": "^0.0.0",
     "lodash": "^4.17.21",
     "request-animation-runner": "^0.3.2"
   },

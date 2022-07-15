@@ -1,5 +1,5 @@
 import { memoize } from 'lodash';
-import { resolveActionWithWaitConfirm, resolveAction } from '@vinteo/utils/src/worker';
+import { resolveActionWithWaitConfirm, resolveAction } from '@experiments/utils/src/worker';
 import type { TParams } from './typings';
 
 memoize.Cache = WeakMap;

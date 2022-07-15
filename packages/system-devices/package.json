@@ -1,5 +1,5 @@
 {
-  "name": "@vinteo/system-devices",
+  "name": "@experiments/system-devices",
   "version": "0.0.0",
   "private": true,
   "license": "UNLICENSED",
@@ -37,8 +37,8 @@
   },
   "dependencies": {
     "@krivega/cancelable-promise": "^0.3.0",
-    "@vinteo/mediastream-api": "^0.0.0",
-    "@vinteo/utils": "^0.0.0",
+    "@experiments/mediastream-api": "^0.0.0",
+    "@experiments/utils": "^0.0.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

@@ -12,21 +12,21 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fab from '@material-ui/core/Fab';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import stopTracksMediaStream from '@vinteo/mediastream-api/src/stopTracksMediaStream';
-import { getMediaStream } from '@vinteo/mediastream-api';
-import { getVideoDevices } from '@vinteo/utils/src/devicesResolvers';
-import Media from '@vinteo/components/src/Media';
-import useMemoizedDebounce from '@vinteo/components/src/useMemoizedDebounce';
-import useNoneInitialEffect from '@vinteo/components/src/useNoneInitialEffect';
-import resolutionsListAll, { ID_720P } from '@vinteo/system-devices/src/resolutionsList';
-import type { TResolution } from '@vinteo/system-devices/src/resolutionsList';
-import RequesterDevices from '@vinteo/system-devices';
-import createVideoProcessor from '@vinteo/video-processor';
+import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
+import { getMediaStream } from '@experiments/mediastream-api';
+import { getVideoDevices } from '@experiments/utils/src/devicesResolvers';
+import Media from '@experiments/components/src/Media';
+import useMemoizedDebounce from '@experiments/components/src/useMemoizedDebounce';
+import useNoneInitialEffect from '@experiments/components/src/useNoneInitialEffect';
+import resolutionsListAll, { ID_720P } from '@experiments/system-devices/src/resolutionsList';
+import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
+import RequesterDevices from '@experiments/system-devices';
+import createVideoProcessor from '@experiments/video-processor';
 import type {
   TProcessVideo,
   TModelSelection,
   TArchitecture,
-} from '@vinteo/video-processor/src/typings';
+} from '@experiments/video-processor/src/typings';
 
 const useStyles = makeStyles((theme) => {
   return {

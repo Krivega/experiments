@@ -1,5 +1,5 @@
 import { cancelablePromise } from '@krivega/cancelable-promise';
-import SetTimeoutRequest from '@vinteo/utils/src/SetTimeoutRequest';
+import SetTimeoutRequest from '@experiments/utils/src/SetTimeoutRequest';
 import prepareConstraints from './prepareConstraints';
 import stopTracksMediaStream from './stopTracksMediaStream';
 

@@ -2,10 +2,6 @@
 
 # dependencies
 node_modules
-/public/pdf.worker.min.js
-
-# testing
-coverage
 
 # production
 build
@@ -32,7 +28,3 @@ yarn-debug.log*
 yarn-error.log*
 
 *.log
-
-# cypress
-packages/apps/desktop-client-web/cypress/videos/*
-packages/apps/desktop-client-web/cypress/screenshots/*

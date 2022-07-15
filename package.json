@@ -32,16 +32,12 @@
   },
   "scripts": {
     "precommit": "lerna run --concurrency 1 --stream precommit",
-    "release": "lerna version --no-private --conventional-graduate",
-    "release:minor": "lerna version minor --no-private",
-    "release:pre": "lerna version --no-private prerelease",
     "test": "CI=true yarn test:modules && yarn test:apps && CI=true yarn test:modules:coverage",
-    "test:apps": "lerna run test:nowatch --stream --scope @vinteo/web-client --scope vinteo.screencast --scope Vinteo.Desktop --scope @vinteo/video-player",
+    "test:apps": "lerna run test:nowatch --stream --scope user-media-api-test --scope video-processing",
     "test:circular": "lerna run test:circular --stream",
-    "test:modules": "lerna run test --stream --ignore @vinteo/web-client --ignore vinteo.screencast --ignore Vinteo.Desktop --ignore @vinteo/video-player --ignore @vinteo/desktop-client-web --ignore @vinteo/desktop-client-web-cypress --ignore @vinteo/web-client-cypress --ignore vinteo.screencast-cypress",
-    "test:modules:coverage": "lerna run test:coverage --stream --ignore @vinteo/web-client --ignore vinteo.screencast --ignore Vinteo.Desktop --ignore @vinteo/video-player --ignore @vinteo/desktop-client-web --ignore @vinteo/desktop-client-web-cypress --ignore @vinteo/web-client-cypress --ignore vinteo.screencast-cypress",
-    "tsc": "tsc",
-    "version": "prettier --write \"packages/**/**/CHANGELOG.md\" && yarn lerna run configure:version --stream --scope Vinteo.Desktop && git add ."
+    "test:modules": "lerna run test --stream --ignore user-media-api-test --ignore video-processing",
+    "test:modules:coverage": "lerna run test:coverage --stream --ignore user-media-api-test --ignore video-processing",
+    "tsc": "tsc"
   },
   "config": {
     "commitizen": {

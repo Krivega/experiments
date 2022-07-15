@@ -1,13 +1,11 @@
 **/node_modules/**
 **/dist/**
-**/storybook-static/**
-**/coverage/**
 **/build/**
 **/.git/**
 **/public/**
 !.eslintrc.js
 package.json
-package-lock.json
+yarn.lock
 jsconfig.json
 manifest.json
 **/CHANGELOG.md

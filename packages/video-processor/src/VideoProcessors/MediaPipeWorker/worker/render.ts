@@ -4,7 +4,7 @@ import {
   createOffScreenCanvas,
   renderImageDataToCanvas,
   imageBitmapToImageData as _imageBitmapToImageData,
-} from '@vinteo/utils/src/canvas';
+} from '@experiments/utils/src/canvas';
 
 let offScreenCanvases = {};
 

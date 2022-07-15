@@ -2,10 +2,10 @@ import AnimationRequest from 'request-animation-runner';
 import { Camera } from '@mediapipe/camera_utils';
 import { SelfieSegmentation } from '@mediapipe/selfie_segmentation';
 import type { ResultsListener } from '@mediapipe/selfie_segmentation';
-import createFpsMeter from '@vinteo/utils/src/createFpsMeter';
-import createFPSCounter from '@vinteo/utils/src/createFPSCounter';
-import mediaStreamToVideo from '@vinteo/utils/src/mediaStreamToVideo';
-import { createCanvas } from '@vinteo/utils/src/canvas';
+import createFpsMeter from '@experiments/utils/src/createFpsMeter';
+import createFPSCounter from '@experiments/utils/src/createFPSCounter';
+import mediaStreamToVideo from '@experiments/utils/src/mediaStreamToVideo';
+import { createCanvas } from '@experiments/utils/src/canvas';
 import type { TResolveProcessVideo, TModelSelection } from '../../typings';
 import drawImageMask from '../MediaPipe/drawImageMask';
 
