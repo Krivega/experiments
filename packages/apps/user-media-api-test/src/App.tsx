@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Checkbox from '@material-ui/core/Checkbox';
 import Drawer from '@material-ui/core/Drawer';
+import Divider from '@material-ui/core/Divider';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -250,24 +251,45 @@ const App = () => {
   }, [audioInputDeviceId, videoDeviceId, resolutionId, videoDeviceList.length]);
 
   const resolveHandleBooleanConstraintsChange = (key: string) => {
-    return (event) => {
-      if (event.target.name === key) {
+    return ({ target }) => {
+      const { name, checked } = target;
+
+      if (name === key) {
         setVideoSettings({
           ...videoSettings,
-          [key]: event.target.checked,
+          [key]: checked,
         });
-      } else if (event.target.name === 'exact') {
+      } else if (name === 'exact') {
         setVideoSettings({
           ...videoSettings,
-          [key]: { exact: event.target.checked },
+          [key]: { exact: checked },
         });
-      } else if (event.target.name === 'ideal') {
+      } else if (name === 'ideal') {
         setVideoSettings({
           ...videoSettings,
-          [key]: { ideal: event.target.checked },
+          [key]: { ideal: checked },
         });
       }
     };
+  };
+
+  const resolveHandleStringConstraints = (key) => {
+    return ({ target }) => {
+      const { value } = target;
+
+      setVideoSettings({
+        ...videoSettings,
+        [key]: value,
+      });
+    };
+  };
+
+  const renderStringOptionValue = (value: string): JSX.Element => {
+    return (
+      <option value={value} key={value}>
+        {value}
+      </option>
+    );
   };
 
   const renderVideoConstraint = ({ key, value }) => {
@@ -320,6 +342,29 @@ const App = () => {
 
             {!!videoSettings[key] && children}
           </FormGroup>
+        </ListItem>
+      );
+    }
+
+    if (value.type === 'stringOption') {
+      const handleStringConstraints = resolveHandleStringConstraints(key);
+
+      return (
+        <ListItem key={key}>
+          <FormControl variant="filled" className={classes.formControl}>
+            <InputLabel htmlFor={key}>{key}</InputLabel>
+            <Select
+              native
+              value={videoSettings[key]}
+              onChange={handleStringConstraints}
+              inputProps={{
+                name: key,
+                id: key,
+              }}
+            >
+              {value.values.map(renderStringOptionValue)}
+            </Select>
+          </FormControl>
         </ListItem>
       );
     }
@@ -394,6 +439,8 @@ const App = () => {
           </div>
         )}
       </div>
+      <Divider />
+      <code>{JSON.stringify(videoSettings, null, 4)}</code>
     </React.Fragment>
   );
 };
