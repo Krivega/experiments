@@ -12,7 +12,7 @@ const passiveEventOptions = { passive: true };
  * @returns {Promise} The media stream origin.
  */
 export const getMediaStreamOrigin = (
-  constraints,
+  constraints: MediaStreamConstraints,
   { waitTimeout = 20_000 } = {}
 ): Promise<MediaStream> => {
   const setTimeoutRequest = new SetTimeoutRequest();

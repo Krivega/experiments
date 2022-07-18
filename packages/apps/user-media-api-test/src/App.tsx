@@ -13,7 +13,7 @@ import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { getMediaStream } from '@experiments/mediastream-api';
 import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
-import { getVideoDevices } from '@experiments/utils/src/devicesResolvers';
+import { getVideoDevices, getAudioInputDevices } from '@experiments/utils/src/devicesResolvers';
 import Media from '@experiments/components/src/Media';
 import resolutionsListAll, { ID_720P } from '@experiments/system-devices/src/resolutionsList';
 import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
@@ -111,9 +111,16 @@ const getVideoTracks = (mediaStream) => {
   });
 };
 
+const getAudioTracks = (mediaStream) => {
+  return mediaStream.getTracks().filter(({ kind }) => {
+    return kind === 'audio';
+  });
+};
+
 const defaultState = {
   resolutionId: ID_720P,
   videoDeviceId: '',
+  audioInputDeviceId: '',
   edgeBlurAmount: 4,
 };
 // @ts-ignore
@@ -126,9 +133,17 @@ const App = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
   const [videoDeviceList, setVideoDeviceList] = useState<MediaDeviceInfo[]>([]);
+  const [audioInputDeviceList, setAudioInputDeviceList] = useState<MediaDeviceInfo[]>([]);
   const [videoDeviceId, setVideoDeviceFromId] = useState<string>(initialState.videoDeviceId);
+  const [audioInputDeviceId, setAudioInputDeviceFromId] = useState<string>(
+    initialState.audioInputDeviceId
+  );
   const [resolutionList, setResolutionList] = useState<TResolution[]>([]);
   const [resolutionId, setResolutionId] = useState<string>(initialState.resolutionId);
+
+  useEffect(() => {
+    const supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
+  }, []);
 
   useEffect(() => {
     const state = {
@@ -146,6 +161,7 @@ const App = () => {
   useEffect(() => {
     requesterDevices.request([]).then((devices) => {
       setVideoDeviceList(getVideoDevices(devices));
+      setAudioInputDeviceList(getAudioInputDevices(devices));
     });
   }, []);
 
@@ -153,14 +169,24 @@ const App = () => {
     if (videoDeviceList.length > 0 && !videoDeviceId) {
       setVideoDeviceFromId(videoDeviceList[0].deviceId);
     }
-  }, [videoDeviceList, videoDeviceId]);
+
+    if (audioInputDeviceList.length > 0 && !audioInputDeviceId) {
+      setAudioInputDeviceFromId(audioInputDeviceList[0].deviceId);
+    }
+  }, [videoDeviceList, videoDeviceId, audioInputDeviceList, audioInputDeviceId]);
 
   useEffect(() => {
     if (mediaStream) {
       const videoTrack = getVideoTracks(mediaStream)[0];
+      const audioTrack = getAudioTracks(mediaStream)[0];
+
+      if (audioTrack.getCapabilities) {
+        const capabilities = audioTrack.getCapabilities();
+      }
 
       if (videoTrack.getCapabilities) {
         const capabilities = videoTrack.getCapabilities();
+
         const resolutionsByCapabilities = getResolutionsByCapabilities(capabilities);
 
         setResolutionList(resolutionsByCapabilities);
@@ -172,7 +198,7 @@ const App = () => {
   useEffect(() => {
     setIsLoading(true);
 
-    if (!videoDeviceId || !resolutionId || videoDeviceList.length === 0) {
+    if (!videoDeviceId || !resolutionId || videoDeviceList.length === 0 || !audioInputDeviceId) {
       setIsLoading(false);
 
       return;
@@ -198,8 +224,9 @@ const App = () => {
       })
       .then(() => {
         return getMediaStream({
-          audio: false,
+          audio: true,
           video: true,
+          audioDeviceId: audioInputDeviceId,
           videoDeviceId,
           width,
           height,
@@ -210,7 +237,7 @@ const App = () => {
         setIsLoading(false);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videoDeviceId, resolutionId, videoDeviceList.length]);
+  }, [audioInputDeviceId, videoDeviceId, resolutionId, videoDeviceList.length]);
 
   return (
     <React.Fragment>
