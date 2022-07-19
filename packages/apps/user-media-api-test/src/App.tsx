@@ -16,6 +16,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Select from '@material-ui/core/Select';
 import Slider from '@material-ui/core/Slider';
+import Typography from '@material-ui/core/Typography';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { getMediaStream } from '@experiments/mediastream-api';
@@ -349,7 +350,7 @@ const App = () => {
                   color="default"
                 />
               }
-              label={key}
+              label={<Typography variant="h6">{key}</Typography>}
             />
             {!!videoSettings[key] && children}
           </FormGroup>
@@ -387,7 +388,7 @@ const App = () => {
       return (
         <ListItem key={key}>
           <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3, width: 250 }}>
-            <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>{key}</div>
+            <Typography variant="h6">{key}</Typography>
             <Slider
               aria-label={key}
               defaultValue={x}

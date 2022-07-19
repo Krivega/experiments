@@ -3,6 +3,7 @@ import Box from '@material-ui/core/Box';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Slider from '@material-ui/core/Slider';
+import Typography from '@material-ui/core/Typography';
 import { TVideoConstraints } from '../typings';
 
 const NumericConstraint = ({
@@ -44,7 +45,7 @@ const NumericConstraint = ({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3, width: 250 }}>
-      <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>{constraintKey}</div>
+      <Typography variant="h6">{constraintKey}</Typography>
       <FormControlLabel
         control={
           <Checkbox
