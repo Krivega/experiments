@@ -27,6 +27,11 @@ import StringOptionConstraint from './containers/StringOptionConstraint';
 import PointOfInterestConstraint from './containers/PointOfInterestConstraint';
 import { videoConstraints } from './constraints';
 import type { TVideoConstraints } from './typings';
+import {
+  STRING_OPTION_CONSTRAINT,
+  POINTS_OF_INTEREST_CONSTRAINT,
+  BOOLEAN_CONSTRAINT,
+} from './constants';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -252,7 +257,7 @@ const App = () => {
   }, [audioInputDeviceId, videoDeviceId, resolutionId, videoDeviceList.length]);
 
   const renderVideoConstraint = ({ key, value }) => {
-    if (value.type === 'boolean') {
+    if (value.type === BOOLEAN_CONSTRAINT) {
       return (
         <ListItem key={key}>
           <BooleanConstraint
@@ -266,7 +271,7 @@ const App = () => {
       );
     }
 
-    if (value.type === 'stringOption') {
+    if (value.type === STRING_OPTION_CONSTRAINT) {
       return (
         <ListItem key={key}>
           <StringOptionConstraint
@@ -280,7 +285,7 @@ const App = () => {
       );
     }
 
-    if (value.type === 'pointsOfInterest') {
+    if (value.type === POINTS_OF_INTEREST_CONSTRAINT) {
       return (
         <ListItem key={key}>
           <PointOfInterestConstraint
