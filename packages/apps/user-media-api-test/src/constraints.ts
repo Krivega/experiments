@@ -10,7 +10,7 @@ export const videoConstraints = {
     default: 'none',
     values: ['none', 'manual', 'single-shot', 'continuous'],
   },
-  pointsOfInterest: { type: 'pointsOfInterest', default: { x: 0, y: 0 } },
+  pointsOfInterest: { type: 'pointsOfInterest', default: { x: 10, y: 10 } },
   exposureCompensation: {
     type: 'number',
     default: 0,

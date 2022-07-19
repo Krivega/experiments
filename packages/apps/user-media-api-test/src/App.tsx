@@ -1,20 +1,21 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import Backdrop from '@material-ui/core/Backdrop';
 import Box from '@material-ui/core/Box';
 import Checkbox from '@material-ui/core/Checkbox';
+import Container from '@material-ui/core/Container';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
-import InputLabel from '@material-ui/core/InputLabel';
+import Fab from '@material-ui/core/Fab';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import Backdrop from '@material-ui/core/Backdrop';
-import Container from '@material-ui/core/Container';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Fab from '@material-ui/core/Fab';
+import Select from '@material-ui/core/Select';
+import Slider from '@material-ui/core/Slider';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { getMediaStream } from '@experiments/mediastream-api';
@@ -273,7 +274,7 @@ const App = () => {
     };
   };
 
-  const resolveHandleStringConstraints = (key) => {
+  const resolveHandleStringConstraints = (key: string) => {
     return ({ target }) => {
       const { value } = target;
 
@@ -281,6 +282,16 @@ const App = () => {
         ...videoSettings,
         [key]: value,
       });
+    };
+  };
+  const resolveHandlePointsOfInterest = (key: string) => {
+    return (axis: string) => {
+      return (event, value) => {
+        setVideoSettings({
+          ...videoSettings,
+          [key]: { ...videoSettings[key], [axis]: value },
+        });
+      };
     };
   };
 
@@ -339,7 +350,6 @@ const App = () => {
               }
               label={key}
             />
-
             {!!videoSettings[key] && children}
           </FormGroup>
         </ListItem>
@@ -366,6 +376,43 @@ const App = () => {
             </Select>
           </FormControl>
         </ListItem>
+      );
+    }
+
+    if (value.type === 'pointsOfInterest') {
+      const { x, y } = value.default;
+      const handlePointsOfInterest = resolveHandlePointsOfInterest(key);
+
+      return (
+        <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3, width: 250 }}>
+          <Slider
+            aria-label="pointsOfInterest"
+            defaultValue={x}
+            getAriaValueText={(val) => {
+              return `${val}`;
+            }}
+            valueLabelDisplay="auto"
+            step={10}
+            marks
+            min={10}
+            max={110}
+            onChange={handlePointsOfInterest('x')}
+          />
+          <Slider
+            data-name="y"
+            aria-label="pointsOfInterest"
+            defaultValue={y}
+            getAriaValueText={(val) => {
+              return `${val}`;
+            }}
+            valueLabelDisplay="auto"
+            step={10}
+            marks
+            min={10}
+            max={110}
+            onChange={handlePointsOfInterest('y')}
+          />
+        </Box>
       );
     }
 
@@ -435,7 +482,7 @@ const App = () => {
         )}
         {mediaStream && (
           <div className={classes.video}>
-            <Media mediaStream={mediaStream} />
+            <Media muted mediaStream={mediaStream} />
           </div>
         )}
       </div>
