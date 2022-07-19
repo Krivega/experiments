@@ -44,7 +44,7 @@ const NumericConstraint = ({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3, width: 250 }}>
-      <div>{constraintKey}</div>
+      <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>{constraintKey}</div>
       <FormControlLabel
         control={
           <Checkbox

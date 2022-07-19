@@ -12,6 +12,10 @@ export const videoConstraints = {
   resizeMode: { type: 'stringOption', default: 'none', values: ['none', 'crop-and-scale'] },
   torch: { type: 'boolean', default: false, defaultObj: { exact: false, ideal: false } },
   pointsOfInterest: { type: 'pointsOfInterest', default: { x: 10, y: 10 } },
+  height: { type: 'number', default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
+  aspectRatio: { type: 'number', default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
+  frameRate: { type: 'number', default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
+  facingMode: { type: 'string', default: '', defaultObj: { exact: '', ideal: '' } },
   exposureCompensation: {
     type: 'number',
     default: 0,
@@ -36,10 +40,6 @@ export const videoConstraints = {
   pan: { type: 'number', default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
   tilt: { type: 'number', default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
   width: { type: 'number', default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
-  height: { type: 'number', default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
-  aspectRatio: { type: 'number', default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
-  frameRate: { type: 'number', default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
-  facingMode: { type: 'string', default: '', defaultObj: { exact: '', ideal: '' } },
 };
 
 export const audioConstraints = {

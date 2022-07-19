@@ -387,7 +387,7 @@ const App = () => {
       return (
         <ListItem key={key}>
           <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3, width: 250 }}>
-            <div>{key}</div>
+            <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>{key}</div>
             <Slider
               aria-label={key}
               defaultValue={x}
