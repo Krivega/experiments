@@ -16,7 +16,7 @@ const NumericConstraint = ({
   value: {
     type: string;
     default: number;
-    defaultObj: { min: number; max: number; exact: number; ideal: 0 };
+    defaultObj: { min: number; max: number; exact: number; ideal: number };
   };
   setVideoSettings: (value: TVideoConstraints) => void;
   videoSettings: TVideoConstraints;

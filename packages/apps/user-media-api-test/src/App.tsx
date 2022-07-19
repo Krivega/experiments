@@ -1,21 +1,16 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Backdrop from '@material-ui/core/Backdrop';
-import Box from '@material-ui/core/Box';
-import Checkbox from '@material-ui/core/Checkbox';
 import Container from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
 import Fab from '@material-ui/core/Fab';
 import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import InputLabel from '@material-ui/core/InputLabel';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Select from '@material-ui/core/Select';
-import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -27,6 +22,9 @@ import resolutionsListAll, { ID_720P } from '@experiments/system-devices/src/res
 import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
 import RequesterDevices from '@experiments/system-devices/src';
 import NumericConstraint from './containers/NumericConstraint';
+import BooleanConstraint from './containers/BooleanConstraint';
+import StringOptionConstraint from './containers/StringOptionConstraint';
+import PointOfInterestConstraint from './containers/PointOfInterestConstraint';
 import { videoConstraints } from './constraints';
 import type { TVideoConstraints } from './typings';
 
@@ -253,169 +251,44 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [audioInputDeviceId, videoDeviceId, resolutionId, videoDeviceList.length]);
 
-  const resolveHandleBooleanConstraintsChange = (key: string) => {
-    return ({ target }) => {
-      const { name, checked } = target;
-
-      if (name === key) {
-        setVideoSettings({
-          ...videoSettings,
-          [key]: checked,
-        });
-      } else if (name === 'exact') {
-        setVideoSettings({
-          ...videoSettings,
-          [key]: { exact: checked },
-        });
-      } else if (name === 'ideal') {
-        setVideoSettings({
-          ...videoSettings,
-          [key]: { ideal: checked },
-        });
-      }
-    };
-  };
-
-  const resolveHandleStringConstraints = (key: string) => {
-    return ({ target }) => {
-      const { value } = target;
-
-      setVideoSettings({
-        ...videoSettings,
-        [key]: value,
-      });
-    };
-  };
-  const resolveHandlePointsOfInterest = (key: string) => {
-    return (axis: string) => {
-      return (event, value) => {
-        setVideoSettings({
-          ...videoSettings,
-          [key]: { ...videoSettings[key], [axis]: value },
-        });
-      };
-    };
-  };
-
-  const renderStringOptionValue = (value: string): JSX.Element => {
-    return (
-      <option value={value} key={value}>
-        {value}
-      </option>
-    );
-  };
-
   const renderVideoConstraint = ({ key, value }) => {
     if (value.type === 'boolean') {
-      const handleBooleanConstraintsChange = resolveHandleBooleanConstraintsChange(key);
-
-      const children = (
-        <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="exact"
-                size="small"
-                onChange={handleBooleanConstraintsChange}
-                checked={!!videoSettings[key]?.exact}
-                color="default"
-              />
-            }
-            label="exact"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="ideal"
-                size="small"
-                onChange={handleBooleanConstraintsChange}
-                checked={!!videoSettings[key]?.ideal}
-                color="default"
-              />
-            }
-            label="ideal"
-          />
-        </Box>
-      );
-
       return (
         <ListItem key={key}>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name={key}
-                  onChange={handleBooleanConstraintsChange}
-                  checked={videoSettings[key] === true}
-                  color="default"
-                />
-              }
-              label={<Typography variant="h6">{key}</Typography>}
-            />
-            {!!videoSettings[key] && children}
-          </FormGroup>
+          <BooleanConstraint
+            classes={classes}
+            value={value}
+            constraintKey={key}
+            videoSettings={videoSettings}
+            setVideoSettings={setVideoSettings}
+          />
         </ListItem>
       );
     }
 
     if (value.type === 'stringOption') {
-      const handleStringConstraints = resolveHandleStringConstraints(key);
-
       return (
         <ListItem key={key}>
-          <FormControl variant="filled" className={classes.formControl}>
-            <InputLabel htmlFor={key}>{key}</InputLabel>
-            <Select
-              native
-              value={videoSettings[key]}
-              onChange={handleStringConstraints}
-              inputProps={{
-                name: key,
-                id: key,
-              }}
-            >
-              {value.values.map(renderStringOptionValue)}
-            </Select>
-          </FormControl>
+          <StringOptionConstraint
+            classes={classes}
+            value={value}
+            constraintKey={key}
+            videoSettings={videoSettings}
+            setVideoSettings={setVideoSettings}
+          />
         </ListItem>
       );
     }
 
     if (value.type === 'pointsOfInterest') {
-      const { x, y } = value.default;
-      const handlePointsOfInterest = resolveHandlePointsOfInterest(key);
-
       return (
         <ListItem key={key}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3, width: 250 }}>
-            <Typography variant="h6">{key}</Typography>
-            <Slider
-              aria-label={key}
-              defaultValue={x}
-              getAriaValueText={(val) => {
-                return `${val}`;
-              }}
-              valueLabelDisplay="auto"
-              step={10}
-              min={10}
-              max={100}
-              marks={[{ value: 10, label: 'X' }]}
-              onChange={handlePointsOfInterest('x')}
-            />
-            <Slider
-              aria-label={key}
-              defaultValue={y}
-              getAriaValueText={(val) => {
-                return `${val}`;
-              }}
-              valueLabelDisplay="auto"
-              step={10}
-              min={10}
-              max={100}
-              marks={[{ value: 10, label: 'Y' }]}
-              onChange={handlePointsOfInterest('y')}
-            />
-          </Box>
+          <PointOfInterestConstraint
+            value={value}
+            constraintKey={key}
+            videoSettings={videoSettings}
+            setVideoSettings={setVideoSettings}
+          />
         </ListItem>
       );
     }
@@ -477,7 +350,7 @@ const App = () => {
                 </ListItem>
               </List>
               <Container>
-                <div>CAMERA SETTINGS</div>
+                <Typography variant="h5">CAMERA SETTINGS</Typography>
               </Container>
               <List>
                 {Object.entries(videoConstraints).map(([key, value]) => {
