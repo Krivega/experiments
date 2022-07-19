@@ -384,35 +384,38 @@ const App = () => {
       const handlePointsOfInterest = resolveHandlePointsOfInterest(key);
 
       return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3, width: 250 }}>
-          <Slider
-            aria-label="pointsOfInterest"
-            defaultValue={x}
-            getAriaValueText={(val) => {
-              return `${val}`;
-            }}
-            valueLabelDisplay="auto"
-            step={10}
-            marks
-            min={10}
-            max={110}
-            onChange={handlePointsOfInterest('x')}
-          />
-          <Slider
-            data-name="y"
-            aria-label="pointsOfInterest"
-            defaultValue={y}
-            getAriaValueText={(val) => {
-              return `${val}`;
-            }}
-            valueLabelDisplay="auto"
-            step={10}
-            marks
-            min={10}
-            max={110}
-            onChange={handlePointsOfInterest('y')}
-          />
-        </Box>
+        <ListItem key={key}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3, width: 250 }}>
+            <Slider
+              key="x"
+              aria-label="pointsOfInterest"
+              defaultValue={x}
+              getAriaValueText={(val) => {
+                return `${val}`;
+              }}
+              valueLabelDisplay="auto"
+              step={10}
+              marks
+              min={10}
+              max={100}
+              onChange={handlePointsOfInterest('x')}
+            />
+            <Slider
+              key="y"
+              aria-label="pointsOfInterest"
+              defaultValue={y}
+              getAriaValueText={(val) => {
+                return `${val}`;
+              }}
+              valueLabelDisplay="auto"
+              step={10}
+              marks
+              min={10}
+              max={100}
+              onChange={handlePointsOfInterest('y')}
+            />
+          </Box>
+        </ListItem>
       );
     }
 
@@ -487,7 +490,7 @@ const App = () => {
         )}
       </div>
       <Divider />
-      <code>{JSON.stringify(videoSettings, null, 4)}</code>
+      <pre>{JSON.stringify(videoSettings, null, 2)}</pre>
     </React.Fragment>
   );
 };
