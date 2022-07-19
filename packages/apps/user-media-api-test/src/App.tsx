@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Backdrop from '@material-ui/core/Backdrop';
 import Container from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -16,86 +15,20 @@ import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { getMediaStream } from '@experiments/mediastream-api';
 import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
-import { getVideoDevices, getAudioInputDevices } from '@experiments/utils/src/devicesResolvers';
+import getVideoTracks from '@experiments/mediastream-api/src/getVideoTracks';
 import Media from '@experiments/components/src/Media';
-import resolutionsListAll, { ID_720P } from '@experiments/system-devices/src/resolutionsList';
+import { ID_720P } from '@experiments/system-devices/src/resolutionsList';
+import getResolutionsByCapabilities from '@experiments/system-devices/src/getResolutionsByCapabilities';
+import getResolutionById from '@experiments/system-devices/src/getResolutionById';
+import parseItemDevice from '@experiments/system-devices/src/parseItemDevice';
+import requestDevices from '@experiments/system-devices/src/requestDevices';
 import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
-import RequesterDevices from '@experiments/system-devices/src';
-import NumericConstraint from './containers/NumericConstraint';
-import BooleanConstraint from './containers/BooleanConstraint';
-import StringOptionConstraint from './containers/StringOptionConstraint';
-import PointOfInterestConstraint from './containers/PointOfInterestConstraint';
+import resolveHandleChangeInput from '@experiments/utils/src/resolveHandleChangeInput';
+import VideoConstraint from './containers/VideoConstraint';
 import { videoConstraints } from './constraints';
 import type { TVideoConstraints } from './typings';
-import {
-  STRING_OPTION_CONSTRAINT,
-  POINTS_OF_INTEREST_CONSTRAINT,
-  BOOLEAN_CONSTRAINT,
-} from './constants';
 
-const useStyles = makeStyles((theme) => {
-  return {
-    formControl: {
-      margin: theme.spacing(1),
-      width: `100%`,
-    },
-    flex: {
-      margin: theme.spacing(1),
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    drawer: { width: '320px' },
-    fullWidth: { width: '100%' },
-    noPadding: { padding: '0' },
-    extendedIcon: {
-      marginRight: theme.spacing(1),
-    },
-    backdrop: {
-      zIndex: theme.zIndex.drawer + 1,
-      color: '#fff',
-    },
-    video: {
-      transform: 'rotateY(180deg)',
-      display: 'flex',
-      justifyContent: 'flex-end',
-    },
-  };
-});
-const getResolutionsByCapabilities = (capabilities) => {
-  const {
-    width: { max: maxWidth },
-    height: { max: maxHeight },
-  } = capabilities;
-
-  const resolutionsByCapabilities = resolutionsListAll.filter((resolution) => {
-    return resolution.width <= maxWidth && resolution.height <= maxHeight;
-  });
-
-  return resolutionsByCapabilities;
-};
-const getResolutionById = (id: string) => {
-  const resolutionById = resolutionsListAll.find((resolution) => {
-    return resolution.id === id;
-  });
-
-  return resolutionById;
-};
-
-const resolveHandleChangeInput = (handler) => {
-  return ({ target }) => {
-    const { value } = target;
-
-    handler(value);
-  };
-};
-
-const parseItemDevice = (device) => {
-  return {
-    label: device.label,
-    value: device.deviceId,
-  };
-};
+import useStyles from './useStyles';
 
 const renderItemDevice = (item, index) => {
   const { label, value } = parseItemDevice(item);
@@ -115,20 +48,6 @@ const renderItemResolution = (item, index) => {
       {label}
     </option>
   );
-};
-
-const requesterDevices = new RequesterDevices();
-
-const getVideoTracks = (mediaStream) => {
-  return mediaStream.getTracks().filter(({ kind }) => {
-    return kind === 'video';
-  });
-};
-
-const getAudioTracks = (mediaStream) => {
-  return mediaStream.getTracks().filter(({ kind }) => {
-    return kind === 'audio';
-  });
 };
 
 const defaultState = {
@@ -176,10 +95,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    requesterDevices.request([]).then((devices) => {
-      setVideoDeviceList(getVideoDevices(devices));
-      setAudioInputDeviceList(getAudioInputDevices(devices));
-    });
+    requestDevices({ setVideoDeviceList, setAudioInputDeviceList });
   }, []);
 
   useEffect(() => {
@@ -195,11 +111,6 @@ const App = () => {
   useEffect(() => {
     if (mediaStream) {
       const videoTrack = getVideoTracks(mediaStream)[0];
-      const audioTrack = getAudioTracks(mediaStream)[0];
-
-      if (audioTrack.getCapabilities) {
-        const capabilities = audioTrack.getCapabilities();
-      }
 
       if (videoTrack.getCapabilities) {
         const capabilities = videoTrack.getCapabilities();
@@ -256,60 +167,6 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [audioInputDeviceId, videoDeviceId, resolutionId, videoDeviceList.length]);
 
-  const renderVideoConstraint = ({ key, value }) => {
-    if (value.type === BOOLEAN_CONSTRAINT) {
-      return (
-        <ListItem key={key}>
-          <BooleanConstraint
-            classes={classes}
-            value={value}
-            constraintKey={key}
-            videoSettings={videoSettings}
-            setVideoSettings={setVideoSettings}
-          />
-        </ListItem>
-      );
-    }
-
-    if (value.type === STRING_OPTION_CONSTRAINT) {
-      return (
-        <ListItem key={key}>
-          <StringOptionConstraint
-            classes={classes}
-            value={value}
-            constraintKey={key}
-            videoSettings={videoSettings}
-            setVideoSettings={setVideoSettings}
-          />
-        </ListItem>
-      );
-    }
-
-    if (value.type === POINTS_OF_INTEREST_CONSTRAINT) {
-      return (
-        <ListItem key={key}>
-          <PointOfInterestConstraint
-            value={value}
-            constraintKey={key}
-            videoSettings={videoSettings}
-            setVideoSettings={setVideoSettings}
-          />
-        </ListItem>
-      );
-    }
-
-    return (
-      <ListItem key={key}>
-        <NumericConstraint
-          value={value}
-          constraintKey={key}
-          videoSettings={videoSettings}
-          setVideoSettings={setVideoSettings}
-        />
-      </ListItem>
-    );
-  };
-
   return (
     <React.Fragment>
       <CssBaseline />
@@ -358,8 +215,17 @@ const App = () => {
                 <Typography variant="h5">CAMERA SETTINGS</Typography>
               </Container>
               <List>
-                {Object.entries(videoConstraints).map(([key, value]) => {
-                  return renderVideoConstraint({ key, value });
+                {Object.entries(videoConstraints).map(([constraint, value]) => {
+                  return (
+                    <VideoConstraint
+                      key={constraint}
+                      constraint={constraint}
+                      value={value}
+                      classes={classes}
+                      videoSettings={videoConstraints}
+                      setVideoSettings={setVideoSettings}
+                    />
+                  );
                 })}
               </List>
               <div className={classes.flex}>
