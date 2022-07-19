@@ -1,5 +1,4 @@
 export const videoConstraints = {
-  torch: { type: 'boolean', default: false, defaultObj: { exact: false, ideal: false } },
   whiteBalanceMode: {
     type: 'stringOption',
     default: 'none',
@@ -10,6 +9,8 @@ export const videoConstraints = {
     default: 'none',
     values: ['none', 'manual', 'single-shot', 'continuous'],
   },
+  resizeMode: { type: 'stringOption', default: 'none', values: ['none', 'crop-and-scale'] },
+  torch: { type: 'boolean', default: false, defaultObj: { exact: false, ideal: false } },
   pointsOfInterest: { type: 'pointsOfInterest', default: { x: 10, y: 10 } },
   exposureCompensation: {
     type: 'number',
@@ -39,7 +40,6 @@ export const videoConstraints = {
   aspectRatio: { type: 'number', default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
   frameRate: { type: 'number', default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
   facingMode: { type: 'string', default: '', defaultObj: { exact: '', ideal: '' } },
-  resizeMode: { type: 'stringOption', default: 'none', values: ['none', 'crop-and-scale'] },
 };
 
 export const audioConstraints = {

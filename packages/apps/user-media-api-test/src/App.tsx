@@ -25,7 +25,8 @@ import Media from '@experiments/components/src/Media';
 import resolutionsListAll, { ID_720P } from '@experiments/system-devices/src/resolutionsList';
 import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
 import RequesterDevices from '@experiments/system-devices/src';
-import { videoConstraints, audioConstraints } from './constraints';
+import NumericConstraint from './containers/NumericConstraint';
+import { videoConstraints } from './constraints';
 import type { TVideoConstraints } from './typings';
 
 const useStyles = makeStyles((theme) => {
@@ -386,32 +387,31 @@ const App = () => {
       return (
         <ListItem key={key}>
           <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3, width: 250 }}>
+            <div>{key}</div>
             <Slider
-              key="x"
-              aria-label="pointsOfInterest"
+              aria-label={key}
               defaultValue={x}
               getAriaValueText={(val) => {
                 return `${val}`;
               }}
               valueLabelDisplay="auto"
               step={10}
-              marks
               min={10}
               max={100}
+              marks={[{ value: 10, label: 'X' }]}
               onChange={handlePointsOfInterest('x')}
             />
             <Slider
-              key="y"
-              aria-label="pointsOfInterest"
+              aria-label={key}
               defaultValue={y}
               getAriaValueText={(val) => {
                 return `${val}`;
               }}
               valueLabelDisplay="auto"
               step={10}
-              marks
               min={10}
               max={100}
+              marks={[{ value: 10, label: 'Y' }]}
               onChange={handlePointsOfInterest('y')}
             />
           </Box>
@@ -419,7 +419,16 @@ const App = () => {
       );
     }
 
-    return <ListItem key={key}>{key}</ListItem>;
+    return (
+      <ListItem key={key}>
+        <NumericConstraint
+          value={value}
+          constraintKey={key}
+          videoSettings={videoSettings}
+          setVideoSettings={setVideoSettings}
+        />
+      </ListItem>
+    );
   };
 
   return (
