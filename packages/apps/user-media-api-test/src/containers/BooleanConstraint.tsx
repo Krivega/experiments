@@ -5,15 +5,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import Typography from '@material-ui/core/Typography';
+import type { TClasses } from '../useStyles';
 import { TVideoConstraints } from '../typings';
 
-const BooleanConstraint = ({
-  value,
-  constraintKey,
-  videoSettings,
-  setVideoSettings,
-  classes,
-}: {
+type TProps = {
   constraintKey: string;
   value: {
     type: string;
@@ -23,10 +18,18 @@ const BooleanConstraint = ({
   };
   setVideoSettings: (value: TVideoConstraints) => void;
   videoSettings: TVideoConstraints;
-  classes;
+  classes: TClasses;
+};
+
+const BooleanConstraint: React.FC<TProps> = ({
+  value,
+  constraintKey,
+  videoSettings,
+  setVideoSettings,
+  classes,
 }) => {
   const resolveHandleBooleanConstraintsChange = (key: string) => {
-    return ({ target }) => {
+    return ({ target }: React.ChangeEvent<HTMLInputElement>) => {
       const { name, checked } = target;
 
       if (name === key) {

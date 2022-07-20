@@ -1,4 +1,17 @@
 import { makeStyles } from '@material-ui/core/styles';
+import type { ClassNameMap } from '@material-ui/styles/withStyles';
+
+export type TClasses = ClassNameMap<
+  | 'video'
+  | 'formControl'
+  | 'flex'
+  | 'buttonGroup'
+  | 'drawer'
+  | 'fullWidth'
+  | 'noPadding'
+  | 'extendedIcon'
+  | 'backdrop'
+>;
 
 const useStyles = makeStyles((theme) => {
   return {

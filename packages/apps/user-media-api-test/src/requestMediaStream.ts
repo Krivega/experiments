@@ -10,14 +10,12 @@ const requestMediaStream = ({
   videoDeviceId,
   resolutionId,
   videoDeviceList,
-  audioInputDeviceId,
   onSuccess = () => {},
   onFail = (error: Error) => {},
   additionalConstraints = {},
 }: {
   mediaStream: MediaStream | null;
   videoDeviceId: string;
-  audioInputDeviceId: string;
   resolutionId: string;
   videoDeviceList: MediaDeviceInfo[];
   additionalConstraints?: TVideoConstraints;
@@ -28,7 +26,7 @@ const requestMediaStream = ({
 }): Promise<MediaStream | void> | void => {
   setIsLoading(true);
 
-  if (!videoDeviceId || !resolutionId || videoDeviceList.length === 0 || !audioInputDeviceId) {
+  if (!videoDeviceId || !resolutionId || videoDeviceList.length === 0) {
     setIsLoading(false);
 
     return undefined;
@@ -54,9 +52,7 @@ const requestMediaStream = ({
     })
     .then(() => {
       return getMediaStream({
-        audio: true,
         video: true,
-        audioDeviceId: audioInputDeviceId,
         videoDeviceId,
         width,
         height,

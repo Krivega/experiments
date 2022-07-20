@@ -5,8 +5,16 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import resolveHandleChangeInput from '@experiments/utils/src/resolveHandleChangeInput';
 import parseItemDevice from '@experiments/system-devices/src/parseItemDevice';
+import type { TClasses } from '../useStyles';
 
-const renderItemDevice = (item, index) => {
+type TProps = {
+  videoDeviceId: string;
+  videoDeviceList: MediaDeviceInfo[];
+  setVideoDeviceFromId: (id: string) => void;
+  classes: TClasses;
+};
+
+const renderItemDevice = (item: MediaDeviceInfo, index: number): JSX.Element => {
   const { label, value } = parseItemDevice(item);
 
   return (
@@ -16,7 +24,12 @@ const renderItemDevice = (item, index) => {
   );
 };
 
-const DeviceList = ({ videoDeviceId, videoDeviceList, setVideoDeviceFromId, classes }) => {
+const DeviceList: React.FC<TProps> = ({
+  videoDeviceId,
+  videoDeviceList,
+  setVideoDeviceFromId,
+  classes,
+}) => {
   return (
     <ListItem>
       <FormControl variant="filled" className={classes.formControl}>

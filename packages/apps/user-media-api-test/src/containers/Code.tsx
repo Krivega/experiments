@@ -1,6 +1,11 @@
 import React from 'react';
+import type { TVideoConstraints, TAudioConstraints } from '../typings';
 
-const Code = ({ videoSettings }) => {
+type TProps = {
+  videoSettings: { audio: boolean | TAudioConstraints; video: TVideoConstraints };
+};
+
+const Code: React.FC<TProps> = ({ videoSettings }) => {
   if (Object.keys(videoSettings).length === 0) {
     return null;
   }

@@ -63,6 +63,11 @@ const NumericConstraint = ({
   const min = isAspectRatio ? +defaultMin.toFixed(3) : defaultMin;
   const max = isAspectRatio || isFrameRate ? +defaultMax.toFixed(3) : defaultMax;
 
+  const marks = [
+    { value: min, label: `${min}` },
+    { value: max, label: `${max}` },
+  ];
+
   const step = getStep(constraintKey);
 
   const resolveHandleChangeNumericConstraint = (constraint: string) => {
@@ -118,6 +123,7 @@ const NumericConstraint = ({
           step={step}
           min={min}
           max={max}
+          marks={marks}
           onChange={handleChangeNumericConstraint()}
         />
       )}
@@ -135,7 +141,7 @@ const NumericConstraint = ({
               step={step}
               min={min}
               max={max}
-              marks={[{ value: 10, label: keyAdvanced }]}
+              marks={[{ value: (max - min) / 2, label: keyAdvanced }, ...marks]}
               onChange={handleChangeNumericConstraint(keyAdvanced)}
             />
           );

@@ -37,8 +37,9 @@ const App = () => {
   const [audioInputDeviceId, setAudioInputDeviceFromId] = useState<string>(
     initialState.audioInputDeviceId
   );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [resolutionList, setResolutionList] = useState<TResolution[]>([]);
-  const [resolutionId, setResolutionId] = useState<string>(initialState.resolutionId);
+  const [resolutionId] = useState<string>(initialState.resolutionId);
   const [snackbarState, setSnackbarState] = useState<TSnackBar>({
     isOpen: false,
     autoHideDuration: null,
@@ -90,6 +91,13 @@ const App = () => {
 
           return [key, value];
         })
+        .sort(([key, value]) => {
+          if (typeof value !== 'string' && !value.disabled) {
+            return -1;
+          }
+
+          return 1;
+        })
     );
 
     setAvailableConstraintsVideoTrack(availableVideoConstraints);
@@ -134,19 +142,11 @@ const App = () => {
       videoDeviceId,
       resolutionId,
       videoDeviceList,
-      audioInputDeviceId,
       onSuccess: onSuccessRequestMediaStream,
       onFail: onFailRequestMediaStream,
       additionalConstraints: videoSettings,
     });
-  }, [
-    audioInputDeviceId,
-    mediaStream,
-    resolutionId,
-    videoDeviceId,
-    videoDeviceList,
-    videoSettings,
-  ]);
+  }, [mediaStream, resolutionId, videoDeviceId, videoDeviceList, videoSettings]);
 
   const resetState = useCallback(() => {
     setVideoSettings({});
@@ -158,11 +158,10 @@ const App = () => {
       videoDeviceId,
       resolutionId,
       videoDeviceList,
-      audioInputDeviceId,
       onFail: onFailRequestMediaStream,
       additionalConstraints: {},
     });
-  }, [audioInputDeviceId, mediaStream, resolutionId, videoDeviceId, videoDeviceList]);
+  }, [mediaStream, resolutionId, videoDeviceId, videoDeviceList]);
 
   useEffect(() => {
     requestDevices({ setVideoDeviceList, setAudioInputDeviceList });
@@ -192,11 +191,10 @@ const App = () => {
       videoDeviceId,
       resolutionId,
       videoDeviceList,
-      audioInputDeviceId,
       onFail: onFailRequestMediaStream,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [audioInputDeviceId, videoDeviceId, resolutionId, videoDeviceList.length]);
+  }, [videoDeviceId, resolutionId, videoDeviceList.length]);
 
   return (
     <React.Fragment>
@@ -207,10 +205,7 @@ const App = () => {
         requestStream={requestStream}
         isInitialized={isInitialized}
         videoDeviceId={videoDeviceId}
-        resolutionId={resolutionId}
-        resolutionList={resolutionList}
         videoDeviceList={videoDeviceList}
-        setResolutionId={setResolutionId}
         setVideoDeviceFromId={setVideoDeviceFromId}
         videoConstraints={availableConstraintsVideoTrack}
         videoSettings={videoSettings}
@@ -228,7 +223,7 @@ const App = () => {
         message={snackbarState.message}
         autoHideDuration={snackbarState.autoHideDuration}
       />
-      <Code videoSettings={videoSettings} />
+      <Code videoSettings={{ audio: false, video: videoSettings }} />
     </React.Fragment>
   );
 };

@@ -11,10 +11,7 @@ import ButtonAction from './ButtonAction';
 const SettingsDrawer = ({
   classes,
   videoDeviceId,
-  resolutionId,
-  resolutionList,
   videoDeviceList,
-  setResolutionId,
   setVideoDeviceFromId,
   videoConstraints,
   videoSettings,
@@ -32,10 +29,7 @@ const SettingsDrawer = ({
       <div className={classes.drawer}>
         <SettingsDevices
           videoDeviceId={videoDeviceId}
-          resolutionId={resolutionId}
-          resolutionList={resolutionList}
           videoDeviceList={videoDeviceList}
-          setResolutionId={setResolutionId}
           setVideoDeviceFromId={setVideoDeviceFromId}
           classes={classes}
         />

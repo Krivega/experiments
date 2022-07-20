@@ -4,6 +4,7 @@ import {
   STRING_OPTION_CONSTRAINT,
   POINTS_OF_INTEREST_CONSTRAINT,
   BOOLEAN_CONSTRAINT,
+  NUMBER_CONSTRAINT,
 } from '../constants';
 import NumericConstraint from './NumericConstraint';
 import BooleanConstraint from './BooleanConstraint';
@@ -52,16 +53,20 @@ const VideoConstraint = ({ constraint, value, classes, videoSettings, setVideoSe
     );
   }
 
-  return (
-    <ListItem>
-      <NumericConstraint
-        value={value}
-        constraintKey={constraint}
-        videoSettings={videoSettings}
-        setVideoSettings={setVideoSettings}
-      />
-    </ListItem>
-  );
+  if (value.type === NUMBER_CONSTRAINT) {
+    return (
+      <ListItem>
+        <NumericConstraint
+          value={value}
+          constraintKey={constraint}
+          videoSettings={videoSettings}
+          setVideoSettings={setVideoSettings}
+        />
+      </ListItem>
+    );
+  }
+
+  return null;
 };
 
 export default VideoConstraint;

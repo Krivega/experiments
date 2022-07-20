@@ -1,8 +1,23 @@
 import React from 'react';
 import List from '@material-ui/core/List';
 import VideoConstraint from './VideoConstraint';
+import type { TClasses } from '../useStyles';
+import type { TVideoConstraints } from '../typings';
+import { videoConstraints as allVideoConstraints } from '../constraints';
 
-const ConstraintsList = ({ videoConstraints, videoSettings, setVideoSettings, classes }) => {
+type TProps = {
+  classes: TClasses;
+  videoConstraints: typeof allVideoConstraints;
+  videoSettings: TVideoConstraints;
+  setVideoSettings: (settings: TVideoConstraints) => void;
+};
+
+const ConstraintsList: React.FC<TProps> = ({
+  videoConstraints,
+  videoSettings,
+  setVideoSettings,
+  classes,
+}) => {
   if (!videoConstraints) {
     return null;
   }
