@@ -7,6 +7,7 @@ import UserMedia from './containers/UserMedia';
 import PageLoader from './containers/PageLoader';
 import Code from './containers/Code';
 import SettingsDrawer from './containers/SettingsDrawer';
+import Snackbar from './containers/Snackbar';
 import { videoConstraints } from './constraints';
 import onInitMedia from './onInitMedia';
 import requestMediaStream from './requestMediaStream';
@@ -14,6 +15,12 @@ import type { TVideoConstraints } from './typings';
 import defaultState from './defaultState';
 import useStyles from './useStyles';
 import { STRING_OPTION_CONSTRAINT, NUMBER_CONSTRAINT } from './constants';
+
+type TSnackBar = {
+  isOpen: boolean;
+  message: string;
+  autoHideDuration: number | null;
+};
 
 // @ts-ignore
 const storedState = JSON.parse(localStorage.getItem('state')) || {};
@@ -32,6 +39,11 @@ const App = () => {
   );
   const [resolutionList, setResolutionList] = useState<TResolution[]>([]);
   const [resolutionId, setResolutionId] = useState<string>(initialState.resolutionId);
+  const [snackbarState, setSnackbarState] = useState<TSnackBar>({
+    isOpen: false,
+    autoHideDuration: null,
+    message: '',
+  });
 
   // Video settings
   const [videoSettings, setVideoSettings] = React.useState<TVideoConstraints>({});
@@ -83,6 +95,28 @@ const App = () => {
     setAvailableConstraintsVideoTrack(availableVideoConstraints);
   }, [mediaStream]);
 
+  const onSuccessRequestMediaStream = () => {
+    setSnackbarState((prevState) => {
+      return {
+        ...prevState,
+        isOpen: true,
+        autoHideDuration: 1000,
+        message: 'Success!',
+      };
+    });
+  };
+
+  const onFailRequestMediaStream = (error) => {
+    setSnackbarState((prevState) => {
+      return {
+        ...prevState,
+        isOpen: true,
+        message: `Wrong parameter: ${error.constraint}. Error: ${error.name},
+        Constraints: ${JSON.stringify(error.constraints, null, 2)}`,
+      };
+    });
+  };
+
   useEffect(() => {
     const state = {
       resolutionId,
@@ -101,6 +135,8 @@ const App = () => {
       resolutionId,
       videoDeviceList,
       audioInputDeviceId,
+      onSuccess: onSuccessRequestMediaStream,
+      onFail: onFailRequestMediaStream,
       additionalConstraints: videoSettings,
     });
   }, [
@@ -123,6 +159,7 @@ const App = () => {
       resolutionId,
       videoDeviceList,
       audioInputDeviceId,
+      onFail: onFailRequestMediaStream,
       additionalConstraints: {},
     });
   }, [audioInputDeviceId, mediaStream, resolutionId, videoDeviceId, videoDeviceList]);
@@ -156,6 +193,7 @@ const App = () => {
       resolutionId,
       videoDeviceList,
       audioInputDeviceId,
+      onFail: onFailRequestMediaStream,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [audioInputDeviceId, videoDeviceId, resolutionId, videoDeviceList.length]);
@@ -180,6 +218,16 @@ const App = () => {
         classes={classes}
       />
       <UserMedia classes={classes} mediaStream={mediaStream} />
+      <Snackbar
+        handleClose={() => {
+          setSnackbarState((prevState) => {
+            return { ...prevState, isOpen: false };
+          });
+        }}
+        open={snackbarState.isOpen}
+        message={snackbarState.message}
+        autoHideDuration={snackbarState.autoHideDuration}
+      />
       <Code videoSettings={videoSettings} />
     </React.Fragment>
   );

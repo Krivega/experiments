@@ -11,6 +11,8 @@ const requestMediaStream = ({
   resolutionId,
   videoDeviceList,
   audioInputDeviceId,
+  onSuccess = () => {},
+  onFail = (error: Error) => {},
   additionalConstraints = {},
 }: {
   mediaStream: MediaStream | null;
@@ -19,6 +21,8 @@ const requestMediaStream = ({
   resolutionId: string;
   videoDeviceList: MediaDeviceInfo[];
   additionalConstraints?: TVideoConstraints;
+  onSuccess?: () => void;
+  onFail: (error: Error) => void;
   setMediaStream: (mediaStream: MediaStream) => void;
   setIsLoading: (isLoading: boolean) => void;
 }): Promise<MediaStream | void> | void => {
@@ -59,7 +63,11 @@ const requestMediaStream = ({
         ...additionalConstraints,
       });
     })
-    .then(setMediaStream)
+    .then((resultMediaStream: MediaStream) => {
+      onSuccess();
+      setMediaStream(resultMediaStream);
+    })
+    .catch(onFail)
     .finally(() => {
       setIsLoading(false);
     });
