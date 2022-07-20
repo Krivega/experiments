@@ -47,4 +47,6 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
+export const flex = { display: 'flex', justifyContent: 'space-between' };
+
 export default useStyles;

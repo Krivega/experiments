@@ -1,6 +1,7 @@
 import React from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Container from '@material-ui/core/Container';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import TvIcon from '@material-ui/icons/Tv';
 import Heading from './Heading';
@@ -33,7 +34,9 @@ const SettingsDrawer = ({
           setVideoDeviceFromId={setVideoDeviceFromId}
           classes={classes}
         />
-        <Heading>CAMERA SETTINGS</Heading>
+        <Container>
+          <Heading>CAMERA SETTINGS</Heading>
+        </Container>
         <ConstraintsList
           videoConstraints={videoConstraints}
           videoSettings={videoSettings}

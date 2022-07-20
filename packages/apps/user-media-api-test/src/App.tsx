@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
 import requestDevices from '@experiments/system-devices/src/requestDevices';
 import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
 import getVideoTracks from '@experiments/mediastream-api/src/getVideoTracks';
@@ -8,12 +10,13 @@ import PageLoader from './containers/PageLoader';
 import Code from './containers/Code';
 import SettingsDrawer from './containers/SettingsDrawer';
 import Snackbar from './containers/Snackbar';
+import Heading from './containers/Heading';
 import { videoConstraints } from './constraints';
 import onInitMedia from './onInitMedia';
 import requestMediaStream from './requestMediaStream';
 import type { TVideoConstraints } from './typings';
 import defaultState from './defaultState';
-import useStyles from './useStyles';
+import useStyles, { flex } from './useStyles';
 import { STRING_OPTION_CONSTRAINT, NUMBER_CONSTRAINT } from './constants';
 
 type TSnackBar = {
@@ -50,6 +53,7 @@ const App = () => {
   const [videoSettings, setVideoSettings] = React.useState<TVideoConstraints>({});
   const [availableConstraintsVideoTrack, setAvailableConstraintsVideoTrack] =
     React.useState<null | Object>(null);
+  const [missingConstraints, setMissingConstraints] = useState<string[]>([]);
 
   useEffect(() => {
     if (!mediaStream) {
@@ -58,6 +62,16 @@ const App = () => {
 
     const videoTrack = getVideoTracks(mediaStream)[0];
     const trackCapabilities = videoTrack.getCapabilities();
+    const irrelevantCapabilities = ['deviceId', 'groupId'];
+    const missingConstraintsFromCapabilities = Object.entries(trackCapabilities)
+      .filter(([key]) => {
+        return !(key in videoConstraints) && !irrelevantCapabilities.includes(key);
+      })
+      .map(([key]) => {
+        return key;
+      });
+
+    setMissingConstraints(missingConstraintsFromCapabilities);
 
     const availableVideoConstraints = Object.fromEntries(
       Object.entries(videoConstraints)
@@ -224,6 +238,16 @@ const App = () => {
         autoHideDuration={snackbarState.autoHideDuration}
       />
       <Code videoSettings={{ audio: false, video: videoSettings }} />
+      {!!missingConstraints.length && (
+        <div>
+          <Heading>MISSING CONSTRAINTS</Heading>
+          <List>
+            {missingConstraints.map((constraint) => {
+              return <ListItem key={constraint}>{constraint}</ListItem>;
+            })}
+          </List>
+        </div>
+      )}
     </React.Fragment>
   );
 };
