@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
@@ -30,9 +30,19 @@ const StringOptionConstraint = ({
   videoSettings: TVideoConstraints;
   classes;
 }) => {
+  const [val, setVal] = useState<string>(value.default);
+
+  useEffect(() => {
+    if (Object.keys(videoSettings).length === 0) {
+      setVal(value.default);
+    }
+  }, [value.default, videoSettings]);
+
   const resolveHandleStringConstraints = (constraint: string) => {
     return ({ target }) => {
       const { value: targetValue } = target;
+
+      setVal(targetValue);
 
       setVideoSettings({
         ...videoSettings,
@@ -49,7 +59,7 @@ const StringOptionConstraint = ({
       <Select
         native
         disabled={value.disabled || value.values.length === 0}
-        value={videoSettings[constraintKey]}
+        value={val}
         onChange={handleStringConstraints}
         inputProps={{
           name: constraintKey,
