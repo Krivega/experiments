@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@material-ui/core/Box';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -48,6 +48,13 @@ const NumericConstraint = ({
   videoSettings: TVideoConstraints;
 }) => {
   const [isAdvanced, setIsAdvanced] = useState<boolean>(false);
+  const [sliderValue, setSliderValue] = useState<number>(+value.default.toFixed(3));
+
+  useEffect(() => {
+    if (Object.keys(videoSettings).length === 0) {
+      setSliderValue(+value.default.toFixed(3));
+    }
+  }, [value.default, videoSettings]);
 
   const defaultMin = value.defaultObj.min;
   const defaultMax = value.defaultObj.max;
@@ -61,6 +68,8 @@ const NumericConstraint = ({
   const resolveHandleChangeNumericConstraint = (constraint: string) => {
     return (advancedSettingKey?: string) => {
       return (event, val) => {
+        setSliderValue(val);
+
         if (!advancedSettingKey) {
           return setVideoSettings({
             ...videoSettings,
@@ -99,6 +108,7 @@ const NumericConstraint = ({
       {!isAdvanced && (
         <Slider
           aria-label={constraintKey}
+          value={sliderValue}
           defaultValue={+value.default.toFixed(3)}
           getAriaValueText={(val) => {
             return val.toFixed(3);

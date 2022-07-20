@@ -92,9 +92,40 @@ const App = () => {
     localStorage.setItem('state', JSON.stringify(state));
   }, [resolutionId, videoDeviceId]);
 
+  const requestStream = useCallback(() => {
+    requestMediaStream({
+      mediaStream,
+      setMediaStream,
+      setIsLoading,
+      videoDeviceId,
+      resolutionId,
+      videoDeviceList,
+      audioInputDeviceId,
+      additionalConstraints: videoSettings,
+    });
+  }, [
+    audioInputDeviceId,
+    mediaStream,
+    resolutionId,
+    videoDeviceId,
+    videoDeviceList,
+    videoSettings,
+  ]);
+
   const resetState = useCallback(() => {
-    setResolutionId(defaultState.resolutionId);
-  }, []);
+    setVideoSettings({});
+
+    requestMediaStream({
+      mediaStream,
+      setMediaStream,
+      setIsLoading,
+      videoDeviceId,
+      resolutionId,
+      videoDeviceList,
+      audioInputDeviceId,
+      additionalConstraints: {},
+    });
+  }, [audioInputDeviceId, mediaStream, resolutionId, videoDeviceId, videoDeviceList]);
 
   useEffect(() => {
     requestDevices({ setVideoDeviceList, setAudioInputDeviceList });
@@ -135,6 +166,7 @@ const App = () => {
       <PageLoader isLoading={isLoading} classes={classes} />
       <SettingsDrawer
         resetState={resetState}
+        requestStream={requestStream}
         isInitialized={isInitialized}
         videoDeviceId={videoDeviceId}
         resolutionId={resolutionId}

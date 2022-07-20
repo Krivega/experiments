@@ -3,7 +3,7 @@ import Drawer from '@material-ui/core/Drawer';
 import Heading from './Heading';
 import SettingsDevices from './SettingsDevices';
 import ConstraintsList from './ConstraintsList';
-import ButtonReset from './ButtonReset';
+import ButtonAction from './ButtonRequest';
 
 const SettingsDrawer = ({
   classes,
@@ -17,6 +17,7 @@ const SettingsDrawer = ({
   videoSettings,
   setVideoSettings,
   resetState,
+  requestStream,
   isInitialized,
 }) => {
   if (!isInitialized) {
@@ -42,9 +43,12 @@ const SettingsDrawer = ({
           setVideoSettings={setVideoSettings}
           classes={classes}
         />
-        <ButtonReset classes={classes} resetState={resetState}>
+        <ButtonAction classes={classes} onClick={requestStream}>
+          Request
+        </ButtonAction>
+        <ButtonAction classes={classes} onClick={resetState}>
           Reset
-        </ButtonReset>
+        </ButtonAction>
       </div>
     </Drawer>
   );

@@ -2,10 +2,10 @@ import React from 'react';
 import Fab from '@material-ui/core/Fab';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 
-const ButtonReset = ({ classes, resetState, children }) => {
+const ButtonAction = ({ classes, onClick, children }) => {
   return (
     <div className={classes.flex}>
-      <Fab variant="extended" color="primary" onClick={resetState}>
+      <Fab variant="extended" color="primary" onClick={onClick}>
         <RotateLeftIcon className={classes.extendedIcon} />
         {children}
       </Fab>
@@ -13,4 +13,4 @@ const ButtonReset = ({ classes, resetState, children }) => {
   );
 };
 
-export default ButtonReset;
+export default ButtonAction;

@@ -1,6 +1,7 @@
 import getResolutionById from '@experiments/system-devices/src/getResolutionById';
 import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
 import { getMediaStream } from '@experiments/mediastream-api';
+import type { TVideoConstraints } from './typings';
 
 const requestMediaStream = ({
   mediaStream,
@@ -10,12 +11,14 @@ const requestMediaStream = ({
   resolutionId,
   videoDeviceList,
   audioInputDeviceId,
+  additionalConstraints = {},
 }: {
   mediaStream: MediaStream | null;
   videoDeviceId: string;
   audioInputDeviceId: string;
   resolutionId: string;
   videoDeviceList: MediaDeviceInfo[];
+  additionalConstraints?: TVideoConstraints;
   setMediaStream: (mediaStream: MediaStream) => void;
   setIsLoading: (isLoading: boolean) => void;
 }): Promise<MediaStream | void> | void => {
@@ -53,6 +56,7 @@ const requestMediaStream = ({
         videoDeviceId,
         width,
         height,
+        ...additionalConstraints,
       });
     })
     .then(setMediaStream)
