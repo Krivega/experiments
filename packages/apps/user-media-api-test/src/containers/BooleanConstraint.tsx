@@ -18,6 +18,7 @@ const BooleanConstraint = ({
   value: {
     type: string;
     default: boolean;
+    disabled: boolean;
     defaultObj: { exact: boolean; ideal: boolean };
   };
   setVideoSettings: (value: TVideoConstraints) => void;
@@ -84,6 +85,7 @@ const BooleanConstraint = ({
         <FormControlLabel
           control={
             <Checkbox
+              disabled={value.disabled}
               name={constraintKey}
               onChange={handleBooleanConstraintsChange}
               checked={videoSettings[constraintKey] === true}

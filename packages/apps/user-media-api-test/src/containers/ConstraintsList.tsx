@@ -3,6 +3,10 @@ import List from '@material-ui/core/List';
 import VideoConstraint from './VideoConstraint';
 
 const ConstraintsList = ({ videoConstraints, videoSettings, setVideoSettings, classes }) => {
+  if (!videoConstraints) {
+    return null;
+  }
+
   return (
     <List>
       {Object.entries(videoConstraints).map(([constraint, value]) => {

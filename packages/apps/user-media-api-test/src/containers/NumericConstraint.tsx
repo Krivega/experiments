@@ -6,6 +6,31 @@ import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
 import { TVideoConstraints } from '../typings';
 
+const ASPECT_RATIO = 'aspectRatio';
+const FRAME_RATE = 'frameRate';
+
+const hasAspectRatio = (constraint: string): boolean => {
+  return constraint === ASPECT_RATIO;
+};
+
+const hasFrameRate = (constraint: string): boolean => {
+  return constraint === FRAME_RATE;
+};
+
+const getStep = (constraint: string): number => {
+  let step = 5;
+
+  if (hasAspectRatio(constraint)) {
+    step = 0.1;
+  }
+
+  if (hasFrameRate(constraint)) {
+    step = 1;
+  }
+
+  return step;
+};
+
 const NumericConstraint = ({
   value,
   constraintKey,
@@ -16,12 +41,22 @@ const NumericConstraint = ({
   value: {
     type: string;
     default: number;
+    disabled: boolean;
     defaultObj: { min: number; max: number; exact: number; ideal: number };
   };
   setVideoSettings: (value: TVideoConstraints) => void;
   videoSettings: TVideoConstraints;
 }) => {
   const [isAdvanced, setIsAdvanced] = useState<boolean>(false);
+
+  const defaultMin = value.defaultObj.min;
+  const defaultMax = value.defaultObj.max;
+  const isAspectRatio = hasAspectRatio(constraintKey);
+  const isFrameRate = hasFrameRate(constraintKey);
+  const min = isAspectRatio ? +defaultMin.toFixed(3) : defaultMin;
+  const max = isAspectRatio || isFrameRate ? +defaultMax.toFixed(3) : defaultMax;
+
+  const step = getStep(constraintKey);
 
   const resolveHandleChangeNumericConstraint = (constraint: string) => {
     return (advancedSettingKey?: string) => {
@@ -49,6 +84,7 @@ const NumericConstraint = ({
       <FormControlLabel
         control={
           <Checkbox
+            disabled={value.disabled}
             name={constraintKey}
             size="small"
             onChange={({ target: { checked } }) => {
@@ -63,14 +99,15 @@ const NumericConstraint = ({
       {!isAdvanced && (
         <Slider
           aria-label={constraintKey}
-          defaultValue={+value.default}
+          defaultValue={+value.default.toFixed(3)}
           getAriaValueText={(val) => {
-            return `${val}`;
+            return val.toFixed(3);
           }}
+          disabled={value.disabled}
           valueLabelDisplay="auto"
-          step={10}
-          min={10}
-          max={100}
+          step={step}
+          min={min}
+          max={max}
           onChange={handleChangeNumericConstraint()}
         />
       )}
@@ -80,14 +117,14 @@ const NumericConstraint = ({
             <Slider
               key={keyAdvanced}
               aria-label={keyAdvanced}
-              defaultValue={+value.default}
+              defaultValue={+value.default.toFixed(3)}
               getAriaValueText={(val) => {
-                return `${val}`;
+                return val.toFixed(3);
               }}
               valueLabelDisplay="auto"
-              step={10}
-              min={10}
-              max={100}
+              step={step}
+              min={min}
+              max={max}
               marks={[{ value: 10, label: keyAdvanced }]}
               onChange={handleChangeNumericConstraint(keyAdvanced)}
             />

@@ -47,6 +47,11 @@ export const videoConstraints = {
     default: 0,
     defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 },
   },
+  width: {
+    type: NUMBER_CONSTRAINT,
+    default: 0,
+    defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 },
+  },
   aspectRatio: {
     type: NUMBER_CONSTRAINT,
     default: 0,
@@ -96,11 +101,6 @@ export const videoConstraints = {
   zoom: { type: NUMBER_CONSTRAINT, default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
   pan: { type: NUMBER_CONSTRAINT, default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
   tilt: { type: NUMBER_CONSTRAINT, default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
-  width: {
-    type: NUMBER_CONSTRAINT,
-    default: 0,
-    defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 },
-  },
 };
 
 export const audioConstraints = {

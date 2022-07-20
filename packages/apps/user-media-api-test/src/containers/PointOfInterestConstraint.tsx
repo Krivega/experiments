@@ -13,6 +13,7 @@ const PointOfInterestConstraint = ({
   constraintKey: string;
   value: {
     type: string;
+    disabled: boolean;
     default: { x: number; y: number };
   };
   setVideoSettings: (value: TVideoConstraints) => void;
@@ -41,6 +42,7 @@ const PointOfInterestConstraint = ({
         getAriaValueText={(val) => {
           return `${val}`;
         }}
+        disabled={value.disabled}
         valueLabelDisplay="auto"
         step={10}
         min={10}
@@ -54,6 +56,7 @@ const PointOfInterestConstraint = ({
         getAriaValueText={(val) => {
           return `${val}`;
         }}
+        disabled={value.disabled}
         valueLabelDisplay="auto"
         step={10}
         min={10}

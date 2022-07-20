@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { ID_720P } from '@experiments/system-devices/src/resolutionsList';
 import requestDevices from '@experiments/system-devices/src/requestDevices';
 import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
+import getVideoTracks from '@experiments/mediastream-api/src/getVideoTracks';
 import UserMedia from './containers/UserMedia';
 import PageLoader from './containers/PageLoader';
 import Code from './containers/Code';
@@ -11,14 +11,10 @@ import { videoConstraints } from './constraints';
 import onInitMedia from './onInitMedia';
 import requestMediaStream from './requestMediaStream';
 import type { TVideoConstraints } from './typings';
+import defaultState from './defaultState';
 import useStyles from './useStyles';
+import { STRING_OPTION_CONSTRAINT, NUMBER_CONSTRAINT } from './constants';
 
-const defaultState = {
-  resolutionId: ID_720P,
-  videoDeviceId: '',
-  audioInputDeviceId: '',
-  edgeBlurAmount: 4,
-};
 // @ts-ignore
 const storedState = JSON.parse(localStorage.getItem('state')) || {};
 const initialState = { ...defaultState, ...storedState };
@@ -39,10 +35,53 @@ const App = () => {
 
   // Video settings
   const [videoSettings, setVideoSettings] = React.useState<TVideoConstraints>({});
+  const [availableConstraintsVideoTrack, setAvailableConstraintsVideoTrack] =
+    React.useState<null | Object>(null);
 
   useEffect(() => {
-    const supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
-  }, []);
+    if (!mediaStream) {
+      return;
+    }
+
+    const videoTrack = getVideoTracks(mediaStream)[0];
+    const trackCapabilities = videoTrack.getCapabilities();
+
+    const availableVideoConstraints = Object.fromEntries(
+      Object.entries(videoConstraints)
+        .map(([key, value]) => {
+          if (key in trackCapabilities) {
+            return [key, { ...value, disabled: false }];
+          }
+
+          return [key, { ...value, disabled: true }];
+        })
+        .map(([key, value]) => {
+          if (typeof value !== 'string' && typeof key === 'string' && !value?.disabled) {
+            if (value.type === STRING_OPTION_CONSTRAINT) {
+              return [key, { ...value, values: [...trackCapabilities[key]] }];
+            }
+
+            if (value.type === NUMBER_CONSTRAINT && 'defaultObj' in value) {
+              const minValue = trackCapabilities[key]?.min;
+              const maxValue = trackCapabilities[key]?.max;
+
+              return [
+                key,
+                {
+                  ...value,
+                  default: minValue,
+                  defaultObj: { ...value.defaultObj, min: minValue, max: maxValue },
+                },
+              ];
+            }
+          }
+
+          return [key, value];
+        })
+    );
+
+    setAvailableConstraintsVideoTrack(availableVideoConstraints);
+  }, [mediaStream]);
 
   useEffect(() => {
     const state = {
@@ -93,24 +132,22 @@ const App = () => {
   return (
     <React.Fragment>
       <CssBaseline />
-      <div>
-        <PageLoader isLoading={isLoading} classes={classes} />
-        <SettingsDrawer
-          resetState={resetState}
-          isInitialized={isInitialized}
-          videoDeviceId={videoDeviceId}
-          resolutionId={resolutionId}
-          resolutionList={resolutionList}
-          videoDeviceList={videoDeviceList}
-          setResolutionId={setResolutionId}
-          setVideoDeviceFromId={setVideoDeviceFromId}
-          videoConstraints={videoConstraints}
-          videoSettings={videoSettings}
-          setVideoSettings={setVideoSettings}
-          classes={classes}
-        />
-        <UserMedia classes={classes} mediaStream={mediaStream} />
-      </div>
+      <PageLoader isLoading={isLoading} classes={classes} />
+      <SettingsDrawer
+        resetState={resetState}
+        isInitialized={isInitialized}
+        videoDeviceId={videoDeviceId}
+        resolutionId={resolutionId}
+        resolutionList={resolutionList}
+        videoDeviceList={videoDeviceList}
+        setResolutionId={setResolutionId}
+        setVideoDeviceFromId={setVideoDeviceFromId}
+        videoConstraints={availableConstraintsVideoTrack}
+        videoSettings={videoSettings}
+        setVideoSettings={setVideoSettings}
+        classes={classes}
+      />
+      <UserMedia classes={classes} mediaStream={mediaStream} />
       <Code videoSettings={videoSettings} />
     </React.Fragment>
   );

@@ -23,6 +23,7 @@ const StringOptionConstraint = ({
   value: {
     type: string;
     default: string;
+    disabled: boolean;
     values: string[];
   };
   setVideoSettings: (value: TVideoConstraints) => void;
@@ -47,6 +48,7 @@ const StringOptionConstraint = ({
       <InputLabel htmlFor={constraintKey}>{constraintKey}</InputLabel>
       <Select
         native
+        disabled={value.disabled || value.values.length === 0}
         value={videoSettings[constraintKey]}
         onChange={handleStringConstraints}
         inputProps={{
