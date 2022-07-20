@@ -6,6 +6,10 @@ const useStyles = makeStyles((theme) => {
       margin: theme.spacing(1),
       width: `100%`,
     },
+    buttonGroup: {
+      width: `100%`,
+      justifyContent: 'center',
+    },
     flex: {
       margin: theme.spacing(1),
       display: 'flex',
