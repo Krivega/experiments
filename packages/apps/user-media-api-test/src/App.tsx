@@ -1,120 +1,31 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Fab from '@material-ui/core/Fab';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import { getMediaStream } from '@experiments/mediastream-api';
-import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
-import { getVideoDevices } from '@experiments/utils/src/devicesResolvers';
-import Media from '@experiments/components/src/Media';
-import resolutionsListAll, { ID_720P } from '@experiments/system-devices/src/resolutionsList';
+import requestDevices from '@experiments/system-devices/src/requestDevices';
 import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
-import RequesterDevices from '@experiments/system-devices/src';
+import getVideoTracks from '@experiments/mediastream-api/src/getVideoTracks';
+import AppBarTop from './containers/AppBarTop';
+import UserMedia from './containers/UserMedia';
+import PageLoader from './containers/PageLoader';
+import Code from './containers/Code';
+import SettingsDrawer from './containers/SettingsDrawer';
+import Snackbar from './containers/Snackbar';
+import Heading from './containers/Heading';
+import { videoConstraints } from './constraints';
+import onInitMedia from './onInitMedia';
+import requestMediaStream from './requestMediaStream';
+import type { TVideoConstraints } from './typings';
+import defaultState from './defaultState';
+import useStyles from './useStyles';
+import { STRING_OPTION_CONSTRAINT, NUMBER_CONSTRAINT } from './constants';
 
-const useStyles = makeStyles((theme) => {
-  return {
-    formControl: {
-      margin: theme.spacing(1),
-      width: `100%`,
-    },
-    flex: {
-      margin: theme.spacing(1),
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    drawer: { width: '320px' },
-    fullWidth: { width: '100%' },
-    noPadding: { padding: '0' },
-    extendedIcon: {
-      marginRight: theme.spacing(1),
-    },
-    backdrop: {
-      zIndex: theme.zIndex.drawer + 1,
-      color: '#fff',
-    },
-    video: {
-      transform: 'rotateY(180deg)',
-      display: 'flex',
-      justifyContent: 'flex-end',
-    },
-  };
-});
-const getResolutionsByCapabilities = (capabilities) => {
-  const {
-    width: { max: maxWidth },
-    height: { max: maxHeight },
-  } = capabilities;
-
-  const resolutionsByCapabilities = resolutionsListAll.filter((resolution) => {
-    return resolution.width <= maxWidth && resolution.height <= maxHeight;
-  });
-
-  return resolutionsByCapabilities;
-};
-const getResolutionById = (id: string) => {
-  const resolutionById = resolutionsListAll.find((resolution) => {
-    return resolution.id === id;
-  });
-
-  return resolutionById;
+type TSnackBar = {
+  isOpen: boolean;
+  message: string;
+  autoHideDuration: number | null;
 };
 
-const resolveHandleChangeInput = (handler) => {
-  return ({ target }) => {
-    const { value } = target;
-
-    handler(value);
-  };
-};
-
-const parseItemDevice = (device) => {
-  return {
-    label: device.label,
-    value: device.deviceId,
-  };
-};
-
-const renderItemDevice = (item, index) => {
-  const { label, value } = parseItemDevice(item);
-
-  return (
-    <option value={value} key={`${value}${index}`}>
-      {label}
-    </option>
-  );
-};
-
-const renderItemResolution = (item, index) => {
-  const { id, label } = item;
-
-  return (
-    <option value={id} key={`${id}${index}`}>
-      {label}
-    </option>
-  );
-};
-
-const requesterDevices = new RequesterDevices();
-
-const getVideoTracks = (mediaStream) => {
-  return mediaStream.getTracks().filter(({ kind }) => {
-    return kind === 'video';
-  });
-};
-
-const defaultState = {
-  resolutionId: ID_720P,
-  videoDeviceId: '',
-  edgeBlurAmount: 4,
-};
 // @ts-ignore
 const storedState = JSON.parse(localStorage.getItem('state')) || {};
 const initialState = { ...defaultState, ...storedState };
@@ -122,13 +33,111 @@ const initialState = { ...defaultState, ...storedState };
 const App = () => {
   const classes = useStyles();
   const [isInitialized, setInitialized] = React.useState<boolean>(false);
-  const [isLoading, setLoading] = React.useState<boolean>(true);
-  const [mediaStreamOriginal, setMediaStreamOriginal] = useState<MediaStream | null>(null);
-  const [mediaStreamProcessed, setMediaStreamProcessed] = useState<MediaStream | null>(null);
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
   const [videoDeviceList, setVideoDeviceList] = useState<MediaDeviceInfo[]>([]);
+  const [audioInputDeviceList, setAudioInputDeviceList] = useState<MediaDeviceInfo[]>([]);
   const [videoDeviceId, setVideoDeviceFromId] = useState<string>(initialState.videoDeviceId);
+  const [audioInputDeviceId, setAudioInputDeviceFromId] = useState<string>(
+    initialState.audioInputDeviceId
+  );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [resolutionList, setResolutionList] = useState<TResolution[]>([]);
-  const [resolutionId, setResolutionId] = useState<string>(initialState.resolutionId);
+  const [resolutionId] = useState<string>(initialState.resolutionId);
+  const [snackbarState, setSnackbarState] = useState<TSnackBar>({
+    isOpen: false,
+    autoHideDuration: null,
+    message: '',
+  });
+
+  const [videoSettings, setVideoSettings] = React.useState<TVideoConstraints>({});
+  const [availableConstraintsVideoTrack, setAvailableConstraintsVideoTrack] =
+    React.useState<null | Object>(null);
+  const [missingConstraints, setMissingConstraints] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!mediaStream) {
+      return;
+    }
+
+    const videoTrack = getVideoTracks(mediaStream)[0];
+    const trackCapabilities = videoTrack.getCapabilities();
+    const irrelevantCapabilities = ['deviceId', 'groupId'];
+    const missingConstraintsFromCapabilities = Object.entries(trackCapabilities)
+      .filter(([key]) => {
+        return !(key in videoConstraints) && !irrelevantCapabilities.includes(key);
+      })
+      .map(([key]) => {
+        return key;
+      });
+
+    setMissingConstraints(missingConstraintsFromCapabilities);
+
+    const availableVideoConstraints = Object.fromEntries(
+      Object.entries(videoConstraints)
+        .map(([key, value]) => {
+          if (key in trackCapabilities) {
+            return [key, { ...value, disabled: false }];
+          }
+
+          return [key, { ...value, disabled: true }];
+        })
+        .map(([key, value]) => {
+          if (typeof value !== 'string' && typeof key === 'string' && !value?.disabled) {
+            if (value.type === STRING_OPTION_CONSTRAINT) {
+              return [key, { ...value, values: [...trackCapabilities[key]] }];
+            }
+
+            if (value.type === NUMBER_CONSTRAINT && 'defaultObj' in value) {
+              const minValue = trackCapabilities[key]?.min;
+              const maxValue = trackCapabilities[key]?.max;
+
+              return [
+                key,
+                {
+                  ...value,
+                  default: minValue,
+                  defaultObj: { ...value.defaultObj, min: minValue, max: maxValue },
+                },
+              ];
+            }
+          }
+
+          return [key, value];
+        })
+        .sort(([key, value]) => {
+          if (typeof value !== 'string' && !value.disabled) {
+            return -1;
+          }
+
+          return 1;
+        })
+    );
+
+    setAvailableConstraintsVideoTrack(availableVideoConstraints);
+  }, [mediaStream]);
+
+  const onSuccessRequestMediaStream = () => {
+    setSnackbarState((prevState) => {
+      return {
+        ...prevState,
+        isOpen: true,
+        autoHideDuration: 1000,
+        message: 'Success!',
+      };
+    });
+  };
+
+  const onFailRequestMediaStream = (error) => {
+    setSnackbarState((prevState) => {
+      return {
+        ...prevState,
+        isOpen: true,
+        message: `Wrong parameter: ${error.constraint}. Error: ${error.name},
+        Constraints: ${JSON.stringify(error.constraints, null, 2)}`,
+      };
+    });
+  };
 
   useEffect(() => {
     const state = {
@@ -139,127 +148,106 @@ const App = () => {
     localStorage.setItem('state', JSON.stringify(state));
   }, [resolutionId, videoDeviceId]);
 
+  const requestStream = useCallback(() => {
+    requestMediaStream({
+      mediaStream,
+      setMediaStream,
+      setIsLoading,
+      videoDeviceId,
+      resolutionId,
+      videoDeviceList,
+      onSuccess: onSuccessRequestMediaStream,
+      onFail: onFailRequestMediaStream,
+      additionalConstraints: videoSettings,
+    });
+  }, [mediaStream, resolutionId, videoDeviceId, videoDeviceList, videoSettings]);
+
   const resetState = useCallback(() => {
-    setResolutionId(defaultState.resolutionId);
-  }, []);
+    setVideoSettings({});
+
+    requestMediaStream({
+      mediaStream,
+      setMediaStream,
+      setIsLoading,
+      videoDeviceId,
+      resolutionId,
+      videoDeviceList,
+      onFail: onFailRequestMediaStream,
+      additionalConstraints: {},
+    });
+  }, [mediaStream, resolutionId, videoDeviceId, videoDeviceList]);
 
   useEffect(() => {
-    requesterDevices.request([]).then((devices) => {
-      setVideoDeviceList(getVideoDevices(devices));
-    });
+    requestDevices({ setVideoDeviceList, setAudioInputDeviceList });
   }, []);
 
   useEffect(() => {
     if (videoDeviceList.length > 0 && !videoDeviceId) {
       setVideoDeviceFromId(videoDeviceList[0].deviceId);
     }
-  }, [videoDeviceList, videoDeviceId]);
+
+    if (audioInputDeviceList.length > 0 && !audioInputDeviceId) {
+      setAudioInputDeviceFromId(audioInputDeviceList[0].deviceId);
+    }
+  }, [videoDeviceList, videoDeviceId, audioInputDeviceList, audioInputDeviceId]);
 
   useEffect(() => {
-    if (mediaStreamOriginal) {
-      const videoTrack = getVideoTracks(mediaStreamOriginal)[0];
-
-      if (videoTrack.getCapabilities) {
-        const capabilities = videoTrack.getCapabilities();
-        const resolutionsByCapabilities = getResolutionsByCapabilities(capabilities);
-
-        setResolutionList(resolutionsByCapabilities);
-        setInitialized(true);
-      }
+    if (mediaStream) {
+      onInitMedia({ mediaStream, setResolutionList, setInitialized });
     }
-  }, [mediaStreamOriginal]);
+  }, [mediaStream]);
 
   useEffect(() => {
-    if (!videoDeviceId || !resolutionId || videoDeviceList.length === 0) {
-      return;
-    }
-
-    const resolution = getResolutionById(resolutionId);
-
-    if (!resolution) {
-      return;
-    }
-
-    const { width, height } = resolution;
-
-    Promise.resolve()
-      .then(() => {
-        if (mediaStreamOriginal) {
-          return stopTracksMediaStream(mediaStreamOriginal);
-        }
-
-        return undefined;
-      })
-      .then(() => {
-        return getMediaStream({
-          audio: false,
-          video: true,
-          videoDeviceId,
-          width,
-          height,
-        });
-      })
-      .then(setMediaStreamOriginal);
+    requestMediaStream({
+      mediaStream,
+      setMediaStream,
+      setIsLoading,
+      videoDeviceId,
+      resolutionId,
+      videoDeviceList,
+      onFail: onFailRequestMediaStream,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoDeviceId, resolutionId, videoDeviceList.length]);
 
   return (
-    <div>
-      <Backdrop className={classes.backdrop} open={isLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-      {isInitialized && (
-        <Drawer open anchor="right" variant="persistent">
-          <div className={classes.drawer}>
-            <List>
-              <ListItem>
-                <FormControl variant="filled" className={classes.formControl}>
-                  <InputLabel htmlFor="cam">Cam</InputLabel>
-                  <Select
-                    native
-                    value={videoDeviceId}
-                    onChange={resolveHandleChangeInput(setVideoDeviceFromId)}
-                    inputProps={{
-                      name: 'cam',
-                      id: 'cam',
-                    }}
-                  >
-                    {videoDeviceList.map(renderItemDevice)}
-                  </Select>
-                </FormControl>
-              </ListItem>
-              <ListItem>
-                <FormControl variant="filled" className={classes.formControl}>
-                  <InputLabel htmlFor="resolution">Resolution</InputLabel>
-                  <Select
-                    native
-                    value={resolutionId}
-                    onChange={resolveHandleChangeInput(setResolutionId)}
-                    inputProps={{
-                      name: 'resolution',
-                      id: 'resolution',
-                    }}
-                  >
-                    {resolutionList.map(renderItemResolution)}
-                  </Select>
-                </FormControl>
-              </ListItem>
-            </List>
-            <div className={classes.flex}>
-              <Fab variant="extended" color="primary" onClick={resetState}>
-                <RotateLeftIcon className={classes.extendedIcon} />
-                Reset
-              </Fab>
-            </div>
-          </div>
-        </Drawer>
-      )}
-      {mediaStreamProcessed && (
-        <div className={classes.video}>
-          <Media mediaStream={mediaStreamProcessed} />
+    <React.Fragment>
+      <CssBaseline />
+      <PageLoader isLoading={isLoading} classes={classes} />
+      <AppBarTop classes={classes} requestStream={requestStream} resetState={resetState} />
+      <SettingsDrawer
+        isInitialized={isInitialized}
+        videoDeviceId={videoDeviceId}
+        videoDeviceList={videoDeviceList}
+        setVideoDeviceFromId={setVideoDeviceFromId}
+        videoConstraints={availableConstraintsVideoTrack}
+        videoSettings={videoSettings}
+        setVideoSettings={setVideoSettings}
+        classes={classes}
+      />
+      <UserMedia classes={classes} mediaStream={mediaStream} />
+      <Snackbar
+        handleClose={() => {
+          setSnackbarState((prevState) => {
+            return { ...prevState, isOpen: false };
+          });
+        }}
+        open={snackbarState.isOpen}
+        message={snackbarState.message}
+        autoHideDuration={snackbarState.autoHideDuration}
+      />
+      <Code videoSettings={{ audio: false, video: videoSettings }} />
+      {!!missingConstraints.length && (
+        <div>
+          <Heading>MISSING CONSTRAINTS</Heading>
+          <List>
+            {missingConstraints.map((constraint) => {
+              return <ListItem key={constraint}>{constraint}</ListItem>;
+            })}
+          </List>
         </div>
       )}
-    </div>
+    </React.Fragment>
   );
 };
 export default App;
