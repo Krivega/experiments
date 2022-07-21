@@ -6,12 +6,28 @@ import {
   BOOLEAN_CONSTRAINT,
   NUMBER_CONSTRAINT,
 } from '../constants';
+import type { TClasses } from '../useStyles';
+import { TVideoConstraints } from '../typings';
 import NumericConstraint from './NumericConstraint';
 import BooleanConstraint from './BooleanConstraint';
 import StringOptionConstraint from './StringOptionConstraint';
 import PointOfInterestConstraint from './PointOfInterestConstraint';
 
-const VideoConstraint = ({ constraint, value, classes, videoSettings, setVideoSettings }) => {
+type TProps = {
+  constraint: string;
+  value: any;
+  classes: TClasses;
+  videoSettings: TVideoConstraints;
+  setVideoSettings: (settings: TVideoConstraints) => void;
+};
+
+const VideoConstraint: React.FC<TProps> = ({
+  constraint,
+  value,
+  classes,
+  videoSettings,
+  setVideoSettings,
+}) => {
   if (value.type === BOOLEAN_CONSTRAINT) {
     return (
       <ListItem>

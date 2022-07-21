@@ -6,7 +6,7 @@ type TProps = {
 };
 
 const Code: React.FC<TProps> = ({ videoSettings }) => {
-  if (Object.keys(videoSettings).length === 0) {
+  if (Object.keys(videoSettings.video).length === 0) {
     return null;
   }
 

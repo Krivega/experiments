@@ -6,6 +6,18 @@ import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
 import { TVideoConstraints } from '../typings';
 
+type TProps = {
+  constraintKey: string;
+  value: {
+    type: string;
+    default: number;
+    disabled: boolean;
+    defaultObj: { min: number; max: number; exact: number; ideal: number };
+  };
+  videoSettings: TVideoConstraints;
+  setVideoSettings: (value: TVideoConstraints) => void;
+};
+
 const ASPECT_RATIO = 'aspectRatio';
 const FRAME_RATE = 'frameRate';
 
@@ -31,21 +43,11 @@ const getStep = (constraint: string): number => {
   return step;
 };
 
-const NumericConstraint = ({
+const NumericConstraint: React.FC<TProps> = ({
   value,
   constraintKey,
   videoSettings,
   setVideoSettings,
-}: {
-  constraintKey: string;
-  value: {
-    type: string;
-    default: number;
-    disabled: boolean;
-    defaultObj: { min: number; max: number; exact: number; ideal: number };
-  };
-  setVideoSettings: (value: TVideoConstraints) => void;
-  videoSettings: TVideoConstraints;
 }) => {
   const [isAdvanced, setIsAdvanced] = useState<boolean>(false);
   const [sliderValue, setSliderValue] = useState<number>(+value.default.toFixed(3));

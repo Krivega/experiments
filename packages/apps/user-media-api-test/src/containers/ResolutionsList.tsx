@@ -4,8 +4,17 @@ import ListItem from '@material-ui/core/ListItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import resolveHandleChangeInput from '@experiments/utils/src/resolveHandleChangeInput';
+import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
+import type { TClasses } from '../useStyles';
 
-const renderItemResolution = (item, index) => {
+type TProps = {
+  resolutionId: string;
+  resolutionList: TResolution[];
+  classes: TClasses;
+  setResolutionId: (id: string) => void;
+};
+
+const renderItemResolution = (item: TResolution, index: number) => {
   const { id, label } = item;
 
   return (
@@ -15,7 +24,12 @@ const renderItemResolution = (item, index) => {
   );
 };
 
-const ResolutionsList = ({ resolutionId, resolutionList, setResolutionId, classes }) => {
+const ResolutionsList: React.FC<TProps> = ({
+  resolutionId,
+  resolutionList,
+  setResolutionId,
+  classes,
+}) => {
   return (
     <ListItem>
       <FormControl variant="filled" className={classes.formControl}>

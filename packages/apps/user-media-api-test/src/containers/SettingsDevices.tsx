@@ -1,8 +1,21 @@
 import React from 'react';
 import List from '@material-ui/core/List';
 import DeviceList from './DeviceList';
+import type { TClasses } from '../useStyles';
 
-const SettingsDevices = ({ videoDeviceId, videoDeviceList, setVideoDeviceFromId, classes }) => {
+type TProps = {
+  videoDeviceId: string;
+  videoDeviceList: MediaDeviceInfo[];
+  classes: TClasses;
+  setVideoDeviceFromId: (id: string) => void;
+};
+
+const SettingsDevices: React.FC<TProps> = ({
+  videoDeviceId,
+  videoDeviceList,
+  setVideoDeviceFromId,
+  classes,
+}) => {
   return (
     <List>
       <DeviceList

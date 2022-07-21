@@ -1,15 +1,24 @@
 import React from 'react';
 import Drawer from '@material-ui/core/Drawer';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Container from '@material-ui/core/Container';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import TvIcon from '@material-ui/icons/Tv';
 import Heading from './Heading';
+import type { TClasses } from '../useStyles';
+import { TVideoConstraints } from '../typings';
 import SettingsDevices from './SettingsDevices';
 import ConstraintsList from './ConstraintsList';
-import ButtonAction from './ButtonAction';
 
-const SettingsDrawer = ({
+type TProps = {
+  videoDeviceId: string;
+  videoDeviceList: MediaDeviceInfo[];
+  videoConstraints: TVideoConstraints | null;
+  classes: TClasses;
+  videoSettings: TVideoConstraints;
+  isInitialized: boolean;
+  setVideoSettings: (value: TVideoConstraints) => void;
+  setVideoDeviceFromId: (id: string) => void;
+};
+
+const SettingsDrawer: React.FC<TProps> = ({
   classes,
   videoDeviceId,
   videoDeviceList,
@@ -17,8 +26,6 @@ const SettingsDrawer = ({
   videoConstraints,
   videoSettings,
   setVideoSettings,
-  resetState,
-  requestStream,
   isInitialized,
 }) => {
   if (!isInitialized) {
@@ -43,22 +50,6 @@ const SettingsDrawer = ({
           setVideoSettings={setVideoSettings}
           classes={classes}
         />
-        <ButtonGroup className={classes.buttonGroup}>
-          <ButtonAction
-            classes={classes}
-            icon={<TvIcon className={classes.extendedIcon} />}
-            onClick={requestStream}
-          >
-            Request
-          </ButtonAction>
-          <ButtonAction
-            classes={classes}
-            icon={<RotateLeftIcon className={classes.extendedIcon} />}
-            onClick={resetState}
-          >
-            Reset
-          </ButtonAction>
-        </ButtonGroup>
       </div>
     </Drawer>
   );

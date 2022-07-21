@@ -10,8 +10,8 @@ import type { TClasses } from '../useStyles';
 type TProps = {
   videoDeviceId: string;
   videoDeviceList: MediaDeviceInfo[];
-  setVideoDeviceFromId: (id: string) => void;
   classes: TClasses;
+  setVideoDeviceFromId: (id: string) => void;
 };
 
 const renderItemDevice = (item: MediaDeviceInfo, index: number): JSX.Element => {

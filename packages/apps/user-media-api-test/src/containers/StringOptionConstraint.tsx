@@ -3,22 +3,9 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import { TVideoConstraints } from '../typings';
+import type { TClasses } from '../useStyles';
 
-const renderStringOptionValue = (value: string, idx): JSX.Element => {
-  return (
-    <option value={value} key={`${value}${idx}`}>
-      {value}
-    </option>
-  );
-};
-
-const StringOptionConstraint = ({
-  value,
-  constraintKey,
-  videoSettings,
-  setVideoSettings,
-  classes,
-}: {
+type TProps = {
   constraintKey: string;
   value: {
     type: string;
@@ -28,7 +15,23 @@ const StringOptionConstraint = ({
   };
   setVideoSettings: (value: TVideoConstraints) => void;
   videoSettings: TVideoConstraints;
-  classes;
+  classes: TClasses;
+};
+
+const renderStringOptionValue = (value: string, idx: number): JSX.Element => {
+  return (
+    <option value={value} key={`${value}${idx}`}>
+      {value}
+    </option>
+  );
+};
+
+const StringOptionConstraint: React.FC<TProps> = ({
+  value,
+  constraintKey,
+  videoSettings,
+  setVideoSettings,
+  classes,
 }) => {
   const [val, setVal] = useState<string>(value.default);
 

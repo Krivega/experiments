@@ -4,12 +4,7 @@ import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
 import { TVideoConstraints } from '../typings';
 
-const PointOfInterestConstraint = ({
-  value,
-  constraintKey,
-  videoSettings,
-  setVideoSettings,
-}: {
+type TProps = {
   constraintKey: string;
   value: {
     type: string;
@@ -18,6 +13,13 @@ const PointOfInterestConstraint = ({
   };
   setVideoSettings: (value: TVideoConstraints) => void;
   videoSettings: TVideoConstraints;
+};
+
+const PointOfInterestConstraint: React.FC<TProps> = ({
+  value,
+  constraintKey,
+  videoSettings,
+  setVideoSettings,
 }) => {
   const resolveHandlePointsOfInterest = (constraint: string) => {
     return (axis: string) => {

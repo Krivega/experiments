@@ -3,11 +3,10 @@ import List from '@material-ui/core/List';
 import VideoConstraint from './VideoConstraint';
 import type { TClasses } from '../useStyles';
 import type { TVideoConstraints } from '../typings';
-import { videoConstraints as allVideoConstraints } from '../constraints';
 
 type TProps = {
   classes: TClasses;
-  videoConstraints: typeof allVideoConstraints;
+  videoConstraints: TVideoConstraints | null;
   videoSettings: TVideoConstraints;
   setVideoSettings: (settings: TVideoConstraints) => void;
 };

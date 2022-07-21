@@ -5,6 +5,7 @@ import ListItem from '@material-ui/core/ListItem';
 import requestDevices from '@experiments/system-devices/src/requestDevices';
 import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
 import getVideoTracks from '@experiments/mediastream-api/src/getVideoTracks';
+import AppBarTop from './containers/AppBarTop';
 import UserMedia from './containers/UserMedia';
 import PageLoader from './containers/PageLoader';
 import Code from './containers/Code';
@@ -16,7 +17,7 @@ import onInitMedia from './onInitMedia';
 import requestMediaStream from './requestMediaStream';
 import type { TVideoConstraints } from './typings';
 import defaultState from './defaultState';
-import useStyles, { flex } from './useStyles';
+import useStyles from './useStyles';
 import { STRING_OPTION_CONSTRAINT, NUMBER_CONSTRAINT } from './constants';
 
 type TSnackBar = {
@@ -49,7 +50,6 @@ const App = () => {
     message: '',
   });
 
-  // Video settings
   const [videoSettings, setVideoSettings] = React.useState<TVideoConstraints>({});
   const [availableConstraintsVideoTrack, setAvailableConstraintsVideoTrack] =
     React.useState<null | Object>(null);
@@ -214,9 +214,8 @@ const App = () => {
     <React.Fragment>
       <CssBaseline />
       <PageLoader isLoading={isLoading} classes={classes} />
+      <AppBarTop classes={classes} requestStream={requestStream} resetState={resetState} />
       <SettingsDrawer
-        resetState={resetState}
-        requestStream={requestStream}
         isInitialized={isInitialized}
         videoDeviceId={videoDeviceId}
         videoDeviceList={videoDeviceList}
