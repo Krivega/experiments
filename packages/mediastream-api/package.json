@@ -36,8 +36,8 @@
     }
   },
   "dependencies": {
-    "@krivega/cancelable-promise": "^0.3.0",
     "@experiments/utils": "^0.0.0",
+    "@krivega/cancelable-promise": "^0.4.0",
     "lodash": "^4.17.21",
     "repeated-calls": "^1.3.2"
   },
