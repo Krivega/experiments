@@ -121,7 +121,9 @@ export default class RequesterDevices {
     this.cancelableRequestDevices = new CancelableRequest<
       Parameters<typeof scanDevices>[0],
       ReturnType<typeof scanDevices>
-    >(scanDevices, this.constructor.name);
+    >(scanDevices, {
+      moduleName: this.constructor.name,
+    });
   }
 
   request = (devicesCached) => {
