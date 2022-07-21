@@ -1,16 +1,28 @@
 import React from 'react';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
 import type { TVideoConstraints, TAudioConstraints } from '../typings';
 
 type TProps = {
-  videoSettings: { audio: boolean | TAudioConstraints; video: TVideoConstraints };
+  classes;
+  heading: string;
+  settings: { audio: boolean | TAudioConstraints; video: TVideoConstraints };
 };
 
-const Code: React.FC<TProps> = ({ videoSettings }) => {
-  if (Object.keys(videoSettings.video).length === 0) {
+const Code: React.FC<TProps> = ({ classes, settings, heading }) => {
+  if (Object.keys(settings.video).length === 0) {
     return null;
   }
 
-  return <pre>{JSON.stringify(videoSettings, null, 2)}</pre>;
+  return (
+    <Card variant="outlined" className={classes.card}>
+      <CardHeader title={heading} />
+      <CardContent>
+        <pre>{JSON.stringify(settings, null, 2)}</pre>
+      </CardContent>
+    </Card>
+  );
 };
 
 export default Code;

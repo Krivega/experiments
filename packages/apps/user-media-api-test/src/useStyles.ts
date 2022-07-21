@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import type { ClassNameMap } from '@material-ui/styles/withStyles';
 
 export type TClasses = ClassNameMap<
+  | 'card'
   | 'appBar'
   | 'video'
   | 'formControl'
@@ -19,6 +20,14 @@ const DRAWER_WIDTH = 320;
 
 const useStyles = makeStyles((theme) => {
   return {
+    card: {
+      maxWidth: '700px',
+      minWidth: '500px',
+      marginLeft: '100px',
+      marginTop: '20px',
+      backgroundColor: 'black',
+      color: 'white',
+    },
     appBar: {
       width: `calc(100% - ${DRAWER_WIDTH}px)`,
       position: 'fixed',

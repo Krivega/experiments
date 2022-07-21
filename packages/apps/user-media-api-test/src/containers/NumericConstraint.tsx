@@ -18,6 +18,8 @@ type TProps = {
   setVideoSettings: (value: TVideoConstraints) => void;
 };
 
+const MAX_VAL_ASPECT_RATIO = 10;
+const STEP_VAL_ASPECT_RATIO = 0.05;
 const ASPECT_RATIO = 'aspectRatio';
 const FRAME_RATE = 'frameRate';
 
@@ -33,7 +35,7 @@ const getStep = (constraint: string): number => {
   let step = 5;
 
   if (hasAspectRatio(constraint)) {
-    step = 0.1;
+    step = STEP_VAL_ASPECT_RATIO;
   }
 
   if (hasFrameRate(constraint)) {
@@ -63,7 +65,15 @@ const NumericConstraint: React.FC<TProps> = ({
   const isAspectRatio = hasAspectRatio(constraintKey);
   const isFrameRate = hasFrameRate(constraintKey);
   const min = isAspectRatio ? +defaultMin.toFixed(3) : defaultMin;
-  const max = isAspectRatio || isFrameRate ? +defaultMax.toFixed(3) : defaultMax;
+  let max = defaultMax;
+
+  if (isFrameRate) {
+    max = +defaultMax.toFixed(3);
+  }
+
+  if (isAspectRatio) {
+    max = MAX_VAL_ASPECT_RATIO;
+  }
 
   const marks = [
     { value: min, label: `${min}` },
@@ -76,6 +86,41 @@ const NumericConstraint: React.FC<TProps> = ({
     return (advancedSettingKey?: string) => {
       return (event, val) => {
         setSliderValue(val);
+
+        if (val === Math.round(value.defaultObj.min) && !advancedSettingKey) {
+          return setVideoSettings(
+            Object.fromEntries(
+              Object.entries(videoSettings).filter(([key]) => {
+                return key !== constraint;
+              })
+            )
+          );
+        }
+
+        if (advancedSettingKey && val === value.defaultObj.min) {
+          let entries: [string, unknown][] = [];
+
+          if (typeof videoSettings[constraint] === 'object') {
+            entries = Object.entries(videoSettings[constraint]).filter(([key]) => {
+              return key !== advancedSettingKey;
+            });
+          }
+
+          if (entries.length === 0) {
+            return setVideoSettings(
+              Object.fromEntries(
+                Object.entries(videoSettings).filter(([key]) => {
+                  return key !== constraint;
+                })
+              )
+            );
+          }
+
+          return setVideoSettings({
+            ...videoSettings,
+            [constraint]: { ...Object.fromEntries(entries) },
+          });
+        }
 
         if (!advancedSettingKey) {
           return setVideoSettings({

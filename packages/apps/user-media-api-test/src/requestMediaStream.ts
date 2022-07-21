@@ -1,6 +1,5 @@
-import getResolutionById from '@experiments/system-devices/src/getResolutionById';
 import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
-import { getMediaStream } from '@experiments/mediastream-api';
+import { getMediaStreamOrigin } from '@experiments/mediastream-api';
 import type { TVideoConstraints } from './typings';
 
 const requestMediaStream = ({
@@ -8,39 +7,29 @@ const requestMediaStream = ({
   setMediaStream,
   setIsLoading,
   videoDeviceId,
-  resolutionId,
   videoDeviceList,
+  setTrackSettings,
   onSuccess = () => {},
   onFail = (error: Error) => {},
   additionalConstraints = {},
 }: {
   mediaStream: MediaStream | null;
   videoDeviceId: string;
-  resolutionId: string;
   videoDeviceList: MediaDeviceInfo[];
   additionalConstraints?: TVideoConstraints;
   onSuccess?: () => void;
   onFail: (error: Error) => void;
   setMediaStream: (mediaStream: MediaStream) => void;
   setIsLoading: (isLoading: boolean) => void;
+  setTrackSettings;
 }): Promise<MediaStream | void> | void => {
   setIsLoading(true);
 
-  if (!videoDeviceId || !resolutionId || videoDeviceList.length === 0) {
+  if (!videoDeviceId || videoDeviceList.length === 0) {
     setIsLoading(false);
 
     return undefined;
   }
-
-  const resolution = getResolutionById(resolutionId);
-
-  if (!resolution) {
-    setIsLoading(false);
-
-    return undefined;
-  }
-
-  const { width, height } = resolution;
 
   return Promise.resolve()
     .then(() => {
@@ -51,17 +40,26 @@ const requestMediaStream = ({
       return undefined;
     })
     .then(() => {
-      return getMediaStream({
-        video: true,
-        videoDeviceId,
-        width,
-        height,
-        ...additionalConstraints,
+      return getMediaStreamOrigin({
+        audio: false,
+        video: { deviceId: videoDeviceId, ...additionalConstraints },
       });
     })
     .then((resultMediaStream: MediaStream) => {
       onSuccess();
       setMediaStream(resultMediaStream);
+
+      resultMediaStream.getVideoTracks()[0].getSettings();
+
+      setTrackSettings(() => {
+        const settingsFiltered = Object.fromEntries(
+          Object.entries(resultMediaStream.getVideoTracks()[0].getSettings()).filter(([key]) => {
+            return key !== 'deviceId' && key !== 'groupId';
+          })
+        );
+
+        return settingsFiltered;
+      });
     })
     .catch(onFail)
     .finally(() => {
