@@ -51,6 +51,7 @@ const App = () => {
   });
 
   const [videoSettings, setVideoSettings] = React.useState<TVideoConstraints>({});
+  const [trackSettings, setTrackSettings] = React.useState<TVideoConstraints>({});
   const [availableConstraintsVideoTrack, setAvailableConstraintsVideoTrack] =
     React.useState<null | Object>(null);
   const [missingConstraints, setMissingConstraints] = useState<string[]>([]);
@@ -154,13 +155,13 @@ const App = () => {
       setMediaStream,
       setIsLoading,
       videoDeviceId,
-      resolutionId,
       videoDeviceList,
+      setTrackSettings,
       onSuccess: onSuccessRequestMediaStream,
       onFail: onFailRequestMediaStream,
       additionalConstraints: videoSettings,
     });
-  }, [mediaStream, resolutionId, videoDeviceId, videoDeviceList, videoSettings]);
+  }, [mediaStream, videoDeviceId, videoDeviceList, videoSettings]);
 
   const resetState = useCallback(() => {
     setVideoSettings({});
@@ -170,12 +171,12 @@ const App = () => {
       setMediaStream,
       setIsLoading,
       videoDeviceId,
-      resolutionId,
       videoDeviceList,
+      setTrackSettings,
       onFail: onFailRequestMediaStream,
       additionalConstraints: {},
     });
-  }, [mediaStream, resolutionId, videoDeviceId, videoDeviceList]);
+  }, [mediaStream, videoDeviceId, videoDeviceList]);
 
   useEffect(() => {
     requestDevices({ setVideoDeviceList, setAudioInputDeviceList });
@@ -203,8 +204,8 @@ const App = () => {
       setMediaStream,
       setIsLoading,
       videoDeviceId,
-      resolutionId,
       videoDeviceList,
+      setTrackSettings,
       onFail: onFailRequestMediaStream,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -236,7 +237,18 @@ const App = () => {
         message={snackbarState.message}
         autoHideDuration={snackbarState.autoHideDuration}
       />
-      <Code videoSettings={{ audio: false, video: videoSettings }} />
+      <div style={{ display: 'flex' }}>
+        <Code
+          heading="REQUESTED CONSTRAINTS"
+          settings={{ audio: false, video: videoSettings }}
+          classes={classes}
+        />
+        <Code
+          heading="TRACK SETTINGS"
+          settings={{ audio: false, video: trackSettings }}
+          classes={classes}
+        />
+      </div>
       {!!missingConstraints.length && (
         <div>
           <Heading>MISSING CONSTRAINTS</Heading>
