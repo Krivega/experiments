@@ -20,16 +20,6 @@ export type TResolveProcessVideo = (params: {
   imageBitmapMask1080p: HTMLImageElement;
 }) => TProcessVideo;
 
-export type TAudioConstraints = {
-  autoGainControl?: boolean | { exact?: boolean; ideal?: boolean };
-  echoCancellation?: boolean | { exact?: boolean; ideal?: boolean };
-  noiseSuppression?: boolean | { exact?: boolean; ideal?: boolean };
-  channelCount?: number | { min: number; max: number; exact: number; ideal: number };
-  latency?: number | { min: number; max: number; exact: number; ideal: number };
-  volume?: number | { min: number; max: number; exact: number; ideal: number };
-  sampleRate?: number | { min?: number; max?: number; exact?: number; ideal?: number };
-  sampleSize?: number | { min?: number; max?: number; exact?: number; ideal?: number };
-};
 export type TVideoConstraints = {
   torch?: boolean | { exact?: boolean; ideal?: boolean };
   whiteBalanceMode?: 'none' | 'manual' | 'single-shot' | 'continuous';

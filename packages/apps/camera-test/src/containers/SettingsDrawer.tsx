@@ -1,20 +1,18 @@
 import React from 'react';
-import Drawer from '@material-ui/core/Drawer';
 import Container from '@material-ui/core/Container';
 import Heading from './Heading';
 import type { TClasses } from '../useStyles';
-import { TVideoConstraints } from '../typings';
+import type { TVideoConstraints } from '../typings';
 import SettingsDevices from './SettingsDevices';
 import ConstraintsList from './ConstraintsList';
 
 type TProps = {
   videoDeviceId: string;
   videoDeviceList: MediaDeviceInfo[];
-  videoConstraints: TVideoConstraints | null;
+  videoConstraintsList: TVideoConstraints | null;
   classes: TClasses;
-  videoSettings: TVideoConstraints;
-  isInitialized: boolean;
-  setVideoSettings: (value: TVideoConstraints) => void;
+  constraints: MediaTrackConstraints;
+  updateConstraints: (value: MediaTrackConstraints) => void;
   setVideoDeviceFromId: (id: string) => void;
 };
 
@@ -23,35 +21,30 @@ const SettingsDrawer: React.FC<TProps> = ({
   videoDeviceId,
   videoDeviceList,
   setVideoDeviceFromId,
-  videoConstraints,
-  videoSettings,
-  setVideoSettings,
-  isInitialized,
+  videoConstraintsList,
+  constraints,
+  updateConstraints,
 }) => {
-  if (!isInitialized) {
-    return null;
-  }
-
   return (
-    <Drawer open anchor="right" variant="persistent">
-      <div className={classes.drawer}>
-        <SettingsDevices
-          videoDeviceId={videoDeviceId}
-          videoDeviceList={videoDeviceList}
-          setVideoDeviceFromId={setVideoDeviceFromId}
-          classes={classes}
-        />
-        <Container>
-          <Heading>CAMERA SETTINGS</Heading>
-        </Container>
+    <div className={classes.drawer}>
+      <SettingsDevices
+        videoDeviceId={videoDeviceId}
+        videoDeviceList={videoDeviceList}
+        setVideoDeviceFromId={setVideoDeviceFromId}
+        classes={classes}
+      />
+      <Container>
+        <Heading>CAMERA SETTINGS</Heading>
+      </Container>
+      {videoConstraintsList && (
         <ConstraintsList
-          videoConstraints={videoConstraints}
-          videoSettings={videoSettings}
-          setVideoSettings={setVideoSettings}
+          videoConstraintsList={videoConstraintsList}
+          constraints={constraints}
+          updateConstraints={updateConstraints}
           classes={classes}
         />
-      </div>
-    </Drawer>
+      )}
+    </div>
   );
 };
 

@@ -27,7 +27,6 @@ const SnackbarTop: React.FC<TProps> = ({ open, handleClose, message, autoHideDur
       autoHideDuration={autoHideDuration}
       onClose={handleClose}
       anchorOrigin={{ vertical, horizontal }}
-      key={vertical + horizontal}
       action={action}
     />
   );

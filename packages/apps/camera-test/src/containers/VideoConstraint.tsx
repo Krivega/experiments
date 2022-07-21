@@ -7,7 +7,6 @@ import {
   NUMBER_CONSTRAINT,
 } from '../constants';
 import type { TClasses } from '../useStyles';
-import { TVideoConstraints } from '../typings';
 import NumericConstraint from './NumericConstraint';
 import BooleanConstraint from './BooleanConstraint';
 import StringOptionConstraint from './StringOptionConstraint';
@@ -17,16 +16,16 @@ type TProps = {
   constraint: string;
   value: any;
   classes: TClasses;
-  videoSettings: TVideoConstraints;
-  setVideoSettings: (settings: TVideoConstraints) => void;
+  constraints: MediaTrackConstraints;
+  updateConstraints: (additionalConstraints: MediaTrackConstraints) => void;
 };
 
 const VideoConstraint: React.FC<TProps> = ({
   constraint,
   value,
   classes,
-  videoSettings,
-  setVideoSettings,
+  constraints,
+  updateConstraints,
 }) => {
   if (value.type === BOOLEAN_CONSTRAINT) {
     return (
@@ -35,8 +34,8 @@ const VideoConstraint: React.FC<TProps> = ({
           classes={classes}
           value={value}
           constraintKey={constraint}
-          videoSettings={videoSettings}
-          setVideoSettings={setVideoSettings}
+          constraints={constraints}
+          updateConstraints={updateConstraints}
         />
       </ListItem>
     );
@@ -49,8 +48,8 @@ const VideoConstraint: React.FC<TProps> = ({
           classes={classes}
           value={value}
           constraintKey={constraint}
-          videoSettings={videoSettings}
-          setVideoSettings={setVideoSettings}
+          constraints={constraints}
+          updateConstraints={updateConstraints}
         />
       </ListItem>
     );
@@ -62,8 +61,8 @@ const VideoConstraint: React.FC<TProps> = ({
         <PointOfInterestConstraint
           value={value}
           constraintKey={constraint}
-          videoSettings={videoSettings}
-          setVideoSettings={setVideoSettings}
+          constraints={constraints}
+          updateConstraints={updateConstraints}
         />
       </ListItem>
     );
@@ -75,8 +74,8 @@ const VideoConstraint: React.FC<TProps> = ({
         <NumericConstraint
           value={value}
           constraintKey={constraint}
-          videoSettings={videoSettings}
-          setVideoSettings={setVideoSettings}
+          constraints={constraints}
+          updateConstraints={updateConstraints}
         />
       </ListItem>
     );

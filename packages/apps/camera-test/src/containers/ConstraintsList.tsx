@@ -6,32 +6,28 @@ import type { TVideoConstraints } from '../typings';
 
 type TProps = {
   classes: TClasses;
-  videoConstraints: TVideoConstraints | null;
-  videoSettings: TVideoConstraints;
-  setVideoSettings: (settings: TVideoConstraints) => void;
+  videoConstraintsList: TVideoConstraints;
+  constraints: MediaTrackConstraints;
+  updateConstraints: (additionalConstraints: MediaTrackConstraints) => void;
 };
 
 const ConstraintsList: React.FC<TProps> = ({
-  videoConstraints,
-  videoSettings,
-  setVideoSettings,
+  videoConstraintsList,
+  constraints,
+  updateConstraints,
   classes,
 }) => {
-  if (!videoConstraints) {
-    return null;
-  }
-
   return (
     <List>
-      {Object.entries(videoConstraints).map(([constraint, value]) => {
+      {Object.entries(videoConstraintsList).map(([constraint, value]) => {
         return (
           <VideoConstraint
             key={constraint}
             constraint={constraint}
             value={value}
             classes={classes}
-            videoSettings={videoSettings}
-            setVideoSettings={setVideoSettings}
+            constraints={constraints}
+            updateConstraints={updateConstraints}
           />
         );
       })}
