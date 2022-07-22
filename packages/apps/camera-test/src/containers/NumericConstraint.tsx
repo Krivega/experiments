@@ -87,13 +87,9 @@ const NumericConstraint: React.FC<TProps> = ({
         setSliderValue(val);
 
         if (val === Math.round(value.defaultObj.min) && !advancedSettingKey) {
-          return updateConstraints(
-            Object.fromEntries(
-              Object.entries(constraints).filter(([key]) => {
-                return key !== constraint;
-              })
-            )
-          );
+          return updateConstraints({
+            [constraint]: undefined,
+          });
         }
 
         if (advancedSettingKey && val === value.defaultObj.min) {
@@ -106,13 +102,9 @@ const NumericConstraint: React.FC<TProps> = ({
           }
 
           if (entries.length === 0) {
-            return updateConstraints(
-              Object.fromEntries(
-                Object.entries(constraints).filter(([key]) => {
-                  return key !== constraint;
-                })
-              )
-            );
+            return updateConstraints({
+              [constraint]: undefined,
+            });
           }
 
           return updateConstraints({
