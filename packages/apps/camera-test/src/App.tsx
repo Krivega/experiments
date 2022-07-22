@@ -244,6 +244,7 @@ const App = () => {
       {isInitialized && (
         <Drawer open anchor="right" variant="permanent" className={classes.drawerRoot}>
           <SettingsDrawer
+            trackSettings={trackSettings}
             videoDeviceId={videoDeviceId}
             videoDeviceList={videoDeviceList}
             setVideoDeviceFromId={setVideoDeviceFromId}

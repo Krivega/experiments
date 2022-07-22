@@ -17,6 +17,7 @@ type TProps = {
   value: any;
   classes: TClasses;
   constraints: MediaTrackConstraints;
+  trackSettings: MediaTrackSettings;
   updateConstraints: (additionalConstraints: MediaTrackConstraints) => void;
 };
 
@@ -25,6 +26,7 @@ const VideoConstraint: React.FC<TProps> = ({
   value,
   classes,
   constraints,
+  trackSettings,
   updateConstraints,
 }) => {
   if (value.type === BOOLEAN_CONSTRAINT) {
@@ -74,6 +76,7 @@ const VideoConstraint: React.FC<TProps> = ({
         <NumericConstraint
           value={value}
           constraintKey={constraint}
+          trackSettings={trackSettings}
           constraints={constraints}
           updateConstraints={updateConstraints}
         />

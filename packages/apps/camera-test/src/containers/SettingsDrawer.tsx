@@ -12,6 +12,7 @@ type TProps = {
   videoConstraintsList: TVideoConstraints | null;
   classes: TClasses;
   constraints: MediaTrackConstraints;
+  trackSettings: MediaTrackSettings;
   updateConstraints: (value: MediaTrackConstraints) => void;
   setVideoDeviceFromId: (id: string) => void;
 };
@@ -24,6 +25,7 @@ const SettingsDrawer: React.FC<TProps> = ({
   videoConstraintsList,
   constraints,
   updateConstraints,
+  trackSettings,
 }) => {
   return (
     <div className={classes.drawer}>
@@ -38,6 +40,7 @@ const SettingsDrawer: React.FC<TProps> = ({
       </Container>
       {videoConstraintsList && (
         <ConstraintsList
+          trackSettings={trackSettings}
           videoConstraintsList={videoConstraintsList}
           constraints={constraints}
           updateConstraints={updateConstraints}

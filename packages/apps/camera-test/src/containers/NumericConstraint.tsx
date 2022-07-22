@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import Box from '@material-ui/core/Box';
+import React, { useState, useEffect, useCallback } from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Slider from '@material-ui/core/Slider';
-import Typography from '@material-ui/core/Typography';
+import ToggleButton from './ToggleButton';
 
 type TProps = {
+  trackSettings: MediaTrackSettings;
   constraintKey: string;
   value: {
     type: string;
@@ -49,6 +49,7 @@ const NumericConstraint: React.FC<TProps> = ({
   constraintKey,
   constraints,
   updateConstraints,
+  trackSettings,
 }) => {
   const [isAdvanced, setIsAdvanced] = useState<boolean>(false);
   const [sliderValue, setSliderValue] = useState<number>(+value.default.toFixed(3));
@@ -92,7 +93,7 @@ const NumericConstraint: React.FC<TProps> = ({
           });
         }
 
-        if (advancedSettingKey && val === value.defaultObj.min) {
+        if (advancedSettingKey && val === Math.round(value.defaultObj.min)) {
           let entries: [string, unknown][] = [];
 
           if (typeof constraints[constraint] === 'object') {
@@ -127,14 +128,34 @@ const NumericConstraint: React.FC<TProps> = ({
 
   const handleChangeNumericConstraint = resolveHandleChangeNumericConstraint(constraintKey);
 
+  const onInactive = useCallback(() => {
+    setSliderValue(+value.default.toFixed(3));
+    updateConstraints({
+      [constraintKey]: undefined,
+    });
+  }, [constraintKey, updateConstraints, value.default]);
+
+  const onActive = useCallback(() => {
+    if (trackSettings[constraintKey]) {
+      setSliderValue(+trackSettings[constraintKey].toFixed(3));
+    }
+
+    updateConstraints({
+      [constraintKey]: trackSettings[constraintKey],
+    });
+  }, [constraintKey, trackSettings, updateConstraints]);
+
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3, width: 250 }}>
-      <Typography variant="h6">{constraintKey}</Typography>
+    <ToggleButton
+      title={constraintKey}
+      disabled={value.disabled}
+      onActive={onActive}
+      onInactive={onInactive}
+    >
       <FormControlLabel
         control={
           <Checkbox
             disabled={value.disabled}
-            name={constraintKey}
             size="small"
             onChange={({ target: { checked } }) => {
               setIsAdvanced(checked);
@@ -181,7 +202,7 @@ const NumericConstraint: React.FC<TProps> = ({
             />
           );
         })}
-    </Box>
+    </ToggleButton>
   );
 };
 
