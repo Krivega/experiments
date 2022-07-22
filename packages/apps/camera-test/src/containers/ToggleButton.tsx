@@ -5,12 +5,14 @@ import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
 
 const ToggleButton = ({
+  type,
   title,
   disabled,
   children,
   onActive,
   onInactive,
 }: {
+  type?: string;
   title: string;
   disabled: boolean;
   children: React.ReactNode;
@@ -34,8 +36,14 @@ const ToggleButton = ({
       return null;
     }
 
+    let padding = '5px 20px';
+
+    if (type === 'input') {
+      padding = '0';
+    }
+
     return (
-      <Paper variant="outlined" style={{ backgroundColor: '#fafafa', padding: '5px 20px' }}>
+      <Paper variant="outlined" style={{ backgroundColor: '#fafafa', padding }}>
         {children}
       </Paper>
     );

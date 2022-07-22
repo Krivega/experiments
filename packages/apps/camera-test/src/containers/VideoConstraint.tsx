@@ -50,6 +50,7 @@ const VideoConstraint: React.FC<TProps> = ({
           classes={classes}
           value={value}
           constraintKey={constraint}
+          trackSettings={trackSettings}
           constraints={constraints}
           updateConstraints={updateConstraints}
         />
@@ -63,6 +64,7 @@ const VideoConstraint: React.FC<TProps> = ({
         <PointOfInterestConstraint
           value={value}
           constraintKey={constraint}
+          trackSettings={trackSettings}
           constraints={constraints}
           updateConstraints={updateConstraints}
         />

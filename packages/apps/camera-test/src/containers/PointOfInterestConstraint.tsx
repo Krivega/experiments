@@ -1,9 +1,9 @@
-import React from 'react';
-import Box from '@material-ui/core/Box';
+import React, { useCallback } from 'react';
 import Slider from '@material-ui/core/Slider';
-import Typography from '@material-ui/core/Typography';
+import ToggleButton from './ToggleButton';
 
 type TProps = {
+  trackSettings: MediaTrackSettings;
   constraintKey: string;
   value: {
     type: string;
@@ -16,6 +16,7 @@ type TProps = {
 
 const PointOfInterestConstraint: React.FC<TProps> = ({
   value,
+  trackSettings,
   constraintKey,
   constraints,
   updateConstraints,
@@ -33,9 +34,25 @@ const PointOfInterestConstraint: React.FC<TProps> = ({
   const { x, y } = value.default;
   const handlePointsOfInterest = resolveHandlePointsOfInterest(constraintKey);
 
+  const onInactive = useCallback(() => {
+    updateConstraints({
+      [constraintKey]: undefined,
+    });
+  }, [constraintKey, updateConstraints]);
+
+  const onActive = useCallback(() => {
+    updateConstraints({
+      [constraintKey]: trackSettings[constraintKey],
+    });
+  }, [constraintKey, trackSettings, updateConstraints]);
+
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3, width: 250 }}>
-      <Typography variant="h6">{constraintKey}</Typography>
+    <ToggleButton
+      title={constraintKey}
+      disabled={value.disabled}
+      onActive={onActive}
+      onInactive={onInactive}
+    >
       <Slider
         aria-label={constraintKey}
         defaultValue={x}
@@ -64,7 +81,7 @@ const PointOfInterestConstraint: React.FC<TProps> = ({
         marks={[{ value: 10, label: 'Y' }]}
         onChange={handlePointsOfInterest('y')}
       />
-    </Box>
+    </ToggleButton>
   );
 };
 
