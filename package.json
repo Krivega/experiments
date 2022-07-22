@@ -36,10 +36,10 @@
     "lint:js": "lerna run lint:js --stream",
     "precommit": "lerna run --concurrency 1 --stream precommit",
     "test": "CI=true yarn test:modules && yarn test:apps && CI=true yarn test:modules:coverage",
-    "test:apps": "lerna run test:nowatch --stream --scope user-media-api-test --scope video-processing",
+    "test:apps": "lerna run test:nowatch --stream --scope camera-test --scope video-processing",
     "test:circular": "lerna run test:circular --stream",
-    "test:modules": "lerna run test --stream --ignore user-media-api-test --ignore video-processing",
-    "test:modules:coverage": "lerna run test:coverage --stream --ignore user-media-api-test --ignore video-processing",
+    "test:modules": "lerna run test --stream --ignore camera-test --ignore video-processing",
+    "test:modules:coverage": "lerna run test:coverage --stream --ignore camera-test --ignore video-processing",
     "tsc": "tsc"
   },
   "config": {

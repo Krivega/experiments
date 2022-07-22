@@ -4,7 +4,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
-import { TVideoConstraints } from '../typings';
 
 type TProps = {
   constraintKey: string;
@@ -14,8 +13,8 @@ type TProps = {
     disabled: boolean;
     defaultObj: { min: number; max: number; exact: number; ideal: number };
   };
-  videoSettings: TVideoConstraints;
-  setVideoSettings: (value: TVideoConstraints) => void;
+  constraints: MediaTrackConstraints;
+  updateConstraints: (additionalConstraints: MediaTrackConstraints) => void;
 };
 
 const MAX_VAL_ASPECT_RATIO = 10;
@@ -48,17 +47,17 @@ const getStep = (constraint: string): number => {
 const NumericConstraint: React.FC<TProps> = ({
   value,
   constraintKey,
-  videoSettings,
-  setVideoSettings,
+  constraints,
+  updateConstraints,
 }) => {
   const [isAdvanced, setIsAdvanced] = useState<boolean>(false);
   const [sliderValue, setSliderValue] = useState<number>(+value.default.toFixed(3));
 
   useEffect(() => {
-    if (Object.keys(videoSettings).length === 0) {
+    if (Object.keys(constraints).length === 0) {
       setSliderValue(+value.default.toFixed(3));
     }
-  }, [value.default, videoSettings]);
+  }, [value.default, constraints]);
 
   const defaultMin = value.defaultObj.min;
   const defaultMax = value.defaultObj.max;
@@ -88,9 +87,15 @@ const NumericConstraint: React.FC<TProps> = ({
         setSliderValue(val);
 
         if (val === Math.round(value.defaultObj.min) && !advancedSettingKey) {
+<<<<<<< HEAD:packages/apps/user-media-api-test/src/containers/NumericConstraint.tsx
           return setVideoSettings(
             Object.fromEntries(
               Object.entries(videoSettings).filter(([key]) => {
+=======
+          return updateConstraints(
+            Object.fromEntries(
+              Object.entries(constraints).filter(([key]) => {
+>>>>>>> upstream/master:packages/apps/camera-test/src/containers/NumericConstraint.tsx
                 return key !== constraint;
               })
             )
@@ -100,38 +105,51 @@ const NumericConstraint: React.FC<TProps> = ({
         if (advancedSettingKey && val === value.defaultObj.min) {
           let entries: [string, unknown][] = [];
 
+<<<<<<< HEAD:packages/apps/user-media-api-test/src/containers/NumericConstraint.tsx
           if (typeof videoSettings[constraint] === 'object') {
             entries = Object.entries(videoSettings[constraint]).filter(([key]) => {
+=======
+          if (typeof constraints[constraint] === 'object') {
+            entries = Object.entries(constraints[constraint]).filter(([key]) => {
+>>>>>>> upstream/master:packages/apps/camera-test/src/containers/NumericConstraint.tsx
               return key !== advancedSettingKey;
             });
           }
 
           if (entries.length === 0) {
+<<<<<<< HEAD:packages/apps/user-media-api-test/src/containers/NumericConstraint.tsx
             return setVideoSettings(
               Object.fromEntries(
                 Object.entries(videoSettings).filter(([key]) => {
+=======
+            return updateConstraints(
+              Object.fromEntries(
+                Object.entries(constraints).filter(([key]) => {
+>>>>>>> upstream/master:packages/apps/camera-test/src/containers/NumericConstraint.tsx
                   return key !== constraint;
                 })
               )
             );
           }
 
+<<<<<<< HEAD:packages/apps/user-media-api-test/src/containers/NumericConstraint.tsx
           return setVideoSettings({
             ...videoSettings,
+=======
+          return updateConstraints({
+>>>>>>> upstream/master:packages/apps/camera-test/src/containers/NumericConstraint.tsx
             [constraint]: { ...Object.fromEntries(entries) },
           });
         }
 
         if (!advancedSettingKey) {
-          return setVideoSettings({
-            ...videoSettings,
+          return updateConstraints({
             [constraint]: val,
           });
         }
 
-        return setVideoSettings({
-          ...videoSettings,
-          [constraint]: { ...videoSettings[constraint], [advancedSettingKey]: val },
+        return updateConstraints({
+          [constraint]: { ...constraints[constraint], [advancedSettingKey]: val },
         });
       };
     };

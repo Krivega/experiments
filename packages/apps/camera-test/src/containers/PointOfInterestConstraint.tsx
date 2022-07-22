@@ -2,7 +2,6 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
-import { TVideoConstraints } from '../typings';
 
 type TProps = {
   constraintKey: string;
@@ -11,22 +10,21 @@ type TProps = {
     disabled: boolean;
     default: { x: number; y: number };
   };
-  setVideoSettings: (value: TVideoConstraints) => void;
-  videoSettings: TVideoConstraints;
+  updateConstraints: (additionalConstraints: MediaTrackConstraints) => void;
+  constraints: MediaTrackConstraints;
 };
 
 const PointOfInterestConstraint: React.FC<TProps> = ({
   value,
   constraintKey,
-  videoSettings,
-  setVideoSettings,
+  constraints,
+  updateConstraints,
 }) => {
   const resolveHandlePointsOfInterest = (constraint: string) => {
     return (axis: string) => {
       return (event, sliderValue) => {
-        setVideoSettings({
-          ...videoSettings,
-          [constraint]: { ...videoSettings[constraint], [axis]: sliderValue },
+        updateConstraints({
+          [constraint]: { ...constraints[constraint], [axis]: sliderValue },
         });
       };
     };

@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import List from '@material-ui/core/List';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+import Drawer from '@material-ui/core/Drawer';
 import ListItem from '@material-ui/core/ListItem';
 import requestDevices from '@experiments/system-devices/src/requestDevices';
-import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
 import getVideoTracks from '@experiments/mediastream-api/src/getVideoTracks';
 import AppBarTop from './containers/AppBarTop';
 import UserMedia from './containers/UserMedia';
@@ -13,9 +15,7 @@ import SettingsDrawer from './containers/SettingsDrawer';
 import Snackbar from './containers/Snackbar';
 import Heading from './containers/Heading';
 import { videoConstraints } from './constraints';
-import onInitMedia from './onInitMedia';
 import requestMediaStream from './requestMediaStream';
-import type { TVideoConstraints } from './typings';
 import defaultState from './defaultState';
 import useStyles from './useStyles';
 import { STRING_OPTION_CONSTRAINT, NUMBER_CONSTRAINT } from './constants';
@@ -36,22 +36,20 @@ const App = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
   const [videoDeviceList, setVideoDeviceList] = useState<MediaDeviceInfo[]>([]);
-  const [audioInputDeviceList, setAudioInputDeviceList] = useState<MediaDeviceInfo[]>([]);
   const [videoDeviceId, setVideoDeviceFromId] = useState<string>(initialState.videoDeviceId);
-  const [audioInputDeviceId, setAudioInputDeviceFromId] = useState<string>(
-    initialState.audioInputDeviceId
-  );
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [resolutionList, setResolutionList] = useState<TResolution[]>([]);
-  const [resolutionId] = useState<string>(initialState.resolutionId);
   const [snackbarState, setSnackbarState] = useState<TSnackBar>({
     isOpen: false,
     autoHideDuration: null,
     message: '',
   });
 
+<<<<<<< HEAD:packages/apps/user-media-api-test/src/App.tsx
   const [videoSettings, setVideoSettings] = React.useState<TVideoConstraints>({});
   const [trackSettings, setTrackSettings] = React.useState<TVideoConstraints>({});
+=======
+  const [constraints, setConstraints] = React.useState<MediaTrackConstraints>({});
+  const [trackSettings, setTrackSettings] = React.useState<MediaTrackSettings>({});
+>>>>>>> upstream/master:packages/apps/camera-test/src/App.tsx
   const [availableConstraintsVideoTrack, setAvailableConstraintsVideoTrack] =
     React.useState<null | Object>(null);
   const [missingConstraints, setMissingConstraints] = useState<string[]>([]);
@@ -142,62 +140,108 @@ const App = () => {
 
   useEffect(() => {
     const state = {
-      resolutionId,
       videoDeviceId,
     };
 
     localStorage.setItem('state', JSON.stringify(state));
-  }, [resolutionId, videoDeviceId]);
+  }, [videoDeviceId]);
+
+  const updateConstraints = useCallback((additionalConstraints: MediaTrackConstraints) => {
+    setConstraints((prevState) => {
+      return { ...prevState, ...additionalConstraints };
+    });
+  }, []);
+
+  useEffect(() => {
+    updateConstraints({ deviceId: videoDeviceId });
+  }, [updateConstraints, videoDeviceId]);
+
+  useEffect(() => {
+    if (mediaStream || !constraints.deviceId) {
+      return;
+    }
+
+    requestMediaStream({
+      mediaStream,
+      setMediaStream,
+      setIsLoading,
+<<<<<<< HEAD:packages/apps/user-media-api-test/src/App.tsx
+      videoDeviceId,
+      videoDeviceList,
+      setTrackSettings,
+      onSuccess: onSuccessRequestMediaStream,
+=======
+      setTrackSettings,
+      constraints,
+>>>>>>> upstream/master:packages/apps/camera-test/src/App.tsx
+      onFail: onFailRequestMediaStream,
+    }).finally(() => {
+      setInitialized(true);
+    });
+<<<<<<< HEAD:packages/apps/user-media-api-test/src/App.tsx
+  }, [mediaStream, videoDeviceId, videoDeviceList, videoSettings]);
+
+  const resetState = useCallback(() => {
+    setVideoSettings({});
+=======
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [constraints]);
+>>>>>>> upstream/master:packages/apps/camera-test/src/App.tsx
 
   const requestStream = useCallback(() => {
     requestMediaStream({
       mediaStream,
       setMediaStream,
       setIsLoading,
+<<<<<<< HEAD:packages/apps/user-media-api-test/src/App.tsx
       videoDeviceId,
       videoDeviceList,
       setTrackSettings,
+=======
+      setTrackSettings,
+      constraints,
       onSuccess: onSuccessRequestMediaStream,
+>>>>>>> upstream/master:packages/apps/camera-test/src/App.tsx
       onFail: onFailRequestMediaStream,
-      additionalConstraints: videoSettings,
     });
-  }, [mediaStream, videoDeviceId, videoDeviceList, videoSettings]);
+<<<<<<< HEAD:packages/apps/user-media-api-test/src/App.tsx
+  }, [mediaStream, videoDeviceId, videoDeviceList]);
+=======
+  }, [mediaStream, constraints]);
 
   const resetState = useCallback(() => {
-    setVideoSettings({});
-
-    requestMediaStream({
-      mediaStream,
-      setMediaStream,
-      setIsLoading,
-      videoDeviceId,
-      videoDeviceList,
-      setTrackSettings,
-      onFail: onFailRequestMediaStream,
-      additionalConstraints: {},
-    });
-  }, [mediaStream, videoDeviceId, videoDeviceList]);
+    setConstraints({ deviceId: videoDeviceId });
+  }, [videoDeviceId]);
+>>>>>>> upstream/master:packages/apps/camera-test/src/App.tsx
 
   useEffect(() => {
-    requestDevices({ setVideoDeviceList, setAudioInputDeviceList });
+    requestDevices({ setVideoDeviceList });
   }, []);
 
   useEffect(() => {
     if (videoDeviceList.length > 0 && !videoDeviceId) {
       setVideoDeviceFromId(videoDeviceList[0].deviceId);
     }
+  }, [videoDeviceList, videoDeviceId]);
 
-    if (audioInputDeviceList.length > 0 && !audioInputDeviceId) {
-      setAudioInputDeviceFromId(audioInputDeviceList[0].deviceId);
-    }
-  }, [videoDeviceList, videoDeviceId, audioInputDeviceList, audioInputDeviceId]);
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}>
+        <CssBaseline />
+        <AppBarTop classes={classes} requestStream={requestStream} resetState={resetState} />
+        <UserMedia classes={classes} mediaStream={mediaStream} />
+        <Snackbar
+          handleClose={() => {
+            setSnackbarState((prevState) => {
+              return { ...prevState, isOpen: false };
+            });
+          }}
+          open={snackbarState.isOpen}
+          message={snackbarState.message}
+          autoHideDuration={snackbarState.autoHideDuration}
+        />
 
-  useEffect(() => {
-    if (mediaStream) {
-      onInitMedia({ mediaStream, setResolutionList, setInitialized });
-    }
-  }, [mediaStream]);
-
+<<<<<<< HEAD:packages/apps/user-media-api-test/src/App.tsx
   useEffect(() => {
     requestMediaStream({
       mediaStream,
@@ -258,8 +302,51 @@ const App = () => {
             })}
           </List>
         </div>
+=======
+        <Grid container spacing={2} className={classes.codes}>
+          <Grid item xs={6}>
+            <Code
+              heading="REQUESTED CONSTRAINTS"
+              settings={{ audio: false, video: constraints }}
+              classes={classes}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Code
+              heading="TRACK SETTINGS"
+              settings={{ audio: false, video: trackSettings }}
+              classes={classes}
+            />
+          </Grid>
+        </Grid>
+
+        {!!missingConstraints.length && (
+          <div>
+            <Heading>MISSING CONSTRAINTS</Heading>
+            <List>
+              {missingConstraints.map((constraint) => {
+                return <ListItem key={constraint}>{constraint}</ListItem>;
+              })}
+            </List>
+          </div>
+        )}
+        <PageLoader isLoading={isLoading} classes={classes} />
+      </Box>
+      {isInitialized && (
+        <Drawer open anchor="right" variant="permanent" className={classes.drawerRoot}>
+          <SettingsDrawer
+            videoDeviceId={videoDeviceId}
+            videoDeviceList={videoDeviceList}
+            setVideoDeviceFromId={setVideoDeviceFromId}
+            videoConstraintsList={availableConstraintsVideoTrack}
+            constraints={constraints}
+            updateConstraints={updateConstraints}
+            classes={classes}
+          />
+        </Drawer>
+>>>>>>> upstream/master:packages/apps/camera-test/src/App.tsx
       )}
-    </React.Fragment>
+    </Box>
   );
 };
 export default App;

@@ -14,12 +14,13 @@ type TProps = {
 
 const AppBarTop: React.FC<TProps> = ({ classes, requestStream, resetState }) => {
   return (
-    <AppBar className={classes.appBar}>
+    <AppBar position="fixed" className={classes.appBar}>
       <ButtonGroup className={classes.buttonGroup}>
         <ButtonAction
           classes={classes}
           icon={<TvIcon className={classes.extendedIcon} />}
           onClick={requestStream}
+          color="primary"
         >
           Request
         </ButtonAction>
@@ -27,6 +28,7 @@ const AppBarTop: React.FC<TProps> = ({ classes, requestStream, resetState }) => 
           classes={classes}
           icon={<RotateLeftIcon className={classes.extendedIcon} />}
           onClick={resetState}
+          color="default"
         >
           Reset
         </ButtonAction>

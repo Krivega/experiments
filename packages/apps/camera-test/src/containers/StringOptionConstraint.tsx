@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
-import { TVideoConstraints } from '../typings';
 import type { TClasses } from '../useStyles';
 
 type TProps = {
@@ -13,33 +12,32 @@ type TProps = {
     disabled: boolean;
     values: string[];
   };
-  setVideoSettings: (value: TVideoConstraints) => void;
-  videoSettings: TVideoConstraints;
+  updateConstraints: (additionalConstraints: MediaTrackConstraints) => void;
+  constraints: MediaTrackConstraints;
   classes: TClasses;
-};
-
-const renderStringOptionValue = (value: string, idx: number): JSX.Element => {
-  return (
-    <option value={value} key={`${value}${idx}`}>
-      {value}
-    </option>
-  );
 };
 
 const StringOptionConstraint: React.FC<TProps> = ({
   value,
   constraintKey,
-  videoSettings,
-  setVideoSettings,
+  constraints,
+  updateConstraints,
   classes,
 }) => {
   const [val, setVal] = useState<string>(value.default);
+  const renderStringOptionValue = (v: string, idx: number): JSX.Element => {
+    return (
+      <option value={v} key={`${constraintKey}${v}${idx}`}>
+        {v}
+      </option>
+    );
+  };
 
   useEffect(() => {
-    if (Object.keys(videoSettings).length === 0) {
+    if (Object.keys(constraints).length === 0) {
       setVal(value.default);
     }
-  }, [value.default, videoSettings]);
+  }, [value.default, constraints]);
 
   const resolveHandleStringConstraints = (constraint: string) => {
     return ({ target }) => {
@@ -47,8 +45,7 @@ const StringOptionConstraint: React.FC<TProps> = ({
 
       setVal(targetValue);
 
-      setVideoSettings({
-        ...videoSettings,
+      updateConstraints({
         [constraint]: targetValue,
       });
     };

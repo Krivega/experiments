@@ -21,10 +21,14 @@ const DRAWER_WIDTH = 320;
 const useStyles = makeStyles((theme) => {
   return {
     card: {
+<<<<<<< HEAD:packages/apps/user-media-api-test/src/useStyles.ts
       maxWidth: '700px',
       minWidth: '500px',
       marginLeft: '100px',
       marginTop: '20px',
+=======
+      width: '100%',
+>>>>>>> upstream/master:packages/apps/camera-test/src/useStyles.ts
       backgroundColor: 'black',
       color: 'white',
     },
@@ -50,7 +54,7 @@ const useStyles = makeStyles((theme) => {
       justifyContent: 'center',
       alignItems: 'center',
     },
-    drawer: { width: '320px' },
+    drawer: { width: `${DRAWER_WIDTH}px` },
     fullWidth: { width: '100%' },
     noPadding: { padding: '0' },
     extendedIcon: {
@@ -66,6 +70,13 @@ const useStyles = makeStyles((theme) => {
       display: 'flex',
       justifyContent: 'flex-end',
       marginTop: `calc(${APP_BAR_HEIGHT}px + 6px)`,
+    },
+    codes: {
+      marginTop: theme.spacing(2),
+    },
+    drawerRoot: {
+      width: `${DRAWER_WIDTH}px`,
+      flexShrink: 0,
     },
   };
 });

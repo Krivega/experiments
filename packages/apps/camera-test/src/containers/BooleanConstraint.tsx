@@ -6,7 +6,6 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import Typography from '@material-ui/core/Typography';
 import type { TClasses } from '../useStyles';
-import { TVideoConstraints } from '../typings';
 
 type TProps = {
   constraintKey: string;
@@ -16,16 +15,16 @@ type TProps = {
     disabled: boolean;
     defaultObj: { exact: boolean; ideal: boolean };
   };
-  setVideoSettings: (value: TVideoConstraints) => void;
-  videoSettings: TVideoConstraints;
+  updateConstraints: (additionalConstraints: MediaTrackConstraints) => void;
+  constraints: MediaTrackConstraints;
   classes: TClasses;
 };
 
 const BooleanConstraint: React.FC<TProps> = ({
   value,
   constraintKey,
-  videoSettings,
-  setVideoSettings,
+  constraints,
+  updateConstraints,
   classes,
 }) => {
   const resolveHandleBooleanConstraintsChange = (key: string) => {
@@ -33,18 +32,15 @@ const BooleanConstraint: React.FC<TProps> = ({
       const { name, checked } = target;
 
       if (name === key) {
-        setVideoSettings({
-          ...videoSettings,
+        updateConstraints({
           [key]: checked,
         });
       } else if (name === 'exact') {
-        setVideoSettings({
-          ...videoSettings,
+        updateConstraints({
           [key]: { exact: checked },
         });
       } else if (name === 'ideal') {
-        setVideoSettings({
-          ...videoSettings,
+        updateConstraints({
           [key]: { ideal: checked },
         });
       }
@@ -61,7 +57,7 @@ const BooleanConstraint: React.FC<TProps> = ({
             name="exact"
             size="small"
             onChange={handleBooleanConstraintsChange}
-            checked={!!videoSettings[constraintKey]?.exact}
+            checked={!!constraints[constraintKey]?.exact}
             color="default"
           />
         }
@@ -73,7 +69,7 @@ const BooleanConstraint: React.FC<TProps> = ({
             name="ideal"
             size="small"
             onChange={handleBooleanConstraintsChange}
-            checked={!!videoSettings[constraintKey]?.ideal}
+            checked={!!constraints[constraintKey]?.ideal}
             color="default"
           />
         }
@@ -91,13 +87,13 @@ const BooleanConstraint: React.FC<TProps> = ({
               disabled={value.disabled}
               name={constraintKey}
               onChange={handleBooleanConstraintsChange}
-              checked={videoSettings[constraintKey] === true}
+              checked={constraints[constraintKey] === true}
               color="default"
             />
           }
           label={<Typography variant="h6">{constraintKey}</Typography>}
         />
-        {!!videoSettings[constraintKey] && children}
+        {!!constraints[constraintKey] && children}
       </FormGroup>
     </FormControl>
   );
