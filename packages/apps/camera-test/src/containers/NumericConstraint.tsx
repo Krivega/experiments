@@ -87,15 +87,9 @@ const NumericConstraint: React.FC<TProps> = ({
         setSliderValue(val);
 
         if (val === Math.round(value.defaultObj.min) && !advancedSettingKey) {
-<<<<<<< HEAD:packages/apps/user-media-api-test/src/containers/NumericConstraint.tsx
-          return setVideoSettings(
-            Object.fromEntries(
-              Object.entries(videoSettings).filter(([key]) => {
-=======
           return updateConstraints(
             Object.fromEntries(
               Object.entries(constraints).filter(([key]) => {
->>>>>>> upstream/master:packages/apps/camera-test/src/containers/NumericConstraint.tsx
                 return key !== constraint;
               })
             )
@@ -105,39 +99,23 @@ const NumericConstraint: React.FC<TProps> = ({
         if (advancedSettingKey && val === value.defaultObj.min) {
           let entries: [string, unknown][] = [];
 
-<<<<<<< HEAD:packages/apps/user-media-api-test/src/containers/NumericConstraint.tsx
-          if (typeof videoSettings[constraint] === 'object') {
-            entries = Object.entries(videoSettings[constraint]).filter(([key]) => {
-=======
           if (typeof constraints[constraint] === 'object') {
             entries = Object.entries(constraints[constraint]).filter(([key]) => {
->>>>>>> upstream/master:packages/apps/camera-test/src/containers/NumericConstraint.tsx
               return key !== advancedSettingKey;
             });
           }
 
           if (entries.length === 0) {
-<<<<<<< HEAD:packages/apps/user-media-api-test/src/containers/NumericConstraint.tsx
-            return setVideoSettings(
-              Object.fromEntries(
-                Object.entries(videoSettings).filter(([key]) => {
-=======
             return updateConstraints(
               Object.fromEntries(
                 Object.entries(constraints).filter(([key]) => {
->>>>>>> upstream/master:packages/apps/camera-test/src/containers/NumericConstraint.tsx
                   return key !== constraint;
                 })
               )
             );
           }
 
-<<<<<<< HEAD:packages/apps/user-media-api-test/src/containers/NumericConstraint.tsx
-          return setVideoSettings({
-            ...videoSettings,
-=======
           return updateConstraints({
->>>>>>> upstream/master:packages/apps/camera-test/src/containers/NumericConstraint.tsx
             [constraint]: { ...Object.fromEntries(entries) },
           });
         }

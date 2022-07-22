@@ -21,14 +21,7 @@ const DRAWER_WIDTH = 320;
 const useStyles = makeStyles((theme) => {
   return {
     card: {
-<<<<<<< HEAD:packages/apps/user-media-api-test/src/useStyles.ts
-      maxWidth: '700px',
-      minWidth: '500px',
-      marginLeft: '100px',
-      marginTop: '20px',
-=======
       width: '100%',
->>>>>>> upstream/master:packages/apps/camera-test/src/useStyles.ts
       backgroundColor: 'black',
       color: 'white',
     },
