@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import type { TClasses } from '../useStyles';
+import ToggleButton from './ToggleButton';
 
 type TProps = {
+  trackSettings: MediaTrackSettings;
   constraintKey: string;
   value: {
     type: string;
@@ -19,6 +21,7 @@ type TProps = {
 
 const StringOptionConstraint: React.FC<TProps> = ({
   value,
+  trackSettings,
   constraintKey,
   constraints,
   updateConstraints,
@@ -53,22 +56,42 @@ const StringOptionConstraint: React.FC<TProps> = ({
 
   const handleStringConstraints = resolveHandleStringConstraints(constraintKey);
 
+  const onInactive = useCallback(() => {
+    updateConstraints({
+      [constraintKey]: undefined,
+    });
+  }, [constraintKey, updateConstraints]);
+
+  const onActive = useCallback(() => {
+    updateConstraints({
+      [constraintKey]: trackSettings[constraintKey],
+    });
+  }, [constraintKey, trackSettings, updateConstraints]);
+
   return (
-    <FormControl variant="filled" className={classes.formControl}>
-      <InputLabel htmlFor={constraintKey}>{constraintKey}</InputLabel>
-      <Select
-        native
-        disabled={value.disabled || value.values.length === 0}
-        value={val}
-        onChange={handleStringConstraints}
-        inputProps={{
-          name: constraintKey,
-          id: constraintKey,
-        }}
-      >
-        {value.values.map(renderStringOptionValue)}
-      </Select>
-    </FormControl>
+    <ToggleButton
+      type="input"
+      title={constraintKey}
+      disabled={value.disabled || value.values.length === 0}
+      onActive={onActive}
+      onInactive={onInactive}
+    >
+      <FormControl variant="filled" className={classes.formControl}>
+        <InputLabel htmlFor={constraintKey}>{constraintKey}</InputLabel>
+        <Select
+          native
+          disabled={value.disabled || value.values.length === 0}
+          value={val}
+          onChange={handleStringConstraints}
+          inputProps={{
+            name: constraintKey,
+            id: constraintKey,
+          }}
+        >
+          {value.values.map(renderStringOptionValue)}
+        </Select>
+      </FormControl>
+    </ToggleButton>
   );
 };
 

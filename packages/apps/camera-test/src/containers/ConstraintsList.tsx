@@ -8,6 +8,7 @@ type TProps = {
   classes: TClasses;
   videoConstraintsList: TVideoConstraints;
   constraints: MediaTrackConstraints;
+  trackSettings: MediaTrackSettings;
   updateConstraints: (additionalConstraints: MediaTrackConstraints) => void;
 };
 
@@ -15,6 +16,7 @@ const ConstraintsList: React.FC<TProps> = ({
   videoConstraintsList,
   constraints,
   updateConstraints,
+  trackSettings,
   classes,
 }) => {
   return (
@@ -24,6 +26,7 @@ const ConstraintsList: React.FC<TProps> = ({
           <VideoConstraint
             key={constraint}
             constraint={constraint}
+            trackSettings={trackSettings}
             value={value}
             classes={classes}
             constraints={constraints}
