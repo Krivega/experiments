@@ -2,10 +2,10 @@ import Stats from 'stats-js';
 
 const createFpsMeter = () => {
   let stats;
-  let isBegined = false;
+  let isBegins = false;
   let isEnded = true;
   const init = () => {
-    isBegined = false;
+    isBegins = false;
     isEnded = true;
     stats = new Stats();
     stats.showPanel(0);
@@ -13,16 +13,16 @@ const createFpsMeter = () => {
     document.body.appendChild(stats.dom);
   };
   const begin = () => {
-    if (stats && isEnded && !isBegined) {
+    if (stats && isEnded && !isBegins) {
       isEnded = false;
-      isBegined = true;
+      isBegins = true;
       stats.begin();
     }
   };
   const end = () => {
-    if (stats && isBegined && !isEnded) {
+    if (stats && isBegins && !isEnded) {
       isEnded = true;
-      isBegined = false;
+      isBegins = false;
       stats.end();
     }
   };

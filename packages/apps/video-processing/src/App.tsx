@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -225,7 +225,11 @@ const App = () => {
 
     const { width, height } = resolution;
 
-    console.log('getMediaStream');
+    console.log('getMediaStream', {
+      videoDeviceId,
+      width,
+      height,
+    });
 
     Promise.resolve()
       .then(() => {
@@ -382,9 +386,9 @@ const App = () => {
                     }}
                   >
                     <option value="MediaPipe">MediaPipe</option>
-                    <option value="MediaPipeOptimized">MediaPipe optimized</option>
+                    {/* <option value="MediaPipeOptimized">MediaPipe optimized</option> */}
                     {/* <option value="MediaPipeWorker">MediaPipe worker</option> */}
-                    <option value="TensorFlow">TensorFlow</option>
+                    {/* <option value="TensorFlow">TensorFlow</option> */}
                   </Select>
                 </FormControl>
               </ListItem>

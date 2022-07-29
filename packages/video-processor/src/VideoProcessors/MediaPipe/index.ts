@@ -1,24 +1,18 @@
-import { Camera } from '@mediapipe/camera_utils';
 import { SelfieSegmentation } from '@mediapipe/selfie_segmentation';
-import type { ResultsListener } from '@mediapipe/selfie_segmentation';
 import createFpsMeter from '@experiments/utils/src/createFpsMeter';
 import mediaStreamToVideo from '@experiments/utils/src/mediaStreamToVideo';
 import { createCanvas } from '@experiments/utils/src/canvas';
 import type { TResolveProcessVideo, TModelSelection } from '../../typings';
-import drawImageMask from './drawImageMask';
+import startVideoProcessing from './startVideoProcessing';
 
 const createSelfieSegmentation = (): Promise<SelfieSegmentation> => {
   const selfieSegmentation = new SelfieSegmentation({
     locateFile: (file) => {
-      console.log('🚀 ~ file: index.ts ~ line 17 ~ file', file);
-
       return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
     },
   });
 
   return selfieSegmentation.initialize().then(() => {
-    console.log('🚀 ~ file: index.ts ~ line 22 ~ returnselfieSegmentation.initialize ~ then');
-
     return selfieSegmentation;
   });
 };
@@ -28,6 +22,18 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
   imageBitmapMask720p,
   imageBitmapMask1080p,
 }) => {
+  const getImageBitmapByWidth = (width: number): HTMLImageElement => {
+    // eslint-disable-next-line default-case
+    switch (width) {
+      case 640:
+        return imageBitmapMask360p;
+      case 1280:
+        return imageBitmapMask720p;
+    }
+
+    return imageBitmapMask1080p;
+  };
+
   return createSelfieSegmentation().then((selfieSegmentation) => {
     const fpsMeter = createFpsMeter();
     let videoSource: HTMLVideoElement;
@@ -40,61 +46,43 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
         return videoSource;
       });
     };
-    const startVideoProcessing = ({
-      modelSelection,
-      edgeBlurAmount,
-    }: {
+
+    let state: {
       modelSelection: TModelSelection;
       edgeBlurAmount: number;
-    }) => {
-      const { width, height } = videoSource;
+    } = {
+      modelSelection: 'general',
+      edgeBlurAmount: 4,
+    };
 
-      let imageBitmapMask: HTMLImageElement;
+    const getModelSelection = (): TModelSelection => {
+      return state.modelSelection;
+    };
+    const getEdgeBlurAmount = (): number => {
+      return state.edgeBlurAmount;
+    };
 
-      fpsMeter.init();
-
-      // eslint-disable-next-line default-case
-      switch (width) {
-        case 640:
-          imageBitmapMask = imageBitmapMask360p;
-          break;
-        case 1280:
-          imageBitmapMask = imageBitmapMask720p;
-          break;
-        case 1920:
-          imageBitmapMask = imageBitmapMask1080p;
-          break;
-      }
-
-      const onResults: ResultsListener = (results) => {
-        drawImageMask({
-          edgeBlurAmount,
-          personMask: results.segmentationMask as ImageBitmap,
-          imageMask: imageBitmapMask,
-          canvas: canvasTarget,
-          videoSource: results.image as unknown as HTMLVideoElement,
-        });
-        fpsMeter.end();
-      };
-
+    const updateState = (params: { modelSelection: TModelSelection; edgeBlurAmount: number }) => {
+      state = { ...state, ...params };
+    };
+    const updateOptionsSelfieSegmentation = () => {
       const GENERAL = 0;
       const LANDSCAPE = 1;
 
+      console.log(
+        '🚀 ~ file: index.ts ~ line 76 ~ updateOptionsSelfieSegmentation ~ updateOptionsSelfieSegmentation'
+      );
       selfieSegmentation.setOptions({
-        modelSelection: modelSelection === 'general' ? GENERAL : LANDSCAPE,
+        modelSelection: getModelSelection() === 'general' ? GENERAL : LANDSCAPE,
       });
-      selfieSegmentation.onResults(onResults);
+    };
 
-      const camera = new Camera(videoSource, {
-        onFrame: async () => {
-          fpsMeter.begin();
-          await selfieSegmentation.send({ image: videoSource });
-        },
-        width,
-        height,
-      });
+    const changeParams = (params: { modelSelection: TModelSelection; edgeBlurAmount: number }) => {
+      updateState(params);
 
-      camera.start();
+      updateOptionsSelfieSegmentation();
+
+      return Promise.resolve();
     };
 
     const start = ({
@@ -106,24 +94,40 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
       modelSelection: TModelSelection;
       edgeBlurAmount: number;
     }) => {
+      updateState({ modelSelection, edgeBlurAmount });
+      updateOptionsSelfieSegmentation();
+
       return createVideo(mediaStream).then(() => {
         const { width, height } = videoSource;
 
+        console.log(
+          '🚀 ~ file: index.ts ~ line 102 ~ returncreateVideo ~ width, height ',
+          width,
+          height
+        );
+
         canvasTarget = createCanvas(width, height);
 
-        startVideoProcessing({ modelSelection, edgeBlurAmount });
+        console.log('🚀 ~ file: index.ts ~ line 104 ~ returncreateVideo ~ startVideoProcessing');
 
-        const mediaStreamOutput = canvasTarget.captureStream();
+        return startVideoProcessing({
+          selfieSegmentation,
+          fpsMeter,
+          getImageBitmapByWidth,
+          canvasTarget,
+          videoSource,
+          getEdgeBlurAmount,
+        }).then(() => {
+          const mediaStreamOutput = canvasTarget.captureStream();
 
-        return mediaStreamOutput;
+          return mediaStreamOutput;
+        });
       });
     };
     const stopVideoProcessing = (): Promise<void> => {
       fpsMeter.reset();
 
-      return Promise.resolve();
-
-      // return selfieSegmentation.close();
+      return selfieSegmentation.close();
     };
     const stop = () => {
       return stopVideoProcessing().then(() => {
@@ -133,19 +137,6 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
       });
     };
 
-    const changeParams = ({
-      modelSelection,
-      edgeBlurAmount,
-    }: {
-      modelSelection: TModelSelection;
-      edgeBlurAmount: number;
-    }) => {
-      return stopVideoProcessing()
-        .then(() => {})
-        .then(() => {
-          return startVideoProcessing({ modelSelection, edgeBlurAmount });
-        });
-    };
     const restart = ({
       mediaStream,
       modelSelection,
@@ -155,13 +146,19 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
       modelSelection: TModelSelection;
       edgeBlurAmount: number;
     }) => {
-      return stop().then(() => {
-        return start({
-          mediaStream,
-          modelSelection,
-          edgeBlurAmount,
+      return stop()
+        .then(createSelfieSegmentation)
+        .then((_selfieSegmentation) => {
+          // eslint-disable-next-line no-param-reassign
+          selfieSegmentation = _selfieSegmentation;
+        })
+        .then(() => {
+          return start({
+            mediaStream,
+            modelSelection,
+            edgeBlurAmount,
+          });
         });
-      });
     };
 
     return { start, restart, changeParams, stop };
