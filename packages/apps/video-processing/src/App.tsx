@@ -139,7 +139,7 @@ const initialState = { ...defaultState, ...storedState };
 
 const App = () => {
   const classes = useStyles();
-  const videoProcessorRef = useRef<TProcessVideo | null>(null);
+  const [videoProcessor, setVideoProcessor] = useState<TProcessVideo | null>(null);
   const [isInitialized, setInitialized] = React.useState<boolean>(false);
   const [isLoading, setLoading] = React.useState<boolean>(true);
   const [mediaStreamOriginal, setMediaStreamOriginal] = useState<MediaStream | null>(null);
@@ -155,9 +155,8 @@ const App = () => {
   const [edgeBlurAmount, setEdgeBlurAmount] = useState<number>(initialState.edgeBlurAmount);
 
   useEffect(() => {
-    createVideoProcessor(architecture).then((videoProcessor) => {
-      videoProcessorRef.current = videoProcessor;
-    });
+    console.log('createVideoProcessor', architecture);
+    createVideoProcessor(architecture).then(setVideoProcessor);
   }, [architecture]);
 
   useEffect(() => {
@@ -168,6 +167,8 @@ const App = () => {
       videoDeviceId,
       edgeBlurAmount,
     };
+
+    console.log('localStorage.setItem', state);
 
     localStorage.setItem('state', JSON.stringify(state));
   }, [architecture, modelSelection, resolutionId, videoDeviceId, edgeBlurAmount]);
@@ -184,6 +185,7 @@ const App = () => {
   }, [architecture]);
 
   useEffect(() => {
+    console.log('getVideoDevices');
     requesterDevices.request([]).then((devices) => {
       setVideoDeviceList(getVideoDevices(devices));
     });
@@ -191,6 +193,7 @@ const App = () => {
 
   useEffect(() => {
     if (videoDeviceList.length > 0 && !videoDeviceId) {
+      console.log('setVideoDeviceFromId');
       setVideoDeviceFromId(videoDeviceList[0].deviceId);
     }
   }, [videoDeviceList, videoDeviceId]);
@@ -203,8 +206,8 @@ const App = () => {
         const capabilities = videoTrack.getCapabilities();
         const resolutionsByCapabilities = getResolutionsByCapabilities(capabilities);
 
+        console.log('setResolutionList');
         setResolutionList(resolutionsByCapabilities);
-        setInitialized(true);
       }
     }
   }, [mediaStreamOriginal]);
@@ -221,6 +224,8 @@ const App = () => {
     }
 
     const { width, height } = resolution;
+
+    console.log('getMediaStream');
 
     Promise.resolve()
       .then(() => {
@@ -243,10 +248,45 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoDeviceId, resolutionId, videoDeviceList.length]);
 
+  const updateProcessingDebounced = useMemoizedDebounce(
+    (params: { modelSelection: TModelSelection; edgeBlurAmount: number }) => {
+      if (videoProcessor) {
+        console.log('updateProcessingDebounced');
+        setLoading(true);
+        videoProcessor.changeParams(params).then(() => {
+          setLoading(false);
+        });
+      }
+    },
+    300,
+    [videoProcessor]
+  );
+
+  const restartDebounced = useMemoizedDebounce(
+    (params: {
+      mediaStream: MediaStream;
+      modelSelection: TModelSelection;
+      edgeBlurAmount: number;
+    }) => {
+      if (videoProcessor) {
+        console.log('restartDebounced');
+        setLoading(true);
+        videoProcessor
+          .restart(params)
+          .then(setMediaStreamProcessed)
+          .then(() => {
+            setLoading(false);
+          });
+      }
+    },
+    300,
+    [videoProcessor]
+  );
+
   useEffect(() => {
-    if (videoProcessorRef.current && mediaStreamOriginal && !mediaStreamProcessed) {
-      setLoading(true);
-      videoProcessorRef.current
+    if (videoProcessor && mediaStreamOriginal && !mediaStreamProcessed && !isInitialized) {
+      console.log('start');
+      videoProcessor
         .start({
           modelSelection,
           edgeBlurAmount,
@@ -255,64 +295,38 @@ const App = () => {
         .then(setMediaStreamProcessed)
         .then(() => {
           setLoading(false);
+          setInitialized(true);
         });
     }
+  }, [
+    edgeBlurAmount,
+    isInitialized,
+    mediaStreamOriginal,
+    mediaStreamProcessed,
+    modelSelection,
+    videoProcessor,
+  ]);
+
+  useEffect(() => {
+    if (isInitialized) {
+      updateProcessingDebounced({ modelSelection, edgeBlurAmount });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mediaStreamOriginal]);
-
-  const updateProcessingDebounced = useMemoizedDebounce(
-    () => {
-      if (videoProcessorRef.current && mediaStreamOriginal && mediaStreamProcessed) {
-        // update processing
-
-        setLoading(true);
-        videoProcessorRef.current
-          .changeParams({
-            modelSelection,
-            edgeBlurAmount,
-          })
-          .then(() => {
-            setLoading(false);
-          });
-      }
-    },
-    300,
-    [modelSelection, edgeBlurAmount, mediaStreamOriginal, mediaStreamProcessed]
-  );
-
-  const restartDebounced = useMemoizedDebounce(
-    () => {
-      if (videoProcessorRef.current && mediaStreamOriginal && mediaStreamProcessed) {
-        setLoading(true);
-        videoProcessorRef.current
-          .restart({
-            modelSelection,
-            edgeBlurAmount,
-            mediaStream: mediaStreamOriginal,
-          })
-          .then(setMediaStreamProcessed)
-          .then(() => {
-            setLoading(false);
-          });
-      }
-    },
-    300,
-    [modelSelection, edgeBlurAmount, mediaStreamOriginal, mediaStreamProcessed]
-  );
+  }, [edgeBlurAmount, modelSelection, updateProcessingDebounced]);
 
   useEffect(() => {
-    updateProcessingDebounced();
-  }, [modelSelection, updateProcessingDebounced]);
-
-  useEffect(() => {
-    if (videoProcessorRef.current && mediaStreamProcessed && mediaStreamOriginal) {
+    if (mediaStreamOriginal && isInitialized) {
       // reload model
 
       updateProcessingDebounced.cancel();
-      restartDebounced();
+      restartDebounced({
+        mediaStream: mediaStreamOriginal,
+        modelSelection,
+        edgeBlurAmount,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mediaStreamOriginal, modelSelection]);
+  }, [mediaStreamOriginal]);
 
   return (
     <div>
@@ -386,8 +400,8 @@ const App = () => {
                       id: 'modelSelection',
                     }}
                   >
-                    <option value="general">general</option>
-                    <option value="landscape">landscape</option>
+                    <option value="general">general(best)</option>
+                    <option value="landscape">landscape(fast)</option>
                   </Select>
                 </FormControl>
               </ListItem>

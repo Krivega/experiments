@@ -18,4 +18,4 @@ export type TResolveProcessVideo = (params: {
   imageBitmapMask360p: HTMLImageElement;
   imageBitmapMask720p: HTMLImageElement;
   imageBitmapMask1080p: HTMLImageElement;
-}) => TProcessVideo;
+}) => Promise<TProcessVideo>;

@@ -45,9 +45,9 @@
     "@mediapipe/drawing_utils": "0.3.1620248257",
     "@mediapipe/selfie_segmentation": "0.1.1632777926",
     "@tensorflow-models/body-segmentation": "1.0.1",
-    "@tensorflow/tfjs-backend-webgl": "3.18.0",
-    "@tensorflow/tfjs-converter": "3.18.0",
-    "@tensorflow/tfjs-core": "3.18.0",
+    "@tensorflow/tfjs-backend-webgl": "3.19.0",
+    "@tensorflow/tfjs-converter": "3.19.0",
+    "@tensorflow/tfjs-core": "3.19.0",
     "lodash": "^4.17.21",
     "request-animation-runner": "^0.3.2"
   },

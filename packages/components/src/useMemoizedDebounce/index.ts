@@ -2,11 +2,13 @@
 import { useMemo, useEffect } from 'react';
 import debounce from 'lodash/debounce';
 
-type TFunctionDebounced = { (): any; cancel: () => void };
-
-const useMemoizedDebounce = (func: () => any, delay: number, deps?: any[]) => {
-  const resultFunc = useMemo<TFunctionDebounced>(() => {
-    return debounce(func, delay);
+const useMemoizedDebounce = <T extends (...args: any) => any>(
+  func: T,
+  delay: number,
+  deps?: any[]
+) => {
+  const resultFunc = useMemo(() => {
+    return debounce<T>(func, delay);
   }, deps);
 
   useEffect(() => {
