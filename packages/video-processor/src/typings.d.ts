@@ -5,6 +5,7 @@ type TParams = {
   mediaStream: MediaStream;
   modelSelection: TModelSelection;
   edgeBlurAmount: number;
+  isBlurBackground: boolean;
 };
 
 export type TProcessVideo = {

@@ -8,6 +8,8 @@ import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import ListItem from '@material-ui/core/ListItem';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fab from '@material-ui/core/Fab';
@@ -33,6 +35,7 @@ const useStyles = makeStyles((theme) => {
     formControl: {
       margin: theme.spacing(1),
       width: `100%`,
+      justifyContent: 'start',
     },
     flex: {
       margin: theme.spacing(1),
@@ -132,6 +135,7 @@ const defaultState = {
   modelSelection: 'landscape' as TModelSelection,
   videoDeviceId: '',
   edgeBlurAmount: 4,
+  isBlurBackground: false,
 };
 // @ts-ignore
 const storedState = JSON.parse(localStorage.getItem('state')) || {};
@@ -142,6 +146,9 @@ const App = () => {
   const [videoProcessor, setVideoProcessor] = useState<TProcessVideo | null>(null);
   const [isInitialized, setInitialized] = React.useState<boolean>(false);
   const [isLoading, setLoading] = React.useState<boolean>(true);
+  const [isBlurBackground, setBlurBackground] = React.useState<boolean>(
+    initialState.isBlurBackground
+  );
   const [mediaStreamOriginal, setMediaStreamOriginal] = useState<MediaStream | null>(null);
   const [mediaStreamProcessed, setMediaStreamProcessed] = useState<MediaStream | null>(null);
   const [videoDeviceList, setVideoDeviceList] = useState<MediaDeviceInfo[]>([]);
@@ -166,18 +173,20 @@ const App = () => {
       modelSelection,
       videoDeviceId,
       edgeBlurAmount,
+      isBlurBackground,
     };
 
     console.log('localStorage.setItem', state);
 
     localStorage.setItem('state', JSON.stringify(state));
-  }, [architecture, modelSelection, resolutionId, videoDeviceId, edgeBlurAmount]);
+  }, [architecture, modelSelection, resolutionId, videoDeviceId, edgeBlurAmount, isBlurBackground]);
 
   const resetState = useCallback(() => {
     setResolutionId(defaultState.resolutionId);
     setArchitecture(defaultState.architecture);
     setModelSelection(defaultState.modelSelection);
     setEdgeBlurAmount(defaultState.edgeBlurAmount);
+    setBlurBackground(defaultState.isBlurBackground);
   }, []);
 
   useNoneInitialEffect(() => {
@@ -253,7 +262,11 @@ const App = () => {
   }, [videoDeviceId, resolutionId, videoDeviceList.length]);
 
   const updateProcessingDebounced = useMemoizedDebounce(
-    (params: { modelSelection: TModelSelection; edgeBlurAmount: number }) => {
+    (params: {
+      modelSelection: TModelSelection;
+      edgeBlurAmount: number;
+      isBlurBackground: boolean;
+    }) => {
       if (videoProcessor) {
         console.log('updateProcessingDebounced');
         setLoading(true);
@@ -271,6 +284,7 @@ const App = () => {
       mediaStream: MediaStream;
       modelSelection: TModelSelection;
       edgeBlurAmount: number;
+      isBlurBackground: boolean;
     }) => {
       if (videoProcessor) {
         console.log('restartDebounced');
@@ -294,6 +308,7 @@ const App = () => {
         .start({
           modelSelection,
           edgeBlurAmount,
+          isBlurBackground,
           mediaStream: mediaStreamOriginal,
         })
         .then(setMediaStreamProcessed)
@@ -304,6 +319,7 @@ const App = () => {
     }
   }, [
     edgeBlurAmount,
+    isBlurBackground,
     isInitialized,
     mediaStreamOriginal,
     mediaStreamProcessed,
@@ -313,10 +329,10 @@ const App = () => {
 
   useEffect(() => {
     if (isInitialized) {
-      updateProcessingDebounced({ modelSelection, edgeBlurAmount });
+      updateProcessingDebounced({ modelSelection, edgeBlurAmount, isBlurBackground });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [edgeBlurAmount, modelSelection, updateProcessingDebounced]);
+  }, [edgeBlurAmount, modelSelection, isBlurBackground, updateProcessingDebounced]);
 
   useEffect(() => {
     if (mediaStreamOriginal && isInitialized) {
@@ -327,6 +343,7 @@ const App = () => {
         mediaStream: mediaStreamOriginal,
         modelSelection,
         edgeBlurAmount,
+        isBlurBackground,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -408,6 +425,19 @@ const App = () => {
                     <option value="landscape">landscape(fast)</option>
                   </Select>
                 </FormControl>
+              </ListItem>
+              <ListItem>
+                <FormControlLabel
+                  labelPlacement="start"
+                  className={classes.formControl}
+                  control={
+                    <Checkbox
+                      checked={isBlurBackground}
+                      onChange={resolveHandleInputChange(setBlurBackground)}
+                    />
+                  }
+                  label={<Typography variant="subtitle1">Blur background</Typography>}
+                />
               </ListItem>
               <ListItem>
                 <FormControl variant="filled" className={classes.formControl}>

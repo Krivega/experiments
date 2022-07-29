@@ -1,7 +1,7 @@
 import { getContext, drawWithCompositing } from '@experiments/utils/src/canvas';
 import type { TCanvas } from '@experiments/utils/src/canvas';
 
-const drawImageMask = ({
+const drawBackgroundImageMask = ({
   videoSource,
   canvas,
   imageMask,
@@ -11,17 +11,11 @@ const drawImageMask = ({
   videoSource: HTMLVideoElement;
   canvas: TCanvas;
   imageMask: HTMLImageElement;
-  personMask?: ImageBitmap;
+  personMask: ImageBitmap;
   edgeBlurAmount: number;
 }) => {
   const { width, height } = videoSource;
   const context = getContext(canvas);
-
-  if (!personMask) {
-    context.drawImage(videoSource, 0, 0);
-
-    return;
-  }
 
   context.save();
 
@@ -33,6 +27,7 @@ const drawImageMask = ({
   }
 
   drawWithCompositing(context, personMask, 'destination-in', width, height);
+
   context.filter = 'none';
 
   drawWithCompositing(context, imageMask, 'destination-over', width, height);
@@ -40,4 +35,4 @@ const drawImageMask = ({
   context.restore();
 };
 
-export default drawImageMask;
+export default drawBackgroundImageMask;

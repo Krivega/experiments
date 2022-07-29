@@ -10,6 +10,7 @@ const startVideoProcessing = ({
   canvasTarget,
   videoSource,
   getEdgeBlurAmount,
+  getIsBlurBackground,
 }: {
   selfieSegmentation: SelfieSegmentation;
   fpsMeter: { init: () => void; begin: () => void; end: () => void };
@@ -17,6 +18,7 @@ const startVideoProcessing = ({
   canvasTarget: HTMLCanvasElement;
   videoSource: HTMLVideoElement;
   getEdgeBlurAmount: () => number;
+  getIsBlurBackground: () => boolean;
 }) => {
   const { width, height } = videoSource;
   const imageBitmapMask = getImageBitmapByWidth(width);
@@ -26,6 +28,7 @@ const startVideoProcessing = ({
   const onResults: ResultsListener = (results) => {
     drawImageMask({
       edgeBlurAmount: getEdgeBlurAmount(),
+      isBlurBackground: getIsBlurBackground(),
       personMask: results.segmentationMask as ImageBitmap,
       imageMask: imageBitmapMask,
       canvas: canvasTarget,

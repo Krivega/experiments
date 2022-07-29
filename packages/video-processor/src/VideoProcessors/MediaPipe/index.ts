@@ -50,7 +50,9 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
     let state: {
       modelSelection: TModelSelection;
       edgeBlurAmount: number;
+      isBlurBackground: boolean;
     } = {
+      isBlurBackground: false,
       modelSelection: 'general',
       edgeBlurAmount: 4,
     };
@@ -61,8 +63,15 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
     const getEdgeBlurAmount = (): number => {
       return state.edgeBlurAmount;
     };
+    const getIsBlurBackground = (): boolean => {
+      return state.isBlurBackground;
+    };
 
-    const updateState = (params: { modelSelection: TModelSelection; edgeBlurAmount: number }) => {
+    const updateState = (params: {
+      modelSelection: TModelSelection;
+      edgeBlurAmount: number;
+      isBlurBackground: boolean;
+    }) => {
       state = { ...state, ...params };
     };
     const updateOptionsSelfieSegmentation = () => {
@@ -77,7 +86,11 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
       });
     };
 
-    const changeParams = (params: { modelSelection: TModelSelection; edgeBlurAmount: number }) => {
+    const changeParams = (params: {
+      modelSelection: TModelSelection;
+      edgeBlurAmount: number;
+      isBlurBackground: boolean;
+    }) => {
       updateState(params);
 
       updateOptionsSelfieSegmentation();
@@ -89,12 +102,14 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
       mediaStream,
       modelSelection,
       edgeBlurAmount,
+      isBlurBackground,
     }: {
       mediaStream: MediaStream;
       modelSelection: TModelSelection;
       edgeBlurAmount: number;
+      isBlurBackground: boolean;
     }) => {
-      updateState({ modelSelection, edgeBlurAmount });
+      updateState({ modelSelection, edgeBlurAmount, isBlurBackground });
       updateOptionsSelfieSegmentation();
 
       return createVideo(mediaStream).then(() => {
@@ -117,6 +132,7 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
           canvasTarget,
           videoSource,
           getEdgeBlurAmount,
+          getIsBlurBackground,
         }).then(() => {
           const mediaStreamOutput = canvasTarget.captureStream();
 
@@ -141,10 +157,12 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
       mediaStream,
       modelSelection,
       edgeBlurAmount,
+      isBlurBackground,
     }: {
       mediaStream: MediaStream;
       modelSelection: TModelSelection;
       edgeBlurAmount: number;
+      isBlurBackground: boolean;
     }) => {
       return stop()
         .then(createSelfieSegmentation)
@@ -157,6 +175,7 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
             mediaStream,
             modelSelection,
             edgeBlurAmount,
+            isBlurBackground,
           });
         });
     };
