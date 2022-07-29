@@ -15,6 +15,18 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
   imageBitmapMask720p,
   imageBitmapMask1080p,
 }) => {
+  const getImageBitmapByWidth = (width: number): HTMLImageElement => {
+    // eslint-disable-next-line default-case
+    switch (width) {
+      case 640:
+        return imageBitmapMask360p;
+      case 1280:
+        return imageBitmapMask720p;
+    }
+
+    return imageBitmapMask1080p;
+  };
+
   const fpsMeter = createFpsMeter();
   const animationRequest = new AnimationRequest();
   let isActive = false;
@@ -43,23 +55,16 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
       check();
     });
   };
-  const startVideoProcessing = ({ edgeBlurAmount }: { edgeBlurAmount: number }) => {
+  const startVideoProcessing = ({
+    edgeBlurAmount,
+    isBlurBackground,
+  }: {
+    edgeBlurAmount: number;
+    isBlurBackground: boolean;
+  }) => {
     const { width, height } = videoSource;
     const canvasSource = createOffScreenCanvas(width, height);
-    let imageBitmapMask: HTMLImageElement;
-
-    // eslint-disable-next-line default-case
-    switch (width) {
-      case 640:
-        imageBitmapMask = imageBitmapMask360p;
-        break;
-      case 1280:
-        imageBitmapMask = imageBitmapMask720p;
-        break;
-      case 1920:
-        imageBitmapMask = imageBitmapMask1080p;
-        break;
-    }
+    const imageBitmapMask = getImageBitmapByWidth(width);
 
     let imageBitmapSource = imageToImageBitmap({ image: videoSource, canvas: canvasSource });
     let personMask: ImageBitmap;
@@ -109,10 +114,12 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
     mediaStream,
     modelSelection,
     edgeBlurAmount,
+    isBlurBackground,
   }: {
     mediaStream: MediaStream;
     modelSelection: TModelSelection;
     edgeBlurAmount: number;
+    isBlurBackground: boolean;
   }) => {
     return runtime
       .init({
@@ -126,7 +133,7 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
 
         canvasTarget = createCanvas(width, height);
 
-        startVideoProcessing({ edgeBlurAmount });
+        startVideoProcessing({ edgeBlurAmount, isBlurBackground });
 
         const mediaStreamOutput = canvasTarget.captureStream();
 
@@ -152,9 +159,11 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
   const changeParams = ({
     modelSelection,
     edgeBlurAmount,
+    isBlurBackground,
   }: {
     modelSelection: TModelSelection;
     edgeBlurAmount: number;
+    isBlurBackground: boolean;
   }) => {
     return stopVideoProcessing()
       .then(() => {
@@ -163,28 +172,31 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
         });
       })
       .then(() => {
-        return startVideoProcessing({ edgeBlurAmount });
+        return startVideoProcessing({ edgeBlurAmount, isBlurBackground });
       });
   };
   const restart = ({
     mediaStream,
     modelSelection,
+    isBlurBackground,
     edgeBlurAmount,
   }: {
     mediaStream: MediaStream;
     modelSelection: TModelSelection;
     edgeBlurAmount: number;
+    isBlurBackground: boolean;
   }) => {
     return stop().then(() => {
       return start({
         mediaStream,
         modelSelection,
         edgeBlurAmount,
+        isBlurBackground,
       });
     });
   };
 
-  return { start, restart, changeParams, stop };
+  return Promise.resolve({ start, restart, changeParams, stop });
 };
 
 export default resolveProcessVideoTensorFlow;

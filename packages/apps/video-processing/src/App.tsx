@@ -405,7 +405,7 @@ const App = () => {
                     <option value="MediaPipe">MediaPipe</option>
                     {/* <option value="MediaPipeOptimized">MediaPipe optimized</option> */}
                     {/* <option value="MediaPipeWorker">MediaPipe worker</option> */}
-                    {/* <option value="TensorFlow">TensorFlow</option> */}
+                    <option value="TensorFlow">TensorFlow</option>
                   </Select>
                 </FormControl>
               </ListItem>
