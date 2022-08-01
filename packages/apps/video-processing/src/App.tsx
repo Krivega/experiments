@@ -4,6 +4,8 @@ import Drawer from '@material-ui/core/Drawer';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Button from '@material-ui/core/Button';
+import AppBar from '@material-ui/core/AppBar';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
@@ -12,6 +14,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import IconButton from '@material-ui/core/IconButton';
+import Divider from '@material-ui/core/Divider';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import Fab from '@material-ui/core/Fab';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
@@ -43,7 +48,8 @@ const useStyles = makeStyles((theme) => {
       justifyContent: 'center',
       alignItems: 'center',
     },
-    drawer: { width: '320px' },
+    drawer: {},
+    drawerContent: { width: '320px' },
     fullWidth: { width: '100%' },
     noPadding: { padding: '0' },
     extendedIcon: {
@@ -134,8 +140,8 @@ const defaultState = {
   architecture: 'MediaPipe' as TArchitecture,
   modelSelection: 'landscape' as TModelSelection,
   videoDeviceId: '',
-  edgeBlurAmount: 4,
-  isBlurBackground: false,
+  edgeBlurAmount: 6,
+  isBlurBackground: true,
 };
 // @ts-ignore
 const storedState = JSON.parse(localStorage.getItem('state')) || {};
@@ -160,6 +166,14 @@ const App = () => {
     initialState.modelSelection
   );
   const [edgeBlurAmount, setEdgeBlurAmount] = useState<number>(initialState.edgeBlurAmount);
+
+  const [open, setOpen] = React.useState(false);
+
+  const toggleDrawer = useCallback(() => {
+    setOpen((current) => {
+      return !current;
+    });
+  }, []);
 
   useEffect(() => {
     console.log('createVideoProcessor', architecture);
@@ -196,6 +210,7 @@ const App = () => {
   useEffect(() => {
     console.log('getVideoDevices');
     requesterDevices.request([]).then((devices) => {
+      console.log(JSON.stringify(devices));
       setVideoDeviceList(getVideoDevices(devices));
     });
   }, []);
@@ -257,7 +272,8 @@ const App = () => {
           height,
         });
       })
-      .then(setMediaStreamOriginal);
+      .then(setMediaStreamOriginal)
+      .catch(console.log);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoDeviceId, resolutionId, videoDeviceList.length]);
 
@@ -270,7 +286,7 @@ const App = () => {
       if (videoProcessor) {
         console.log('updateProcessingDebounced');
         setLoading(true);
-        videoProcessor.changeParams(params).then(() => {
+        videoProcessor.changeParams(params).finally(() => {
           setLoading(false);
         });
       }
@@ -292,7 +308,7 @@ const App = () => {
         videoProcessor
           .restart(params)
           .then(setMediaStreamProcessed)
-          .then(() => {
+          .finally(() => {
             setLoading(false);
           });
       }
@@ -312,7 +328,7 @@ const App = () => {
           mediaStream: mediaStreamOriginal,
         })
         .then(setMediaStreamProcessed)
-        .then(() => {
+        .finally(() => {
           setLoading(false);
           setInitialized(true);
         });
@@ -355,113 +371,123 @@ const App = () => {
         <CircularProgress color="inherit" />
       </Backdrop>
       {isInitialized && (
-        <Drawer open anchor="right" variant="persistent">
-          <div className={classes.drawer}>
-            <List>
-              <ListItem>
-                <FormControl variant="filled" className={classes.formControl}>
-                  <InputLabel htmlFor="cam">Cam</InputLabel>
-                  <Select
-                    native
-                    value={videoDeviceId}
-                    onChange={resolveHandleChangeInput(setVideoDeviceFromId)}
-                    inputProps={{
-                      name: 'cam',
-                      id: 'cam',
-                    }}
-                  >
-                    {videoDeviceList.map(renderItemDevice)}
-                  </Select>
-                </FormControl>
-              </ListItem>
-              <ListItem>
-                <FormControl variant="filled" className={classes.formControl}>
-                  <InputLabel htmlFor="resolution">Resolution</InputLabel>
-                  <Select
-                    native
-                    value={resolutionId}
-                    onChange={resolveHandleChangeInput(setResolutionId)}
-                    inputProps={{
-                      name: 'resolution',
-                      id: 'resolution',
-                    }}
-                  >
-                    {resolutionList.map(renderItemResolution)}
-                  </Select>
-                </FormControl>
-              </ListItem>
-              <ListItem>
-                <FormControl variant="filled" className={classes.formControl}>
-                  <InputLabel htmlFor="resolution">Architecture</InputLabel>
-                  <Select
-                    native
-                    value={architecture}
-                    onChange={resolveHandleChangeInput(setArchitecture)}
-                    inputProps={{
-                      name: 'architecture',
-                      id: 'architecture',
-                    }}
-                  >
-                    <option value="MediaPipe">MediaPipe</option>
-                    {/* <option value="MediaPipeOptimized">MediaPipe optimized</option> */}
-                    {/* <option value="MediaPipeWorker">MediaPipe worker</option> */}
-                    <option value="TensorFlow">TensorFlow</option>
-                  </Select>
-                </FormControl>
-              </ListItem>
-              <ListItem>
-                <FormControl variant="filled" className={classes.formControl}>
-                  <InputLabel htmlFor="outputStride">Model type</InputLabel>
-                  <Select
-                    native
-                    value={modelSelection}
-                    onChange={resolveHandleChangeInput(setModelSelection)}
-                    inputProps={{
-                      name: 'modelSelection',
-                      id: 'modelSelection',
-                    }}
-                  >
-                    <option value="general">general(best)</option>
-                    <option value="landscape">landscape(fast)</option>
-                  </Select>
-                </FormControl>
-              </ListItem>
-              <ListItem>
-                <FormControlLabel
-                  labelPlacement="start"
-                  className={classes.formControl}
-                  control={
-                    <Checkbox
-                      checked={isBlurBackground}
-                      onChange={resolveHandleInputChange(setBlurBackground)}
-                    />
-                  }
-                  label={<Typography variant="subtitle1">Blur background</Typography>}
-                />
-              </ListItem>
-              <ListItem>
-                <FormControl variant="filled" className={classes.formControl}>
-                  <Typography gutterBottom>Edge blur amount</Typography>
-                  <Slider
-                    marks
-                    valueLabelDisplay="on"
-                    min={0}
-                    step={1}
-                    max={20}
-                    value={edgeBlurAmount}
-                    onChange={resolveHandleInputChange(setEdgeBlurAmount)}
+        <>
+          <AppBar position="fixed">
+            <Button onClick={toggleDrawer}>{open ? 'Close' : 'Open'} Settings</Button>
+          </AppBar>
+          <Drawer anchor="right" variant="persistent" open={open} className={classes.drawer}>
+            <div className={classes.drawerContent}>
+              <IconButton onClick={toggleDrawer}>
+                <ChevronRightIcon />
+              </IconButton>
+              <Divider />
+
+              <List>
+                <ListItem>
+                  <FormControl variant="filled" className={classes.formControl}>
+                    <InputLabel htmlFor="cam">Cam</InputLabel>
+                    <Select
+                      native
+                      value={videoDeviceId}
+                      onChange={resolveHandleChangeInput(setVideoDeviceFromId)}
+                      inputProps={{
+                        name: 'cam',
+                        id: 'cam',
+                      }}
+                    >
+                      {videoDeviceList.map(renderItemDevice)}
+                    </Select>
+                  </FormControl>
+                </ListItem>
+                <ListItem>
+                  <FormControl variant="filled" className={classes.formControl}>
+                    <InputLabel htmlFor="resolution">Resolution</InputLabel>
+                    <Select
+                      native
+                      value={resolutionId}
+                      onChange={resolveHandleChangeInput(setResolutionId)}
+                      inputProps={{
+                        name: 'resolution',
+                        id: 'resolution',
+                      }}
+                    >
+                      {resolutionList.map(renderItemResolution)}
+                    </Select>
+                  </FormControl>
+                </ListItem>
+                <ListItem>
+                  <FormControl variant="filled" className={classes.formControl}>
+                    <InputLabel htmlFor="resolution">Architecture</InputLabel>
+                    <Select
+                      native
+                      value={architecture}
+                      onChange={resolveHandleChangeInput(setArchitecture)}
+                      inputProps={{
+                        name: 'architecture',
+                        id: 'architecture',
+                      }}
+                    >
+                      <option value="MediaPipe">MediaPipe</option>
+                      {/* <option value="MediaPipeOptimized">MediaPipe optimized</option> */}
+                      {/* <option value="MediaPipeWorker">MediaPipe worker</option> */}
+                      <option value="TensorFlow">TensorFlow</option>
+                    </Select>
+                  </FormControl>
+                </ListItem>
+                <ListItem>
+                  <FormControl variant="filled" className={classes.formControl}>
+                    <InputLabel htmlFor="outputStride">Model type</InputLabel>
+                    <Select
+                      native
+                      value={modelSelection}
+                      onChange={resolveHandleChangeInput(setModelSelection)}
+                      inputProps={{
+                        name: 'modelSelection',
+                        id: 'modelSelection',
+                      }}
+                    >
+                      <option value="general">general(best)</option>
+                      <option value="landscape">landscape(fast)</option>
+                    </Select>
+                  </FormControl>
+                </ListItem>
+                <ListItem>
+                  <FormControlLabel
+                    labelPlacement="start"
+                    className={classes.formControl}
+                    control={
+                      <Checkbox
+                        checked={isBlurBackground}
+                        onChange={resolveHandleInputChange(setBlurBackground)}
+                      />
+                    }
+                    label={<Typography variant="subtitle1">Blur background</Typography>}
                   />
-                </FormControl>
-              </ListItem>
-            </List>
-            <div className={classes.flex}>
-              <Fab variant="extended" color="primary" onClick={resetState}>
-                <RotateLeftIcon className={classes.extendedIcon} />
-                Reset
-              </Fab>
+                </ListItem>
+                <ListItem>
+                  <FormControl variant="filled" className={classes.formControl}>
+                    <Typography gutterBottom>Edge blur amount</Typography>
+                    <Slider
+                      marks
+                      valueLabelDisplay="on"
+                      min={0}
+                      step={1}
+                      max={20}
+                      value={edgeBlurAmount}
+                      onChange={resolveHandleInputChange(setEdgeBlurAmount)}
+                    />
+                  </FormControl>
+                </ListItem>
+              </List>
+              <div className={classes.flex}>
+                <Fab variant="extended" color="primary" onClick={resetState}>
+                  <RotateLeftIcon className={classes.extendedIcon} />
+                  Reset
+                </Fab>
+              </div>
             </div>
-          </div>
-        </Drawer>
+          </Drawer>
+        </>
       )}
       {mediaStreamProcessed && (
         <div className={classes.video}>

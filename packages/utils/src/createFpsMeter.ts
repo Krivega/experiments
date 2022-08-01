@@ -10,7 +10,9 @@ const createFpsMeter = () => {
     stats = new Stats();
     stats.showPanel(0);
 
-    document.body.appendChild(stats.dom);
+    if (window.screen.width > 500) {
+      document.body.appendChild(stats.dom);
+    }
   };
   const begin = () => {
     if (stats && isEnded && !isBegins) {
