@@ -55,7 +55,13 @@ const App = () => {
     }
 
     const videoTrack = getVideoTracks(mediaStream)[0];
+
+    console.log('🚀 ~ file: App.tsx:58 ~ useEffect ~ videoTrack', videoTrack);
+
     const trackCapabilities = videoTrack.getCapabilities();
+
+    console.log('🚀 ~ file: App.tsx:60 ~ useEffect ~ trackCapabilities', trackCapabilities);
+
     const irrelevantCapabilities = ['deviceId', 'groupId'];
     const missingConstraintsFromCapabilities = Object.entries(trackCapabilities)
       .filter(([key]) => {
@@ -85,13 +91,19 @@ const App = () => {
             if (value.type === NUMBER_CONSTRAINT && 'defaultObj' in value) {
               const minValue = trackCapabilities[key]?.min;
               const maxValue = trackCapabilities[key]?.max;
+              const stepValue = trackCapabilities[key]?.step;
 
               return [
                 key,
                 {
                   ...value,
                   default: minValue,
-                  defaultObj: { ...value.defaultObj, min: minValue, max: maxValue },
+                  defaultObj: {
+                    ...value.defaultObj,
+                    min: minValue,
+                    max: maxValue,
+                    step: stepValue,
+                  },
                 },
               ];
             }

@@ -24,6 +24,7 @@ export type TVideoConstraints = {
   torch?: boolean | { exact?: boolean; ideal?: boolean };
   whiteBalanceMode?: 'none' | 'manual' | 'single-shot' | 'continuous';
   exposureMode?: 'none' | 'manual' | 'single-shot' | 'continuous';
+  exposureTime?: number | { min?: number; max?: number; exact?: number; ideal?: number };
   pointsOfInterest?: { x: number; y: number };
   exposureCompensation?: number | { min?: number; max?: number; exact?: number; ideal?: number };
   colorTemperature?: number | { min?: number; max?: number; exact?: number; ideal?: number };
@@ -33,6 +34,7 @@ export type TVideoConstraints = {
   saturation?: number | { min?: number; max?: number; exact?: number; ideal?: number };
   sharpness?: number | { min?: number; max?: number; exact?: number; ideal?: number };
   focusDistance?: number | { min?: number; max?: number; exact?: number; ideal?: number };
+  focusMode?: 'none' | 'manual' | 'single-shot' | 'continuous';
   zoom?: number | { min?: number; max?: number; exact?: number; ideal?: number };
   pan?: number | { min?: number; max?: number; exact?: number; ideal?: number };
   tilt?: number | { min?: number; max?: number; exact?: number; ideal?: number };

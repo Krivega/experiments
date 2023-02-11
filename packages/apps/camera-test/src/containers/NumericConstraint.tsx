@@ -11,7 +11,7 @@ type TProps = {
     type: string;
     default: number;
     disabled: boolean;
-    defaultObj: { min: number; max: number; exact: number; ideal: number };
+    defaultObj: { min: number; max: number; exact: number; ideal: number; step?: number };
   };
   constraints: MediaTrackConstraints;
   updateConstraints: (additionalConstraints: MediaTrackConstraints) => void;
@@ -62,6 +62,7 @@ const NumericConstraint: React.FC<TProps> = ({
 
   const defaultMin = value.defaultObj.min;
   const defaultMax = value.defaultObj.max;
+  const defaultStep = value.defaultObj.step;
   const isAspectRatio = hasAspectRatio(constraintKey);
   const isFrameRate = hasFrameRate(constraintKey);
   const min = isAspectRatio ? +defaultMin.toFixed(3) : defaultMin;
@@ -80,7 +81,7 @@ const NumericConstraint: React.FC<TProps> = ({
     { value: max, label: `${max}` },
   ];
 
-  const step = getStep(constraintKey);
+  const step = defaultStep || getStep(constraintKey);
 
   const resolveHandleChangeNumericConstraint = (constraint: string) => {
     return (advancedSettingKey?: string) => {

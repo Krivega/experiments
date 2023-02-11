@@ -30,6 +30,11 @@ export const videoConstraints = {
       EExposureMode.CONTINUOUS,
     ],
   },
+  exposureTime: {
+    type: NUMBER_CONSTRAINT,
+    default: 0,
+    defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 },
+  },
   facingMode: {
     type: STRING_OPTION_CONSTRAINT,
     default: EFacingMode.USER,
@@ -99,6 +104,16 @@ export const videoConstraints = {
     defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 },
   },
   zoom: { type: NUMBER_CONSTRAINT, default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
+  focusMode: {
+    type: STRING_OPTION_CONSTRAINT,
+    default: EExposureMode.NONE,
+    values: [
+      EExposureMode.NONE,
+      EExposureMode.MANUAL,
+      EExposureMode.SINGLE_SHOT,
+      EExposureMode.CONTINUOUS,
+    ],
+  },
   pan: { type: NUMBER_CONSTRAINT, default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
   tilt: { type: NUMBER_CONSTRAINT, default: 0, defaultObj: { min: 0, max: 0, exact: 0, ideal: 0 } },
 };
