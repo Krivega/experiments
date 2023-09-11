@@ -1,8 +1,9 @@
+import getPathWithPublic from './getPathWithPublic';
 import NoiseSuppressionEffect, { enableDebug } from './noiseSuppression';
 
 enableDebug();
 
-const workletUrl = `/@vinteo/noise-suppression/noiseSuppressorWorklet.es.js`;
+const workletUrl = getPathWithPublic(`@vinteo/noise-suppression/noiseSuppressorWorklet.es.js`);
 
 const noiseSuppressionEffect = new NoiseSuppressionEffect(workletUrl);
 
