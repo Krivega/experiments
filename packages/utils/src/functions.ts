@@ -149,7 +149,7 @@ export const tapThenCatchCombinator = <T>(func) => {
 export const thenCatchCombinator = <T, P>(
   func,
   resolveHandler: (any) => Promise<P> | P,
-  rejectHandler: (error: Error) => Promise<P> | P
+  rejectHandler: (error: Error) => Promise<P> | P,
 ) => {
   return (val: T): Promise<P> => {
     return func(val).then(resolveHandler).catch(rejectHandler);

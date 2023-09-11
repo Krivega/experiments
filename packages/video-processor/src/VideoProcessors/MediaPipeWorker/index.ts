@@ -1,14 +1,14 @@
-import AnimationRequest from 'request-animation-runner';
-import { Camera } from '@mediapipe/camera_utils';
-import { SelfieSegmentation } from '@mediapipe/selfie_segmentation';
-import type { ResultsListener } from '@mediapipe/selfie_segmentation';
-import mediaStreamToVideo from '@experiments/utils/src/mediaStreamToVideo';
-import createFpsMeter from '@experiments/utils/src/createFpsMeter';
 import { createCanvas } from '@experiments/utils/src/canvas';
-import type { TResolveProcessVideo, TModelSelection } from '../../typings';
+import createFpsMeter from '@experiments/utils/src/createFpsMeter';
+import mediaStreamToVideo from '@experiments/utils/src/mediaStreamToVideo';
+import { Camera } from '@mediapipe/camera_utils';
+import type { ResultsListener } from '@mediapipe/selfie_segmentation';
+import { SelfieSegmentation } from '@mediapipe/selfie_segmentation';
+import AnimationRequest from 'request-animation-runner';
+import type { TModelSelection } from '../../typings';
 import drawImageMask from '../MediaPipe/drawImageMask';
 
-const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
+const resolveProcessVideoMediaPipe = ({
   imageBitmapMask360p,
   imageBitmapMask720p,
   imageBitmapMask1080p,

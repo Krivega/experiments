@@ -1,12 +1,12 @@
-import '@tensorflow/tfjs-core';
-import '@tensorflow/tfjs-backend-webgl';
 import * as tensorflowBodySegmentation from '@tensorflow-models/body-segmentation';
 import type { BodySegmenter } from '@tensorflow-models/body-segmentation/dist/body_segmenter';
+import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-converter';
+import '@tensorflow/tfjs-core';
 import type { TModelSelection } from '../../../typings';
 // import '@mediapipe/selfie_segmentation';
-import { resetOffScreenCanvases } from './render';
 import bodySegmentation from './bodySegmentation';
+import { resetOffScreenCanvases } from './render';
 import createState from './state';
 
 const { getState, initState, setStateValue } = createState();

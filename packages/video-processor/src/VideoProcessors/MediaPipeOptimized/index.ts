@@ -1,12 +1,12 @@
-import AnimationRequest from 'request-animation-runner';
-import { Camera } from '@mediapipe/camera_utils';
-import { SelfieSegmentation } from '@mediapipe/selfie_segmentation';
-import type { ResultsListener } from '@mediapipe/selfie_segmentation';
-import createFpsMeter from '@experiments/utils/src/createFpsMeter';
-import createFPSCounter from '@experiments/utils/src/createFPSCounter';
-import mediaStreamToVideo from '@experiments/utils/src/mediaStreamToVideo';
 import { createCanvas } from '@experiments/utils/src/canvas';
-import type { TResolveProcessVideo, TModelSelection } from '../../typings';
+import createFPSCounter from '@experiments/utils/src/createFPSCounter';
+import createFpsMeter from '@experiments/utils/src/createFpsMeter';
+import mediaStreamToVideo from '@experiments/utils/src/mediaStreamToVideo';
+import { Camera } from '@mediapipe/camera_utils';
+import type { ResultsListener } from '@mediapipe/selfie_segmentation';
+import { SelfieSegmentation } from '@mediapipe/selfie_segmentation';
+import AnimationRequest from 'request-animation-runner';
+import type { TModelSelection, TResolveProcessVideo } from '../../typings';
 import drawImageMask from '../MediaPipe/drawImageMask';
 
 const createSelfieSegmentation = (): Promise<SelfieSegmentation> => {
@@ -126,7 +126,7 @@ const resolveProcessVideoMediaPipeOptimized: TResolveProcessVideo = ({
           // targetVideoFrame();
           console.log(
             '🚀 ~ file: index.ts ~ line 117 ~ animationRequest.run ~ targetVideoFrame',
-            fpsCounter.value
+            fpsCounter.value,
           );
         }
       }, 60);

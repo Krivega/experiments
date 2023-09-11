@@ -1,5 +1,5 @@
-import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
 import { getMediaStreamOrigin } from '@experiments/mediastream-api';
+import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
 
 const requestMediaStream = ({
   mediaStream,

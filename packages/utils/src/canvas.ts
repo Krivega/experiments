@@ -21,7 +21,7 @@ export const getContext = <T = CanvasRenderingContext2D>(
     imageSmoothingQuality?: ImageSmoothingQuality;
     globalCompositeOperation?: GlobalCompositeOperation;
     alpha?: boolean;
-  } = {}
+  } = {},
 ): T => {
   const context = canvas.getContext(type, {
     alpha,
@@ -63,7 +63,7 @@ export const fill = (
     width: number;
     height: number;
     color?: string;
-  }
+  },
 ) => {
   const context = getContext(canvas);
 
@@ -102,7 +102,7 @@ export const renderImageToCanvas = (
     imageSmoothingQuality?: ImageSmoothingQuality;
     alpha?: boolean;
     globalCompositeOperation?: GlobalCompositeOperation;
-  } = {}
+  } = {},
 ) => {
   const imageSizes = getImageSizes(image);
   const targetWidth = width || imageSizes.width;
@@ -146,10 +146,11 @@ export const drawWithCompositing = (
   image: CanvasImageSource,
   compositeOperation,
   desiredWidth,
-  desiredHeight
+  desiredHeight,
 ) => {
   context.globalCompositeOperation = compositeOperation;
 
+  // @ts-ignore
   const { width, height } = image;
 
   context.drawImage(
@@ -162,7 +163,7 @@ export const drawWithCompositing = (
     0,
     0,
     desiredWidth,
-    desiredHeight
+    desiredHeight,
   );
 };
 

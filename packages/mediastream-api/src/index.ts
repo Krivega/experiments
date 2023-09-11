@@ -1,5 +1,5 @@
-import { cancelablePromise } from '@krivega/cancelable-promise';
 import SetTimeoutRequest from '@experiments/utils/src/SetTimeoutRequest';
+import { cancelablePromise } from '@krivega/cancelable-promise';
 import prepareConstraints from './prepareConstraints';
 import stopTracksMediaStream from './stopTracksMediaStream';
 
@@ -13,7 +13,7 @@ const passiveEventOptions = { passive: true };
  */
 export const getMediaStreamOrigin = (
   constraints: MediaStreamConstraints,
-  { waitTimeout = 20_000 } = {}
+  { waitTimeout = 20_000 } = {},
 ): Promise<MediaStream> => {
   const setTimeoutRequest = new SetTimeoutRequest();
 
@@ -98,7 +98,7 @@ export const getMediaStream = (optionsConstraints, options?: any) => {
 export const getCancelableMediaStream = (
   optionsConstraints,
   options,
-  moduleName = 'getCancelableMediaStream'
+  moduleName = 'getCancelableMediaStream',
 ) => {
-  return cancelablePromise(getMediaStream(optionsConstraints, options), moduleName);
+  return cancelablePromise(getMediaStream(optionsConstraints, options), { moduleName });
 };

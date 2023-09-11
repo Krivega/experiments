@@ -1,7 +1,6 @@
 import { SelfieSegmentation } from '@mediapipe/selfie_segmentation';
 import api from './client-api';
 import { resetOffScreenCanvases } from './render';
-import bodySegmentation from './bodySegmentation';
 import createState from './state';
 
 import type { TParams } from './typings';

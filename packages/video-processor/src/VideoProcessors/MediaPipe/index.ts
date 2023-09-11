@@ -1,8 +1,8 @@
-import { SelfieSegmentation } from '@mediapipe/selfie_segmentation';
+import { createCanvas } from '@experiments/utils/src/canvas';
 import createFpsMeter from '@experiments/utils/src/createFpsMeter';
 import mediaStreamToVideo from '@experiments/utils/src/mediaStreamToVideo';
-import { createCanvas } from '@experiments/utils/src/canvas';
-import type { TResolveProcessVideo, TModelSelection } from '../../typings';
+import { SelfieSegmentation } from '@mediapipe/selfie_segmentation';
+import type { TModelSelection, TResolveProcessVideo } from '../../typings';
 import startVideoProcessing from './startVideoProcessing';
 
 const createSelfieSegmentation = (): Promise<SelfieSegmentation> => {
@@ -79,7 +79,7 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
       const LANDSCAPE = 1;
 
       console.log(
-        '🚀 ~ file: index.ts ~ line 76 ~ updateOptionsSelfieSegmentation ~ updateOptionsSelfieSegmentation'
+        '🚀 ~ file: index.ts ~ line 76 ~ updateOptionsSelfieSegmentation ~ updateOptionsSelfieSegmentation',
       );
       selfieSegmentation.setOptions({
         modelSelection: getModelSelection() === 'general' ? GENERAL : LANDSCAPE,
@@ -118,7 +118,7 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
         console.log(
           '🚀 ~ file: index.ts ~ line 102 ~ returncreateVideo ~ width, height ',
           width,
-          height
+          height,
         );
 
         canvasTarget = createCanvas(width, height);

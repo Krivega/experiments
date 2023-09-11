@@ -1,13 +1,6 @@
 {
   "reject": [
     "@experiments/*",
-    "jest",
-    "@types/jest",
-    "eslint",
-    "eslint-plugin-import",
-    "lint-staged",
-    "core-js",
-    "eslint-plugin-react-hooks",
     "lerna",
     "@lerna/filter-options"
   ]

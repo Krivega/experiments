@@ -1,6 +1,6 @@
 import repeatedCalls from 'repeated-calls';
 
-const stopTracksMediaStream = (mediaStream) => {
+const stopTracksMediaStream = (mediaStream: MediaStream) => {
   return Promise.all(
     mediaStream.getTracks().map((track) => {
       const stopTrack = () => {
@@ -14,7 +14,7 @@ const stopTracksMediaStream = (mediaStream) => {
         targetFunction: stopTrack,
         isComplete: isEndedTrack,
       });
-    })
+    }),
   );
 };
 

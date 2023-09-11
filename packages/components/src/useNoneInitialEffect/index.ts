@@ -1,11 +1,11 @@
+import type { DependencyList, EffectCallback } from 'react';
 import { useEffect, useRef } from 'react';
-import type { EffectCallback, DependencyList } from 'react';
 
 const useNonInitialEffect = (effect: EffectCallback, deps?: DependencyList) => {
   const initialRender = useRef(true);
 
   useEffect(() => {
-    let effectReturns: ReturnType<EffectCallback>;
+    let effectReturns: ReturnType<EffectCallback> = () => {};
 
     if (initialRender.current) {
       initialRender.current = false;

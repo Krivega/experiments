@@ -1,5 +1,5 @@
 import type { BodySegmenter } from '@tensorflow-models/body-segmentation/dist/body_segmenter';
-import { imageBitmapToImageData, createPersonMask } from './render';
+import { createPersonMask, imageBitmapToImageData } from './render';
 
 // const estimateSegmentation = async (
 //   segmenter: BodySegmenter,
@@ -39,7 +39,7 @@ const bodySegmentation = async (
     multiPersonDecoding,
     edgeBlurAmount,
     scale,
-  }
+  },
 ) => {
   const imageData = imageBitmapToImageData(imageBitmap, scale);
 

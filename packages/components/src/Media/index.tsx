@@ -191,6 +191,7 @@ class Media extends React.Component<TProps> {
           ref={this.mediaRef}
           preload={preload}
           // @ts-ignore
+          // eslint-disable-next-line react/no-unknown-property
           volume={volume}
           muted={muted}
         />
@@ -199,6 +200,7 @@ class Media extends React.Component<TProps> {
 
     return (
       <video
+        // eslint-disable-next-line react/no-unknown-property
         volume={volume}
         muted={muted}
         data-testid={testid}

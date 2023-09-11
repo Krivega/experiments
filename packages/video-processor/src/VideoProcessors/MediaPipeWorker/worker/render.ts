@@ -1,10 +1,10 @@
-import * as tensorflowBodySegmentation from '@tensorflow-models/body-segmentation';
-import type { Segmentation } from '@tensorflow-models/body-segmentation/dist/shared/calculators/interfaces/common_interfaces';
 import {
+  imageBitmapToImageData as _imageBitmapToImageData,
   createOffScreenCanvas,
   renderImageDataToCanvas,
-  imageBitmapToImageData as _imageBitmapToImageData,
 } from '@experiments/utils/src/canvas';
+import * as tensorflowBodySegmentation from '@tensorflow-models/body-segmentation';
+import type { Segmentation } from '@tensorflow-models/body-segmentation/dist/shared/calculators/interfaces/common_interfaces';
 
 let offScreenCanvases = {};
 
@@ -45,7 +45,7 @@ export const createPersonMask = async (segmentation: Segmentation[], edgeBlurAmo
     foregroundColor,
     backgroundColor,
     drawContour,
-    foregroundThreshold
+    foregroundThreshold,
   );
 
   const backgroundMask = renderImageDataToOffScreenCanvas(backgroundDarkeningMask, 'mask');

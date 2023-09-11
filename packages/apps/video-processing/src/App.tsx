@@ -1,39 +1,39 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import Button from '@material-ui/core/Button';
-import AppBar from '@material-ui/core/AppBar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Slider from '@material-ui/core/Slider';
-import ListItem from '@material-ui/core/ListItem';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import IconButton from '@material-ui/core/IconButton';
-import Divider from '@material-ui/core/Divider';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import Fab from '@material-ui/core/Fab';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
-import { getMediaStream } from '@experiments/mediastream-api';
-import { getVideoDevices } from '@experiments/utils/src/devicesResolvers';
 import Media from '@experiments/components/src/Media';
 import useMemoizedDebounce from '@experiments/components/src/useMemoizedDebounce';
 import useNoneInitialEffect from '@experiments/components/src/useNoneInitialEffect';
-import resolutionsListAll, { ID_720P } from '@experiments/system-devices/src/resolutionsList';
-import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
+import { getMediaStream } from '@experiments/mediastream-api';
+import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
 import RequesterDevices from '@experiments/system-devices';
+import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
+import resolutionsListAll, { ID_720P } from '@experiments/system-devices/src/resolutionsList';
+import { getVideoDevices } from '@experiments/utils/src/devicesResolvers';
 import createVideoProcessor from '@experiments/video-processor';
 import type {
-  TProcessVideo,
-  TModelSelection,
   TArchitecture,
+  TModelSelection,
+  TProcessVideo,
 } from '@experiments/video-processor/src/typings';
+import AppBar from '@material-ui/core/AppBar';
+import Backdrop from '@material-ui/core/Backdrop';
+import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+import Fab from '@material-ui/core/Fab';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import IconButton from '@material-ui/core/IconButton';
+import InputLabel from '@material-ui/core/InputLabel';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Select from '@material-ui/core/Select';
+import Slider from '@material-ui/core/Slider';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+import React, { useCallback, useEffect, useState } from 'react';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -153,7 +153,7 @@ const App = () => {
   const [isInitialized, setInitialized] = React.useState<boolean>(false);
   const [isLoading, setLoading] = React.useState<boolean>(true);
   const [isBlurBackground, setBlurBackground] = React.useState<boolean>(
-    initialState.isBlurBackground
+    initialState.isBlurBackground,
   );
   const [mediaStreamOriginal, setMediaStreamOriginal] = useState<MediaStream | null>(null);
   const [mediaStreamProcessed, setMediaStreamProcessed] = useState<MediaStream | null>(null);
@@ -163,7 +163,7 @@ const App = () => {
   const [resolutionId, setResolutionId] = useState<string>(initialState.resolutionId);
   const [architecture, setArchitecture] = useState<TArchitecture>(initialState.architecture);
   const [modelSelection, setModelSelection] = useState<TModelSelection>(
-    initialState.modelSelection
+    initialState.modelSelection,
   );
   const [edgeBlurAmount, setEdgeBlurAmount] = useState<number>(initialState.edgeBlurAmount);
 
@@ -292,7 +292,7 @@ const App = () => {
       }
     },
     300,
-    [videoProcessor]
+    [videoProcessor],
   );
 
   const restartDebounced = useMemoizedDebounce(
@@ -314,7 +314,7 @@ const App = () => {
       }
     },
     300,
-    [videoProcessor]
+    [videoProcessor],
   );
 
   useEffect(() => {

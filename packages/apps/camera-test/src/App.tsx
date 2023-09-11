@@ -1,24 +1,24 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import List from '@material-ui/core/List';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import Drawer from '@material-ui/core/Drawer';
-import ListItem from '@material-ui/core/ListItem';
-import requestDevices from '@experiments/system-devices/src/requestDevices';
 import getVideoTracks from '@experiments/mediastream-api/src/getVideoTracks';
+import requestDevices from '@experiments/system-devices/src/requestDevices';
+import Box from '@material-ui/core/Box';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Drawer from '@material-ui/core/Drawer';
+import Grid from '@material-ui/core/Grid';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import React, { useCallback, useEffect, useState } from 'react';
+import { NUMBER_CONSTRAINT, STRING_OPTION_CONSTRAINT } from './constants';
+import { videoConstraints } from './constraints';
 import AppBarTop from './containers/AppBarTop';
-import UserMedia from './containers/UserMedia';
-import PageLoader from './containers/PageLoader';
 import Code from './containers/Code';
+import Heading from './containers/Heading';
+import PageLoader from './containers/PageLoader';
 import SettingsDrawer from './containers/SettingsDrawer';
 import Snackbar from './containers/Snackbar';
-import Heading from './containers/Heading';
-import { videoConstraints } from './constraints';
-import requestMediaStream from './requestMediaStream';
+import UserMedia from './containers/UserMedia';
 import defaultState from './defaultState';
+import requestMediaStream from './requestMediaStream';
 import useStyles from './useStyles';
-import { STRING_OPTION_CONSTRAINT, NUMBER_CONSTRAINT } from './constants';
 
 type TSnackBar = {
   isOpen: boolean;
@@ -117,7 +117,7 @@ const App = () => {
           }
 
           return 1;
-        })
+        }),
     );
 
     setAvailableConstraintsVideoTrack(availableVideoConstraints);

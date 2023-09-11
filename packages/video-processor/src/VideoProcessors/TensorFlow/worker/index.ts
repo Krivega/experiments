@@ -1,16 +1,16 @@
-import '@tensorflow/tfjs-core';
-import '@tensorflow/tfjs-backend-webgl';
 import * as tensorflowBodySegmentation from '@tensorflow-models/body-segmentation';
 import type { BodySegmenter } from '@tensorflow-models/body-segmentation/dist/body_segmenter';
+import '@tensorflow/tfjs-backend-webgl';
+import '@tensorflow/tfjs-core';
 
 // Uncomment the line below if you want to use TensorFlow.js runtime.
 // import '@tensorflow/tfjs-converter';
 
 // Uncomment the line below if you want to use MediaPipe runtime.
 import '@mediapipe/selfie_segmentation';
+import bodySegmentation from './bodySegmentation';
 import api from './client-api';
 import { resetOffScreenCanvases } from './render';
-import bodySegmentation from './bodySegmentation';
 import createState from './state';
 
 const { getState, initState, setStateValue } = createState();

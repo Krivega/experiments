@@ -1,16 +1,16 @@
-import flow from 'lodash/flow';
-import { CancelableRequest } from '@krivega/cancelable-promise';
+import { getMediaStreamOrigin } from '@experiments/mediastream-api';
+import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
 import {
-  identityPromiseResolve,
-  thenResolve,
   catchResolve,
   combineThenCombinator,
+  identityPromiseResolve,
   tapThenCombinator,
+  thenResolve,
 } from '@experiments/utils/src/functions';
-import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
-import { getMediaStreamOrigin } from '@experiments/mediastream-api';
+import { CancelableRequest } from '@krivega/cancelable-promise';
+import flow from 'lodash/flow';
+import { AUDIO_INPUT_KIND, VIDEO_KIND } from './constants';
 import createStateDeviceFromSystemDevice from './createStateDeviceFromSystemDevice';
-import { VIDEO_KIND, AUDIO_INPUT_KIND } from './constants';
 import {
   checkPermissionCamera,
   checkPermissionMicrophone,
@@ -30,7 +30,7 @@ const checkPermissions = () => {
   return Promise.all([checkPermissionCamera(), checkPermissionMicrophone()]).then(
     ([isHavePermissionCamera, isHavePermissionMicrophone]) => {
       return isHavePermissionCamera && isHavePermissionMicrophone;
-    }
+    },
   );
 };
 
@@ -63,7 +63,7 @@ const requestDevicesWithPermissions = flow(
     ) {
       return getMediaStreamOrigin(
         { video: isAvailableVideoDevice, audio: isAvailableAudioInputDevice },
-        { waitTimeout: 1000 * 60 * 10 } // 10 mins for started request
+        { waitTimeout: 1000 * 60 * 10 }, // 10 mins for started request
       );
     }
 
@@ -80,11 +80,11 @@ const requestDevicesWithPermissions = flow(
       }
 
       return Promise.resolve();
-    })
+    }),
   ),
   thenResolve(({ valFunc: devices }: { valFunc: MediaDeviceInfo[] }) => {
     return devices;
-  })
+  }),
 );
 
 const convertMediaDevicesInfo = (devices: MediaDeviceInfo[]) => {
@@ -108,7 +108,7 @@ const scanDevices: (devicesCached?: MediaDeviceInfo[]) => Promise<MediaDeviceInf
     console.log('error', error);
 
     return [];
-  })
+  }),
 );
 
 export default class RequesterDevices {

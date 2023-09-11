@@ -1,12 +1,12 @@
-import AnimationRequest from 'request-animation-runner';
-import createFpsMeter from '@experiments/utils/src/createFpsMeter';
-import mediaStreamToVideo from '@experiments/utils/src/mediaStreamToVideo';
 import {
   createCanvas,
   createOffScreenCanvas,
   imageToImageBitmap,
 } from '@experiments/utils/src/canvas';
-import type { TResolveProcessVideo, TModelSelection } from '../../typings';
+import createFpsMeter from '@experiments/utils/src/createFpsMeter';
+import mediaStreamToVideo from '@experiments/utils/src/mediaStreamToVideo';
+import AnimationRequest from 'request-animation-runner';
+import type { TModelSelection, TResolveProcessVideo } from '../../typings';
 import drawImageMask from './drawImageMask';
 import runtime from './runtime';
 
