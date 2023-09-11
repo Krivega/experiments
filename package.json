@@ -51,6 +51,8 @@
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
     "@lerna/filter-options": "^4.0.0",
+    "@types/audioworklet": "0.0.50",
+    "@types/dom-mediacapture-transform": "^0.1.6",
     "@types/filesystem": "^0.0.32",
     "@types/history": "^4.7.11",
     "@types/jest": "^29.5.4",

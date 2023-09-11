@@ -2,7 +2,15 @@
   "compilerOptions": {
     "target": "ES2019",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["node", "lodash", "react", "react-dom", "offscreencanvas"],
+    "types": [
+      "node",
+      "lodash",
+      "react",
+      "react-dom",
+      "offscreencanvas",
+      "dom-mediacapture-transform",
+      "audioworklet"
+    ],
     "allowJs": true,
     "checkJs": true,
     "esModuleInterop": true,

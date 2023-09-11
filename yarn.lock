@@ -3278,6 +3278,11 @@
   resolved "https://registry.yarnpkg.com/@types/aria-query/-/aria-query-5.0.1.tgz#3286741fb8f1e1580ac28784add4c7a1d49bdfbc"
   integrity sha512-XTIieEY+gvJ39ChLcB4If5zHtPxt3Syj5rgZR+e1ctpmK8NjPf0zFqsz4JpLJT0xla9GFDKjy8Cpu331nrmE1Q==
 
+"@types/audioworklet@0.0.50":
+  version "0.0.50"
+  resolved "https://registry.yarnpkg.com/@types/audioworklet/-/audioworklet-0.0.50.tgz#be35418a1b9f889afffa35aebd47186958293678"
+  integrity sha512-Wic6k+tczhJZz4yq2ianEowIF/xH10wI9ac8sBDh27Jvs+WIvXIeM+nWPPRITFwSKuLZKlvVjfLiNmUjfy4koA==
+
 "@types/babel__core@^7.1.14":
   version "7.20.1"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.20.1.tgz#916ecea274b0c776fec721e333e55762d3a9614b"
@@ -3340,6 +3345,18 @@
   integrity sha512-P63Zd/JUGq+PdrM1lv0Wv5SBYeA2+CORvbrXbngriYY0jzLUWfQMQQxOhjONEz/wlHOAxOdY7CY65rgQdTjq2w==
   dependencies:
     "@types/node" "*"
+
+"@types/dom-mediacapture-transform@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@types/dom-mediacapture-transform/-/dom-mediacapture-transform-0.1.6.tgz#26890dbfa4b3e5d81fba370e49f579892bcf89a3"
+  integrity sha512-sl2o+PVeciAozjEmj6UOnxOB3n4qv9bs2mw7PFYWYxpUKTHRIpDvm8TTfsWoRI86byQXWjQKecckaGSx/ExDPA==
+  dependencies:
+    "@types/dom-webcodecs" "*"
+
+"@types/dom-webcodecs@*":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@types/dom-webcodecs/-/dom-webcodecs-0.1.8.tgz#1f48409f83120625a12b6692a271ff3f10d77b7b"
+  integrity sha512-KThTPaGQJLITk8Q0XkEkz+GqFdoWDyQfbyeJmfEUagB15TZQdNx5AqP2b7GP6vkVM6X/6T1Z8EHxA8RgHfY9BA==
 
 "@types/eslint-scope@^3.7.3":
   version "3.7.4"

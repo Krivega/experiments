@@ -1,0 +1,47 @@
+{
+  "name": "noise-suppression",
+  "version": "0.0.0",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "react-scripts build",
+    "build:stats": "yarn build --stats",
+    "deps:check": "ncu",
+    "deps:update": "ncu -u",
+    "format": "prettier --write \"src/**/*.{js,ts,tsx,json}\"",
+    "lint": "yarn lint:js && yarn lint:ts",
+    "lint:js": "eslint src/. --ext .js,.jsx,.ts,.tsx",
+    "lint:ts": "tsc",
+    "precommit": "lint-staged",
+    "start": "react-scripts start",
+    "test": "react-scripts test --verbose=false",
+    "test:circular": "madge --circular src/index.tsx",
+    "test:nowatch": "yarn test --watchAll=false"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!<rootDir>/node_modules/",
+      "!src/*.{js,jsx}",
+      "!src/containers/Root/*.{js,jsx}",
+      "!src/store/*.{js,jsx}",
+      "!**/__tests-utils__/**",
+      "!**/__mocks__/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
+      }
+    }
+  },
+  "dependencies": {
+    "debug": "4.3.4"
+  },
+  "devDependencies": {
+    "lint-staged": "14.0.1",
+    "madge": "^6.1.0",
+    "monorepo-react-scripts": "5.0.1-alpha.3"
+  }
+}
