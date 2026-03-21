@@ -1,4 +1,5 @@
 import { SelfieSegmentation } from '@mediapipe/selfie_segmentation';
+
 import api from './client-api';
 import { resetOffScreenCanvases } from './render';
 import createState from './state';
@@ -24,32 +25,32 @@ const updateOptions = () => {
   });
 };
 
-const init = ({ modelSelection }: TParams) => {
+const init = async ({ modelSelection }: TParams) => {
   initState({
     modelSelection,
   });
   resetOffScreenCanvases();
   updateOptions();
 
-  return Promise.resolve({});
+  return {};
   // return loadBodyPix({ modelSelection }).then(() => {
   //   return {};
   // });
 };
 
-const processVideo = (imageBitmap: ImageBitmap) => {
+const processVideo = async (imageBitmap: ImageBitmap) => {
   // @ts-ignore
   return selfieSegmentation.send({ image: imageBitmap }).then(() => {
     return { payload: undefined };
   });
 };
 
-const changeParams = ({ modelSelection }: TParams) => {
+const changeParams = async ({ modelSelection }: TParams) => {
   setStateValue('modelSelection', modelSelection);
   resetOffScreenCanvases();
   updateOptions();
 
-  return Promise.resolve({});
+  return {};
 };
 
 api.init.onReceiveActionAndWaitConfirm(init);

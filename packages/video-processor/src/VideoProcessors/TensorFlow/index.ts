@@ -1,16 +1,14 @@
-import {
-  createCanvas,
-  createOffScreenCanvas,
-  imageToImageBitmap,
-} from '@experiments/utils/src/canvas';
-import createFpsMeter from '@experiments/utils/src/createFpsMeter';
-import mediaStreamToVideo from '@experiments/utils/src/mediaStreamToVideo';
+/* eslint-disable unicorn/no-null */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+import { canvasUtils, createFpsMeter, mediaStreamToVideo } from '@experiments/utils';
 import AnimationRequest from 'request-animation-runner';
-import type { TModelSelection, TResolveProcessVideo } from '../../typings';
+
 import drawImageMask from './drawImageMask';
 import runtime from './runtime';
 
-const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
+import type { TModelSelection, TResolveProcessVideo } from '../../typings';
+
+const resolveProcessVideoTensorFlow: TResolveProcessVideo = async ({
   imageBitmapMask360p,
   imageBitmapMask720p,
   imageBitmapMask1080p,
@@ -18,10 +16,12 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
   const getImageBitmapByWidth = (width: number): HTMLImageElement => {
     // eslint-disable-next-line default-case
     switch (width) {
-      case 640:
+      case 640: {
         return imageBitmapMask360p;
-      case 1280:
+      }
+      case 1280: {
         return imageBitmapMask720p;
+      }
     }
 
     return imageBitmapMask1080p;
@@ -31,10 +31,10 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
   const animationRequest = new AnimationRequest();
   let isActive = false;
   let requestIDBodySegmentationFrame: number;
-  let videoSource: HTMLVideoElement;
+  let videoSource: HTMLVideoElement | null = null;
   let canvasTarget: HTMLCanvasElement;
 
-  const createVideo = (mediaStream: MediaStream) => {
+  const createVideo = async (mediaStream: MediaStream) => {
     return mediaStreamToVideo(mediaStream).then((video) => {
       videoSource = video;
 
@@ -42,13 +42,13 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
     });
   };
   let isInProgressVideoProcessing = false;
-  const checkEndProgressVideoProcessing = () => {
+  const checkEndProgressVideoProcessing = async () => {
     return new Promise<void>((resolve) => {
       const check = () => {
-        if (isInProgressVideoProcessing === false) {
-          resolve();
-        } else {
+        if (isInProgressVideoProcessing) {
           setTimeout(check, 100);
+        } else {
+          resolve();
         }
       };
 
@@ -57,19 +57,24 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
   };
   const startVideoProcessing = ({
     edgeBlurAmount,
-    isBlurBackground,
   }: {
     edgeBlurAmount: number;
     isBlurBackground: boolean;
   }) => {
+    if (!videoSource) {
+      throw new Error('Video source not found');
+    }
+
     const { width, height } = videoSource;
-    const canvasSource = createOffScreenCanvas(width, height);
+    const canvasSource = canvasUtils.createOffScreenCanvas(width, height);
     const imageBitmapMask = getImageBitmapByWidth(width);
 
-    let imageBitmapSource = imageToImageBitmap({ image: videoSource, canvas: canvasSource });
-    let personMask: ImageBitmap;
+    let imageBitmapSource = canvasUtils.imageToImageBitmap({
+      image: videoSource,
+      canvas: canvasSource,
+    });
+    let personMask: ImageBitmap | undefined;
 
-    fpsMeter.init();
     isActive = true;
 
     const bodySegmentationFrame = async () => {
@@ -88,12 +93,20 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
 
       // for check after async
       if (isActive) {
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         requestIDBodySegmentationFrame = requestAnimationFrame(bodySegmentationFrame);
       }
     };
 
     const targetVideoFrame = () => {
-      imageBitmapSource = imageToImageBitmap({ image: videoSource, canvas: canvasSource });
+      if (!videoSource) {
+        throw new Error('Video source not found');
+      }
+
+      imageBitmapSource = canvasUtils.imageToImageBitmap({
+        image: videoSource,
+        canvas: canvasSource,
+      });
 
       drawImageMask({
         personMask,
@@ -110,7 +123,7 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
     });
   };
 
-  const start = ({
+  const start = async ({
     mediaStream,
     modelSelection,
     edgeBlurAmount,
@@ -125,13 +138,17 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
       .init({
         modelSelection,
       })
-      .then(() => {
+      .then(async () => {
         return createVideo(mediaStream);
       })
       .then(() => {
+        if (!videoSource) {
+          throw new Error('Video source not found');
+        }
+
         const { width, height } = videoSource;
 
-        canvasTarget = createCanvas(width, height);
+        canvasTarget = canvasUtils.createCanvas(width, height);
 
         startVideoProcessing({ edgeBlurAmount, isBlurBackground });
 
@@ -140,7 +157,7 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
         return mediaStreamOutput;
       });
   };
-  const stopVideoProcessing = () => {
+  const stopVideoProcessing = async () => {
     isActive = false;
     window.cancelAnimationFrame(requestIDBodySegmentationFrame);
     animationRequest.deactivate();
@@ -148,7 +165,7 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
 
     return checkEndProgressVideoProcessing();
   };
-  const stop = () => {
+  const stop = async () => {
     return stopVideoProcessing().then(() => {
       if (videoSource) {
         videoSource.srcObject = null;
@@ -156,7 +173,7 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
     });
   };
 
-  const changeParams = ({
+  const changeParams = async ({
     modelSelection,
     edgeBlurAmount,
     isBlurBackground,
@@ -166,16 +183,16 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
     isBlurBackground: boolean;
   }) => {
     return stopVideoProcessing()
-      .then(() => {
+      .then(async () => {
         return runtime.changeParams({
           modelSelection,
         });
       })
       .then(() => {
-        return startVideoProcessing({ edgeBlurAmount, isBlurBackground });
+        startVideoProcessing({ edgeBlurAmount, isBlurBackground });
       });
   };
-  const restart = ({
+  const restart = async ({
     mediaStream,
     modelSelection,
     isBlurBackground,
@@ -186,7 +203,7 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
     edgeBlurAmount: number;
     isBlurBackground: boolean;
   }) => {
-    return stop().then(() => {
+    return stop().then(async () => {
       return start({
         mediaStream,
         modelSelection,
@@ -196,7 +213,7 @@ const resolveProcessVideoTensorFlow: TResolveProcessVideo = ({
     });
   };
 
-  return Promise.resolve({ start, restart, changeParams, stop });
+  return { start, restart, changeParams, stop };
 };
 
 export default resolveProcessVideoTensorFlow;

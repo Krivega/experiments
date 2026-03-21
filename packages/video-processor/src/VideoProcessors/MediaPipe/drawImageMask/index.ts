@@ -1,7 +1,9 @@
-import { getContext } from '@experiments/utils/src/canvas';
-import type { TCanvas } from '@experiments/utils/src/canvas';
+import { canvasUtils } from '@experiments/utils';
+
 import drawBackgroundImageMask from './drawBackgroundImageMask';
 import drawBlurImageMask from './drawBlurImageMask';
+
+import type { TCanvas } from '@experiments/utils';
 
 const drawImageMask = ({
   videoSource,
@@ -19,7 +21,7 @@ const drawImageMask = ({
   isBlurBackground: boolean;
 }) => {
   if (!personMask) {
-    const context = getContext(canvas);
+    const context = canvasUtils.getContext(canvas) as CanvasRenderingContext2D;
 
     context.drawImage(videoSource, 0, 0);
 

@@ -71,7 +71,9 @@ export default defineConfig([
   createPackageConfig('packages/components', [jestConfig, reactConfig]),
   createPackageConfig('packages/mediastream-api', [jestConfig]),
   createPackageConfig('packages/system-devices', [jestConfig]),
-  createPackageConfig('packages/video-processor', [jestConfig]),
+  createPackageConfig('packages/video-processor', [jestConfig], {
+    "unicorn/filename-case": "off",
+  }),
   createPackageConfig('packages/utils', [jestConfig]),
   createPackageConfig('packages/timeout-requester', [jestConfig]),
   createPackageConfig('packages/audio-utils', [jestConfig]),

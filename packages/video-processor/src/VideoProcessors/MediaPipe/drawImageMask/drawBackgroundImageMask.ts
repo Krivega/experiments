@@ -1,5 +1,6 @@
-import { getContext, drawWithCompositing } from '@experiments/utils/src/canvas';
-import type { TCanvas } from '@experiments/utils/src/canvas';
+import { canvasUtils } from '@experiments/utils';
+
+import type { TCanvas } from '@experiments/utils';
 
 const drawBackgroundImageMask = ({
   videoSource,
@@ -15,7 +16,7 @@ const drawBackgroundImageMask = ({
   edgeBlurAmount: number;
 }) => {
   const { width, height } = videoSource;
-  const context = getContext(canvas);
+  const context = canvasUtils.getContext(canvas) as CanvasRenderingContext2D;
 
   context.save();
 
@@ -26,11 +27,11 @@ const drawBackgroundImageMask = ({
     context.filter = `blur(${edgeBlurAmount}px)`;
   }
 
-  drawWithCompositing(context, personMask, 'destination-in', width, height);
+  canvasUtils.drawWithCompositing(context, personMask, 'destination-in', width, height);
 
   context.filter = 'none';
 
-  drawWithCompositing(context, imageMask, 'destination-over', width, height);
+  canvasUtils.drawWithCompositing(context, imageMask, 'destination-over', width, height);
 
   context.restore();
 };

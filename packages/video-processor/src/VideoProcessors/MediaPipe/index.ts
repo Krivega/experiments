@@ -1,11 +1,12 @@
-import { createCanvas } from '@experiments/utils/src/canvas';
-import createFpsMeter from '@experiments/utils/src/createFpsMeter';
-import mediaStreamToVideo from '@experiments/utils/src/mediaStreamToVideo';
+/* eslint-disable unicorn/no-null */
+import { canvasUtils, createFpsMeter, mediaStreamToVideo } from '@experiments/utils';
 import { SelfieSegmentation } from '@mediapipe/selfie_segmentation';
-import type { TModelSelection, TResolveProcessVideo } from '../../typings';
+
 import startVideoProcessing from './startVideoProcessing';
 
-const createSelfieSegmentation = (): Promise<SelfieSegmentation> => {
+import type { TModelSelection, TResolveProcessVideo } from '../../typings';
+
+const createSelfieSegmentation = async (): Promise<SelfieSegmentation> => {
   const selfieSegmentation = new SelfieSegmentation({
     locateFile: (file) => {
       return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
@@ -17,7 +18,7 @@ const createSelfieSegmentation = (): Promise<SelfieSegmentation> => {
   });
 };
 
-const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
+const resolveProcessVideoMediaPipe: TResolveProcessVideo = async ({
   imageBitmapMask360p,
   imageBitmapMask720p,
   imageBitmapMask1080p,
@@ -25,10 +26,12 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
   const getImageBitmapByWidth = (width: number): HTMLImageElement => {
     // eslint-disable-next-line default-case
     switch (width) {
-      case 640:
+      case 640: {
         return imageBitmapMask360p;
-      case 1280:
+      }
+      case 1280: {
         return imageBitmapMask720p;
+      }
     }
 
     return imageBitmapMask1080p;
@@ -36,10 +39,10 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
 
   return createSelfieSegmentation().then((selfieSegmentation) => {
     const fpsMeter = createFpsMeter();
-    let videoSource: HTMLVideoElement;
+    let videoSource: HTMLVideoElement | null = null;
     let canvasTarget: HTMLCanvasElement;
 
-    const createVideo = (mediaStream: MediaStream) => {
+    const createVideo = async (mediaStream: MediaStream) => {
       return mediaStreamToVideo(mediaStream).then((video) => {
         videoSource = video;
 
@@ -78,15 +81,12 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
       const GENERAL = 0;
       const LANDSCAPE = 1;
 
-      console.log(
-        '🚀 ~ file: index.ts ~ line 76 ~ updateOptionsSelfieSegmentation ~ updateOptionsSelfieSegmentation',
-      );
       selfieSegmentation.setOptions({
         modelSelection: getModelSelection() === 'general' ? GENERAL : LANDSCAPE,
       });
     };
 
-    const changeParams = (params: {
+    const changeParams = async (params: {
       modelSelection: TModelSelection;
       edgeBlurAmount: number;
       isBlurBackground: boolean;
@@ -94,11 +94,9 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
       updateState(params);
 
       updateOptionsSelfieSegmentation();
-
-      return Promise.resolve();
     };
 
-    const start = ({
+    const start = async ({
       mediaStream,
       modelSelection,
       edgeBlurAmount,
@@ -112,18 +110,14 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
       updateState({ modelSelection, edgeBlurAmount, isBlurBackground });
       updateOptionsSelfieSegmentation();
 
-      return createVideo(mediaStream).then(() => {
+      return createVideo(mediaStream).then(async () => {
+        if (!videoSource) {
+          throw new Error('Video source not found');
+        }
+
         const { width, height } = videoSource;
 
-        console.log(
-          '🚀 ~ file: index.ts ~ line 102 ~ returncreateVideo ~ width, height ',
-          width,
-          height,
-        );
-
-        canvasTarget = createCanvas(width, height);
-
-        console.log('🚀 ~ file: index.ts ~ line 104 ~ returncreateVideo ~ startVideoProcessing');
+        canvasTarget = canvasUtils.createCanvas(width, height);
 
         return startVideoProcessing({
           selfieSegmentation,
@@ -140,12 +134,12 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
         });
       });
     };
-    const stopVideoProcessing = (): Promise<void> => {
+    const stopVideoProcessing = async (): Promise<void> => {
       fpsMeter.reset();
 
       return selfieSegmentation.close();
     };
-    const stop = () => {
+    const stop = async () => {
       return stopVideoProcessing().then(() => {
         if (videoSource) {
           videoSource.srcObject = null;
@@ -153,7 +147,7 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
       });
     };
 
-    const restart = ({
+    const restart = async ({
       mediaStream,
       modelSelection,
       edgeBlurAmount,
@@ -170,7 +164,7 @@ const resolveProcessVideoMediaPipe: TResolveProcessVideo = ({
           // eslint-disable-next-line no-param-reassign
           selfieSegmentation = _selfieSegmentation;
         })
-        .then(() => {
+        .then(async () => {
           return start({
             mediaStream,
             modelSelection,

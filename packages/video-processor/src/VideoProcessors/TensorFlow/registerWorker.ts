@@ -1,4 +1,4 @@
-const registerWorker = (workerURL) => {
+const registerWorker = (workerURL: string | URL) => {
   return new Worker(workerURL);
 };
 

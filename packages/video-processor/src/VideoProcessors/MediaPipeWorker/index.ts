@@ -1,71 +1,85 @@
-import { createCanvas } from '@experiments/utils/src/canvas';
-import createFpsMeter from '@experiments/utils/src/createFpsMeter';
-import mediaStreamToVideo from '@experiments/utils/src/mediaStreamToVideo';
+/* eslint-disable unicorn/no-null */
+import { canvasUtils, createFpsMeter, mediaStreamToVideo } from '@experiments/utils';
 import { Camera } from '@mediapipe/camera_utils';
-import type { ResultsListener } from '@mediapipe/selfie_segmentation';
 import { SelfieSegmentation } from '@mediapipe/selfie_segmentation';
 import AnimationRequest from 'request-animation-runner';
-import type { TModelSelection } from '../../typings';
+
 import drawImageMask from '../MediaPipe/drawImageMask';
+
+import type { ResultsListener } from '@mediapipe/selfie_segmentation';
+import type { TModelSelection } from '../../typings';
 
 const resolveProcessVideoMediaPipe = ({
   imageBitmapMask360p,
   imageBitmapMask720p,
   imageBitmapMask1080p,
+}: {
+  imageBitmapMask360p: HTMLImageElement;
+  imageBitmapMask720p: HTMLImageElement;
+  imageBitmapMask1080p: HTMLImageElement;
 }) => {
   const fpsMeter = createFpsMeter();
   const animationRequest = new AnimationRequest();
-  let requestIDBodySegmentationFrame;
-  let videoSource: HTMLVideoElement;
+  let videoSource: HTMLVideoElement | null = null;
   let canvasTarget: HTMLCanvasElement;
 
-  const createVideo = (mediaStream: MediaStream) => {
+  const createVideo = async (mediaStream: MediaStream) => {
     return mediaStreamToVideo(mediaStream).then((video) => {
       videoSource = video;
 
       return videoSource;
     });
   };
-  const isInProgressVideoProcessing = false;
-  const checkEndProgressVideoProcessing = () => {
+  // const isInProgressVideoProcessing = false;
+  const checkEndProgressVideoProcessing = async () => {
     return new Promise<void>((resolve) => {
       const check = () => {
-        if (isInProgressVideoProcessing === false) {
-          resolve();
-        } else {
-          setTimeout(check, 100);
-        }
+        // if (isInProgressVideoProcessing) {
+        //   setTimeout(check, 100);
+        // } else {
+        //   resolve();
+        resolve();
+        // }
       };
 
       check();
     });
   };
   const startVideoProcessing = ({ modelSelection }: { modelSelection: TModelSelection }) => {
+    if (!videoSource) {
+      throw new Error('Video source not found');
+    }
+
     const { width, height } = videoSource;
     let imageBitmapMask: HTMLImageElement;
 
-    fpsMeter.init();
-
     // eslint-disable-next-line default-case
     switch (width) {
-      case 640:
+      case 640: {
         imageBitmapMask = imageBitmapMask360p;
         break;
-      case 1280:
+      }
+      case 1280: {
         imageBitmapMask = imageBitmapMask720p;
         break;
-      case 1920:
+      }
+      case 1920: {
         imageBitmapMask = imageBitmapMask1080p;
         break;
+      }
     }
 
     const onResults: ResultsListener = (results) => {
+      if (!videoSource) {
+        throw new Error('Video source not found');
+      }
+
       drawImageMask({
         // @ts-ignore
         personMask: results.segmentationMask,
         imageMask: imageBitmapMask,
         canvas: canvasTarget,
-        // @ts-ignore
+        // @ts-expect-error
         videoSource: results.image,
       });
       fpsMeter.end();
@@ -87,6 +101,10 @@ const resolveProcessVideoMediaPipe = ({
 
     const camera = new Camera(videoSource, {
       onFrame: async () => {
+        if (!videoSource) {
+          throw new Error('Video source not found');
+        }
+
         fpsMeter.begin();
         await selfieSegmentation.send({ image: videoSource });
       },
@@ -94,10 +112,13 @@ const resolveProcessVideoMediaPipe = ({
       height,
     });
 
-    camera.start();
+    camera.start().catch((error: unknown) => {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    });
   };
 
-  const start = ({
+  const start = async ({
     mediaStream,
     modelSelection,
   }: {
@@ -105,9 +126,13 @@ const resolveProcessVideoMediaPipe = ({
     modelSelection: TModelSelection;
   }) => {
     return createVideo(mediaStream).then(() => {
+      if (!videoSource) {
+        throw new Error('Video source not found');
+      }
+
       const { width, height } = videoSource;
 
-      canvasTarget = createCanvas(width, height);
+      canvasTarget = canvasUtils.createCanvas(width, height);
 
       startVideoProcessing({ modelSelection });
 
@@ -116,14 +141,13 @@ const resolveProcessVideoMediaPipe = ({
       return mediaStreamOutput;
     });
   };
-  const stopVideoProcessing = () => {
-    window.cancelAnimationFrame(requestIDBodySegmentationFrame);
+  const stopVideoProcessing = async () => {
     animationRequest.deactivate();
     fpsMeter.reset();
 
     return checkEndProgressVideoProcessing();
   };
-  const stop = () => {
+  const stop = async () => {
     return stopVideoProcessing().then(() => {
       if (videoSource) {
         videoSource.srcObject = null;
@@ -131,21 +155,21 @@ const resolveProcessVideoMediaPipe = ({
     });
   };
 
-  const changeParams = ({ modelSelection }: { modelSelection: TModelSelection }) => {
+  const changeParams = async ({ modelSelection }: { modelSelection: TModelSelection }) => {
     return stopVideoProcessing()
       .then(() => {})
       .then(() => {
-        return startVideoProcessing({ modelSelection });
+        startVideoProcessing({ modelSelection });
       });
   };
-  const restart = ({
+  const restart = async ({
     mediaStream,
     modelSelection,
   }: {
     mediaStream: MediaStream;
     modelSelection: TModelSelection;
   }) => {
-    return stop().then(() => {
+    return stop().then(async () => {
       return start({
         mediaStream,
         modelSelection,

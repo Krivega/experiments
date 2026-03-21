@@ -1,4 +1,4 @@
-type TCanvas = HTMLCanvasElement;
+export type TCanvas = HTMLCanvasElement | OffscreenCanvas;
 
 export const createCanvas = (width: number, height: number): HTMLCanvasElement => {
   const canvas = document.createElement('canvas');
@@ -143,4 +143,78 @@ export const drawWithCompositing = (
   context.globalCompositeOperation = compositeOperation;
   context.drawImage(image, 0, 0, width, height, 0, 0, desiredWidth, desiredHeight);
   context.globalCompositeOperation = 'source-over'; // reset tto default falue
+};
+
+export const createOffScreenCanvas = (width: number, height: number): OffscreenCanvas => {
+  const offScreenCanvas = new OffscreenCanvas(width, height);
+
+  return offScreenCanvas;
+};
+
+export const renderImageDataToCanvas = (image: ImageData, canvas: TCanvas) => {
+  const context = getContext(canvas);
+
+  (context as CanvasRenderingContext2D).putImageData(image, 0, 0);
+};
+
+export const drawAndBlurImageOnCanvas = (
+  image: CanvasImageSource,
+  blurAmount: number,
+  canvas: TCanvas,
+) => {
+  const { height, width } = image as { width: number; height: number };
+  const context = getContext(canvas) as CanvasRenderingContext2D;
+
+  context.clearRect(0, 0, width, height);
+  context.save();
+
+  context.filter = `blur(${blurAmount}px)`;
+  context.drawImage(image, 0, 0, width, height);
+
+  context.restore();
+};
+
+export const drawAndBlurImageOnOffScreenCanvas = ({
+  canvas,
+  image,
+  blurAmount,
+}: {
+  canvas: OffscreenCanvas;
+  image: CanvasImageSource;
+  blurAmount: number;
+}) => {
+  if (blurAmount === 0) {
+    renderImageToCanvas(image, canvas);
+  } else {
+    drawAndBlurImageOnCanvas(image, blurAmount, canvas);
+  }
+};
+
+export const imageBitmapToImageData = (
+  canvas: TCanvas,
+  imageBitmap: ImageBitmap,
+  desiredWidth: number,
+  desiredHeight: number,
+  // eslint-disable-next-line @typescript-eslint/max-params
+) => {
+  const { width, height } = imageBitmap;
+  const context = getContext(canvas) as CanvasRenderingContext2D;
+
+  context.drawImage(imageBitmap, 0, 0, width, height, 0, 0, desiredWidth, desiredHeight);
+
+  const imageData = context.getImageData(0, 0, desiredWidth, desiredHeight);
+
+  return imageData;
+};
+
+export const imageToImageBitmap = ({
+  canvas,
+  image,
+}: {
+  canvas: OffscreenCanvas;
+  image: CanvasImageSource;
+}) => {
+  renderImageToCanvas(image, canvas);
+
+  return canvas.transferToImageBitmap();
 };

@@ -1,9 +1,10 @@
 import { Camera } from '@mediapipe/camera_utils';
-import { SelfieSegmentation } from '@mediapipe/selfie_segmentation';
-import type { ResultsListener } from '@mediapipe/selfie_segmentation';
+
 import drawImageMask from './drawImageMask';
 
-const startVideoProcessing = ({
+import type { SelfieSegmentation, ResultsListener } from '@mediapipe/selfie_segmentation';
+
+const startVideoProcessing = async ({
   selfieSegmentation,
   fpsMeter,
   getImageBitmapByWidth,
@@ -13,7 +14,7 @@ const startVideoProcessing = ({
   getIsBlurBackground,
 }: {
   selfieSegmentation: SelfieSegmentation;
-  fpsMeter: { init: () => void; begin: () => void; end: () => void };
+  fpsMeter: { begin: () => void; end: () => void };
   getImageBitmapByWidth: (width: number) => HTMLImageElement;
   canvasTarget: HTMLCanvasElement;
   videoSource: HTMLVideoElement;
@@ -22,8 +23,6 @@ const startVideoProcessing = ({
 }) => {
   const { width, height } = videoSource;
   const imageBitmapMask = getImageBitmapByWidth(width);
-
-  fpsMeter.init();
 
   const onResults: ResultsListener = (results) => {
     drawImageMask({

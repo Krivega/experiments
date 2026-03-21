@@ -1,5 +1,7 @@
-import type { BodySegmenter } from '@tensorflow-models/body-segmentation/dist/body_segmenter';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createPersonMask, imageBitmapToImageData } from './render';
+
+import type { BodySegmenter } from '@tensorflow-models/body-segmentation/dist/body_segmenter';
 
 // const estimateSegmentation = async (
 //   segmenter: BodySegmenter,
@@ -39,9 +41,17 @@ const bodySegmentation = async (
     multiPersonDecoding,
     edgeBlurAmount,
     scale,
+  }: {
+    imageBitmap: ImageBitmap;
+    algorithm?: string;
+    segmentationThreshold?: string;
+    internalResolution?: string;
+    multiPersonDecoding?: string;
+    edgeBlurAmount?: number;
+    scale?: number;
   },
 ) => {
-  const imageData = imageBitmapToImageData(imageBitmap, scale);
+  const imageData = imageBitmapToImageData(imageBitmap, scale ?? 1);
 
   const segmentation = await segmenter.segmentPeople(imageData);
 
@@ -49,7 +59,7 @@ const bodySegmentation = async (
     return undefined;
   }
 
-  const personMask = createPersonMask(segmentation, edgeBlurAmount);
+  const personMask = createPersonMask(segmentation, edgeBlurAmount ?? 0);
 
   return personMask;
 };

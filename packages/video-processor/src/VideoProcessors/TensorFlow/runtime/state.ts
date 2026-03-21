@@ -10,10 +10,10 @@ const createState = () => {
   const getState = (): TState => {
     return state;
   };
-  const getStateValue = (name: string): string | undefined => {
-    return state[name];
+  const getStateValue = (name: keyof TState): string | undefined => {
+    return state[name as keyof TState];
   };
-  const setStateValue = (name: string, value?: string) => {
+  const setStateValue = <K extends keyof TState>(name: K, value?: TState[K]) => {
     state[name] = value;
   };
 

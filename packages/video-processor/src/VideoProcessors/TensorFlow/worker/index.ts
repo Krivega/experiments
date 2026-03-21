@@ -1,17 +1,14 @@
-import * as tensorflowBodySegmentation from '@tensorflow-models/body-segmentation';
-import type { BodySegmenter } from '@tensorflow-models/body-segmentation/dist/body_segmenter';
+import '@mediapipe/selfie_segmentation';
 import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-core';
+import * as tensorflowBodySegmentation from '@tensorflow-models/body-segmentation';
 
-// Uncomment the line below if you want to use TensorFlow.js runtime.
-// import '@tensorflow/tfjs-converter';
-
-// Uncomment the line below if you want to use MediaPipe runtime.
-import '@mediapipe/selfie_segmentation';
 import bodySegmentation from './bodySegmentation';
 import api from './client-api';
 import { resetOffScreenCanvases } from './render';
 import createState from './state';
+
+import type { BodySegmenter } from '@tensorflow-models/body-segmentation/dist/body_segmenter';
 
 const { getState, initState, setStateValue } = createState();
 let segmenter: BodySegmenter;
@@ -23,12 +20,17 @@ const segmenterConfig = {
   modelType: 'general', // or 'landscape'
 };
 
-const loadBodyPix = async ({ architecture, outputStride, multiplier, quantBytes }) => {
+const loadBodyPix = async (_params: {
+  architecture: string;
+  outputStride: string;
+  multiplier: string;
+  quantBytes: string;
+}) => {
   // @ts-ignore
   segmenter = await tensorflowBodySegmentation.createSegmenter(model, segmenterConfig);
 };
 
-const init = ({
+const init = async ({
   algorithm,
   segmentationThreshold,
   edgeBlurAmount,
@@ -39,6 +41,17 @@ const init = ({
   multiplier,
   quantBytes,
   internalResolution,
+}: {
+  algorithm: string;
+  segmentationThreshold: string;
+  edgeBlurAmount: number;
+  multiPersonDecoding: string;
+  scale: number;
+  architecture: string;
+  outputStride: string;
+  multiplier: string;
+  quantBytes: string;
+  internalResolution: string;
 }) => {
   initState({
     algorithm,
@@ -59,7 +72,7 @@ const init = ({
   });
 };
 
-const processVideo = (imageBitmap) => {
+const processVideo = async (imageBitmap: ImageBitmap) => {
   const {
     algorithm,
     segmentationThreshold,
@@ -82,13 +95,20 @@ const processVideo = (imageBitmap) => {
   });
 };
 
-const changeParams = ({
+const changeParams = async ({
   algorithm,
   segmentationThreshold,
   internalResolution,
   multiPersonDecoding,
   edgeBlurAmount,
   scale,
+}: {
+  algorithm: string;
+  segmentationThreshold: string;
+  internalResolution: string;
+  multiPersonDecoding: string;
+  edgeBlurAmount: number;
+  scale: number;
 }) => {
   setStateValue('algorithm', algorithm);
   setStateValue('segmentationThreshold', segmentationThreshold);
@@ -99,11 +119,12 @@ const changeParams = ({
 
   resetOffScreenCanvases();
 
-  return Promise.resolve({});
+  return {};
 };
 
-// @ts-ignore
+// @ts-expect-error
 api.init.onReceiveActionAndWaitConfirm(init);
+// @ts-expect-error
 api.processImage.onReceiveActionAndWaitConfirm(processVideo);
-// @ts-ignore
+// @ts-expect-error
 api.changeParams.onReceiveActionAndWaitConfirm(changeParams);

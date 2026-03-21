@@ -1,12 +1,12 @@
+import { workerUtils } from '@experiments/utils';
 import { memoize } from 'lodash';
-import { resolveActionWithWaitConfirm } from '@experiments/utils/src/worker';
 
 memoize.Cache = WeakMap;
 
 const resolveAPI = (worker: Worker) => {
-  const init = resolveActionWithWaitConfirm(worker, 'init');
-  const processImage = resolveActionWithWaitConfirm<ImageBitmap>(worker, 'process');
-  const changeParams = resolveActionWithWaitConfirm(worker, 'changeParams');
+  const init = workerUtils.resolveActionWithWaitConfirm(worker, 'init');
+  const processImage = workerUtils.resolveActionWithWaitConfirm<ImageBitmap>(worker, 'process');
+  const changeParams = workerUtils.resolveActionWithWaitConfirm(worker, 'changeParams');
 
   // memoize(processImage)
   return {

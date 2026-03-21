@@ -1,15 +1,16 @@
-import * as tensorflowBodySegmentation from '@tensorflow-models/body-segmentation';
-import type { BodySegmenter } from '@tensorflow-models/body-segmentation/dist/body_segmenter';
 import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-converter';
 import '@tensorflow/tfjs-core';
-import type { TModelSelection } from '../../../typings';
-// import '@mediapipe/selfie_segmentation';
+import * as tensorflowBodySegmentation from '@tensorflow-models/body-segmentation';
+
 import bodySegmentation from './bodySegmentation';
 import { resetOffScreenCanvases } from './render';
 import createState from './state';
 
-const { getState, initState, setStateValue } = createState();
+import type { BodySegmenter } from '@tensorflow-models/body-segmentation/dist/body_segmenter';
+import type { TModelSelection } from '../../../typings';
+
+const { initState, setStateValue } = createState();
 let segmenter: BodySegmenter;
 
 const model = tensorflowBodySegmentation.SupportedModels.MediaPipeSelfieSegmentation; // or 'BodyPix'|| MediaPipeSelfieSegmentation
@@ -23,7 +24,7 @@ const loadSegmenter = async ({ modelSelection }: { modelSelection: TModelSelecti
   segmenter = await tensorflowBodySegmentation.createSegmenter(model, segmenterConfig);
 };
 
-const init = ({ modelSelection }: { modelSelection: TModelSelection }) => {
+const init = async ({ modelSelection }: { modelSelection: TModelSelection }) => {
   initState({
     modelSelection,
   });
@@ -32,13 +33,13 @@ const init = ({ modelSelection }: { modelSelection: TModelSelection }) => {
   return loadSegmenter({ modelSelection });
 };
 
-const processVideo = (imageBitmap) => {
+const processVideo = async (imageBitmap: ImageBitmap) => {
   return bodySegmentation(segmenter, {
     imageBitmap,
   });
 };
 
-const changeParams = ({ modelSelection }: { modelSelection: TModelSelection }) => {
+const changeParams = async ({ modelSelection }: { modelSelection: TModelSelection }) => {
   setStateValue('modelSelection', modelSelection);
 
   resetOffScreenCanvases();

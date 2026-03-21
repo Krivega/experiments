@@ -1,18 +1,19 @@
-import { createOffScreenCanvas, renderImageDataToCanvas } from '@experiments/utils/src/canvas';
+import { canvasUtils } from '@experiments/utils';
 import * as tensorflowBodySegmentation from '@tensorflow-models/body-segmentation';
+
 import type { Segmentation } from '@tensorflow-models/body-segmentation/dist/shared/calculators/interfaces/common_interfaces';
 
-let offScreenCanvases = {};
+let offScreenCanvases: Record<string, OffscreenCanvas> = {};
 
 export const resetOffScreenCanvases = () => {
   offScreenCanvases = {};
 };
 
-const ensureOffscreenCanvasCreated = (id, width, height) => {
+const ensureOffscreenCanvasCreated = (id: string, width: number, height: number) => {
   const key = `${id}_${width}_${height}`;
 
-  if (!offScreenCanvases[key]) {
-    offScreenCanvases[key] = createOffScreenCanvas(width, height);
+  if (!(key in offScreenCanvases)) {
+    offScreenCanvases[key] = canvasUtils.createOffScreenCanvas(width, height);
   }
 
   return offScreenCanvases[key];
@@ -35,7 +36,7 @@ export const createPersonMask = async (segmentation: Segmentation[]) => {
   const { width, height } = backgroundDarkeningMask;
   const canvas = ensureOffscreenCanvasCreated('blurredMask', width, height);
 
-  renderImageDataToCanvas(backgroundDarkeningMask, canvas);
+  canvasUtils.renderImageDataToCanvas(backgroundDarkeningMask, canvas);
 
   return canvas.transferToImageBitmap();
 };

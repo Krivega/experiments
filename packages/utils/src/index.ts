@@ -3,6 +3,9 @@ export * as canvasUtils from './canvas';
 export { default as copyTextToClipboard } from './copyTextToClipboard';
 export { default as Counter } from './Counter';
 export { default as createVideoFromMediaStream } from './createVideoFromMediaStream';
+export { default as mediaStreamToVideo } from './mediaStreamToVideo';
+export { default as createFpsMeter } from './createFpsMeter';
+export { default as createFPSCounter } from './createFPSCounter';
 export * as dateUtils from './date';
 export { default as decodeJwtToken } from './decodeJwtToken';
 export { default as dispatchGlobalEvent } from './dispatchGlobalEvent';
@@ -15,4 +18,5 @@ export { skipDuplicatedCalls } from './skipDuplicatedCalls';
 export * as uiUtils from './ui';
 export * as utils from './utils';
 
+export * as workerUtils from './worker';
 export type * from './types';

@@ -1,9 +1,9 @@
 type TState = {
   algorithm?: string;
   segmentationThreshold?: string;
-  edgeBlurAmount?: string;
+  edgeBlurAmount?: number;
   multiPersonDecoding?: string;
-  scale?: string;
+  scale?: number;
   architecture?: string;
   outputStride?: string;
   multiplier?: string;
@@ -17,10 +17,10 @@ const createState = () => {
   const getState = (): TState => {
     return state;
   };
-  const getStateValue = (name: string): string | undefined => {
-    return state[name];
+  const getStateValue = (name: keyof TState) => {
+    return state[name as keyof TState];
   };
-  const setStateValue = (name: string, value?: string) => {
+  const setStateValue = <K extends keyof TState>(name: K, value?: TState[K]) => {
     state[name] = value;
   };
 
