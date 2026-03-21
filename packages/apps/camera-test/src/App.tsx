@@ -290,7 +290,11 @@ const App = () => {
     requesterDevices
       .request([])
       .then((devices) => {
-        setVideoDeviceList(devices);
+        setVideoDeviceList(
+          devices.filter((device) => {
+            return device.kind === 'videoinput';
+          }),
+        );
       })
       .catch((error: unknown) => {
         console.error('🚀 ~ file: App.tsx:207 ~ useEffect ~ error', error);

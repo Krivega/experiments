@@ -31,7 +31,8 @@ type TProps = {
   value: {
     type: string;
     default: boolean;
-    disabled: boolean;
+    /** Set by App from track capabilities; optional for static config. */
+    disabled?: boolean;
     defaultObj: { exact: boolean; ideal: boolean };
   };
   updateConstraints: (additionalConstraints: MediaTrackConstraints) => void;
@@ -46,6 +47,8 @@ const BooleanConstraint: React.FC<TProps> = ({
   updateConstraints,
   classes,
 }) => {
+  const isControlDisabled = value.disabled === true;
+
   const resolveHandleBooleanConstraintsChange = (key: string) => {
     return ({ target }: React.ChangeEvent<HTMLInputElement>) => {
       const { name, checked } = target;
@@ -85,6 +88,8 @@ const BooleanConstraint: React.FC<TProps> = ({
   const showAdvanced =
     constraintValue !== undefined && constraintValue !== null && constraintValue !== false;
 
+  const disabledLabelSx = isControlDisabled ? { color: 'text.disabled' } : undefined;
+
   const children = (
     <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
       <FormControlLabel
@@ -92,12 +97,20 @@ const BooleanConstraint: React.FC<TProps> = ({
           <Checkbox
             checked={isBooleanSubfieldChecked(constraints, constraintKey, 'exact')}
             color="default"
+            disabled={isControlDisabled}
             name="exact"
             size="small"
             onChange={handleBooleanConstraintsChange}
           />
         }
-        label="exact"
+        disabled={isControlDisabled}
+        label={
+          <Typography component="span" sx={disabledLabelSx} variant="body2">
+            exact
+          </Typography>
+        }
+        labelPlacement="start"
+        sx={{ justifyContent: 'space-between', m: 0, width: '100%' }}
       />
 
       <FormControlLabel
@@ -105,30 +118,45 @@ const BooleanConstraint: React.FC<TProps> = ({
           <Checkbox
             checked={isBooleanSubfieldChecked(constraints, constraintKey, 'ideal')}
             color="default"
+            disabled={isControlDisabled}
             name="ideal"
             size="small"
             onChange={handleBooleanConstraintsChange}
           />
         }
-        label="ideal"
+        disabled={isControlDisabled}
+        label={
+          <Typography component="span" sx={disabledLabelSx} variant="body2">
+            ideal
+          </Typography>
+        }
+        labelPlacement="start"
+        sx={{ justifyContent: 'space-between', m: 0, width: '100%' }}
       />
     </Box>
   );
 
   return (
-    <FormControl className={classes.formControl} variant="filled">
+    <FormControl className={classes.formControl} disabled={isControlDisabled} variant="filled">
       <FormGroup>
         <FormControlLabel
           control={
             <Checkbox
               checked={constraintValue === true}
               color="default"
-              disabled={value.disabled}
+              disabled={isControlDisabled}
               name={constraintKey}
               onChange={handleBooleanConstraintsChange}
             />
           }
-          label={<Typography variant="h6">{constraintKey}</Typography>}
+          disabled={isControlDisabled}
+          label={
+            <Typography sx={disabledLabelSx} variant="h6">
+              {constraintKey}
+            </Typography>
+          }
+          labelPlacement="start"
+          sx={{ alignItems: 'center', justifyContent: 'space-between', m: 0, width: '100%' }}
         />
 
         {showAdvanced ? children : undefined}

@@ -1,6 +1,7 @@
+import RotateLeft from '@mui/icons-material/RotateLeft';
+import Tv from '@mui/icons-material/Tv';
 import AppBar from '@mui/material/AppBar';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import Icon from '@mui/material/Icon';
 import React from 'react';
 
 import ButtonAction from './ButtonAction';
@@ -20,7 +21,7 @@ const AppBarTop: React.FC<TProps> = ({ classes, requestStream, resetState }) => 
         <ButtonAction
           classes={classes}
           color="primary"
-          icon={<Icon className={classes.extendedIcon}>Tv</Icon>}
+          icon={<Tv className={classes.extendedIcon} fontSize="small" />}
           onClick={requestStream}
         >
           Request
@@ -29,7 +30,7 @@ const AppBarTop: React.FC<TProps> = ({ classes, requestStream, resetState }) => 
         <ButtonAction
           classes={classes}
           color="default"
-          icon={<Icon className={classes.extendedIcon}>RotateLeft</Icon>}
+          icon={<RotateLeft className={classes.extendedIcon} fontSize="small" />}
           onClick={resetState}
         >
           Reset
