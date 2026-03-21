@@ -7,7 +7,6 @@
     "packages/video-processor",
     "packages/utils"
   ],
-  "useWorkspaces": true,
   "npmClient": "yarn",
   "command": {
     "run": { "npmClient": "yarn" },

@@ -12,7 +12,7 @@
     "deps:update": "ncu -u",
     "format": "prettier --write \"src/**/*.{js,ts,tsx,json}\"",
     "lint": "yarn lint:js && yarn lint:ts",
-    "lint:js": "eslint src/. --ext .js,.jsx,.ts,.tsx",
+    "lint:js": "eslint src/. --ext .js,.jsx,.ts,.tsx --max-warnings 0 --cache --cache-strategy=content",
     "lint:ts": "tsc",
     "precommit": "lint-staged",
     "test": "react-scripts test --verbose=false --passWithNoTests"

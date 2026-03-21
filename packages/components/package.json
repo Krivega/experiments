@@ -12,7 +12,7 @@
     "deps:update": "ncu -u",
     "format": "prettier --write \"src/**/*.{js,ts,tsx,json}\"",
     "lint": "yarn lint:js && yarn lint:ts",
-    "lint:js": "eslint src/. --ext .js,.jsx,.ts,.tsx",
+    "lint:js": "eslint src/. --ext .js,.jsx,.ts,.tsx --max-warnings 0 --cache --cache-strategy=content",
     "lint:ts": "tsc",
     "precommit": "lint-staged",
     "test": "react-scripts test --verbose=false --passWithNoTests"
@@ -36,11 +36,11 @@
     }
   },
   "dependencies": {
-    "lodash": "^4.17.21",
-    "react": "^18.2.0"
+    "lodash": "^4.17.23",
+    "react": "^19.2.4"
   },
   "devDependencies": {
-    "lint-staged": "14.0.1"
+    "lint-staged": "16.4.0"
   },
   "main:src": "src/index.ts"
 }
