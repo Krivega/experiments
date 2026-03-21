@@ -1,6 +1,35 @@
 {
   "extends": "./tsconfig.build.json",
   "compilerOptions": {
-    "baseUrl": "."
-  }
+    "baseUrl": ".",
+  },
+  "exclude": [
+    "node_modules",
+    "packages/**/node_modules",
+    "packages/apps/**/node_modules",
+    "**/node_modules/*",
+    "scripts/config/node_modules",
+    ".git",
+    ".app-cache",
+    ".npm",
+    ".npm-tmp",
+    "dist",
+    "**/dist/*",
+    "packages/**/dist",
+    "packages/apps/**/dist",
+    "out",
+    "**/out/*",
+    "packages/**/out",
+    "packages/apps/**/out",
+    "build",
+    "*-build",
+    "**/build/*",
+    "packages/**/build",
+    "packages/apps/**/build",
+    "packages/apps/**/*-build",
+    "public",
+    "**/public/*",
+    "packages/**/public",
+    "packages/apps/**/public",
+  ],
 }

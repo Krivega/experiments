@@ -13,20 +13,20 @@
     ],
     "allowJs": true,
     "checkJs": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noImplicitReturns": true,
     "noImplicitAny": false,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react-jsx"
   },
-
-  "exclude": ["node_modules", "dist", "build"]
+  "exclude": ["node_modules", "dist", "build", "public"]
 }
