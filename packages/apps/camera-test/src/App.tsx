@@ -1,5 +1,8 @@
-import getVideoTracks from '@experiments/mediastream-api/src/getVideoTracks';
-import requestDevices from '@experiments/system-devices/src/requestDevices';
+/* eslint-disable react/hook-use-state */
+/* eslint-disable unicorn/no-null */
+/* eslint-disable no-console */
+import { extractVideoTrack } from '@experiments/mediastream-api';
+import { RequesterDevices } from '@experiments/system-devices';
 import Box from '@material-ui/core/Box';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
@@ -7,6 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import React, { useCallback, useEffect, useState } from 'react';
+
 import { NUMBER_CONSTRAINT, STRING_OPTION_CONSTRAINT } from './constants';
 import { videoConstraints } from './constraints';
 import AppBarTop from './containers/AppBarTop';
@@ -20,15 +24,18 @@ import defaultState from './defaultState';
 import requestMediaStream from './requestMediaStream';
 import useStyles from './useStyles';
 
+import type { TState } from './defaultState';
+
 type TSnackBar = {
   isOpen: boolean;
   message: string;
   autoHideDuration: number | null;
 };
 
-// @ts-ignore
-const storedState = JSON.parse(localStorage.getItem('state')) || {};
-const initialState = { ...defaultState, ...storedState };
+const requesterDevices = new RequesterDevices();
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+const storedState = JSON.parse(localStorage.getItem('state') ?? '{}') ?? {};
+const initialState: TState = { ...defaultState, ...storedState } as TState;
 
 const App = () => {
   const classes = useStyles();
@@ -45,8 +52,9 @@ const App = () => {
 
   const [constraints, setConstraints] = React.useState<MediaTrackConstraints>({});
   const [trackSettings, setTrackSettings] = React.useState<MediaTrackSettings>({});
-  const [availableConstraintsVideoTrack, setAvailableConstraintsVideoTrack] =
-    React.useState<null | Object>(null);
+  const [availableConstraintsVideoTrack, setAvailableConstraintsVideoTrack] = React.useState<
+    null | object
+  >(null);
   const [missingConstraints, setMissingConstraints] = useState<string[]>([]);
 
   useEffect(() => {
@@ -54,7 +62,7 @@ const App = () => {
       return;
     }
 
-    const videoTrack = getVideoTracks(mediaStream)[0];
+    const videoTrack = extractVideoTrack(mediaStream);
 
     console.log('🚀 ~ file: App.tsx:58 ~ useEffect ~ videoTrack', videoTrack);
 
@@ -62,10 +70,10 @@ const App = () => {
 
     console.log('🚀 ~ file: App.tsx:60 ~ useEffect ~ trackCapabilities', trackCapabilities);
 
-    const irrelevantCapabilities = ['deviceId', 'groupId'];
+    const irrelevantCapabilities = new Set(['deviceId', 'groupId']);
     const missingConstraintsFromCapabilities = Object.entries(trackCapabilities)
       .filter(([key]) => {
-        return !(key in videoConstraints) && !irrelevantCapabilities.includes(key);
+        return !(key in videoConstraints) && !irrelevantCapabilities.has(key);
       })
       .map(([key]) => {
         return key;
@@ -175,9 +183,13 @@ const App = () => {
       setTrackSettings,
       constraints,
       onFail: onFailRequestMediaStream,
-    }).finally(() => {
-      setInitialized(true);
-    });
+    })
+      .catch((error: unknown) => {
+        console.error('🚀 ~ file: App.tsx:186 ~ useEffect ~ error', error);
+      })
+      .finally(() => {
+        setInitialized(true);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [constraints]);
 
@@ -198,7 +210,14 @@ const App = () => {
   }, [videoDeviceId]);
 
   useEffect(() => {
-    requestDevices({ setVideoDeviceList });
+    requesterDevices
+      .request([])
+      .then((devices) => {
+        setVideoDeviceList(devices);
+      })
+      .catch((error: unknown) => {
+        console.error('🚀 ~ file: App.tsx:207 ~ useEffect ~ error', error);
+      });
   }, []);
 
   useEffect(() => {
@@ -211,39 +230,44 @@ const App = () => {
     <Box sx={{ display: 'flex' }}>
       <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}>
         <CssBaseline />
+
         <AppBarTop classes={classes} requestStream={requestStream} resetState={resetState} />
+
         <UserMedia classes={classes} mediaStream={mediaStream} />
+
         <Snackbar
+          autoHideDuration={snackbarState.autoHideDuration}
           handleClose={() => {
             setSnackbarState((prevState) => {
               return { ...prevState, isOpen: false };
             });
           }}
-          open={snackbarState.isOpen}
           message={snackbarState.message}
-          autoHideDuration={snackbarState.autoHideDuration}
+          open={snackbarState.isOpen}
         />
 
-        <Grid container spacing={2} className={classes.codes}>
+        <Grid container className={classes.codes} spacing={2}>
           <Grid item xs={6}>
             <Code
+              classes={classes}
               heading="REQUESTED CONSTRAINTS"
               settings={{ audio: false, video: constraints }}
-              classes={classes}
             />
           </Grid>
+
           <Grid item xs={6}>
             <Code
+              classes={classes}
               heading="TRACK SETTINGS"
               settings={{ audio: false, video: trackSettings }}
-              classes={classes}
             />
           </Grid>
         </Grid>
 
-        {!!missingConstraints.length && (
+        {missingConstraints.length > 0 && (
           <div>
             <Heading>MISSING CONSTRAINTS</Heading>
+
             <List>
               {missingConstraints.map((constraint) => {
                 return <ListItem key={constraint}>{constraint}</ListItem>;
@@ -251,22 +275,24 @@ const App = () => {
             </List>
           </div>
         )}
-        <PageLoader isLoading={isLoading} classes={classes} />
+
+        <PageLoader classes={classes} isLoading={isLoading} />
       </Box>
-      {isInitialized && (
-        <Drawer open anchor="right" variant="permanent" className={classes.drawerRoot}>
+
+      {isInitialized ? (
+        <Drawer open anchor="right" className={classes.drawerRoot} variant="permanent">
           <SettingsDrawer
+            classes={classes}
+            constraints={constraints}
+            setVideoDeviceFromId={setVideoDeviceFromId}
             trackSettings={trackSettings}
+            updateConstraints={updateConstraints}
+            videoConstraintsList={availableConstraintsVideoTrack}
             videoDeviceId={videoDeviceId}
             videoDeviceList={videoDeviceList}
-            setVideoDeviceFromId={setVideoDeviceFromId}
-            videoConstraintsList={availableConstraintsVideoTrack}
-            constraints={constraints}
-            updateConstraints={updateConstraints}
-            classes={classes}
           />
         </Drawer>
-      )}
+      ) : null}
     </Box>
   );
 };

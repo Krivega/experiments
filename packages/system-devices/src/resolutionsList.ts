@@ -18,7 +18,7 @@ export const resolution360p = {
   height: 360,
   aspectRatio: 16 / 9,
 };
-const resolution720p = {
+export const resolution720p = {
   id: ID_720P,
   width: 1280,
   height: 720,

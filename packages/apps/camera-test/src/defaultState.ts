@@ -1,7 +1,14 @@
-import { ID_720P } from '@experiments/system-devices/src/resolutionsList';
+import { resolution720p } from '@experiments/system-devices';
 
-const defaultState = {
-  resolutionId: ID_720P,
+export type TState = {
+  resolutionId: string;
+  videoDeviceId: string;
+  audioInputDeviceId: string;
+  edgeBlurAmount: number;
+};
+
+const defaultState: TState = {
+  resolutionId: resolution720p.id,
   videoDeviceId: '',
   audioInputDeviceId: '',
   edgeBlurAmount: 4,

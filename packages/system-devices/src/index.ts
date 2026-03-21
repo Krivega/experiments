@@ -6,5 +6,10 @@ export {
 export { hasDefinedDeviceId } from './hasDefinedDeviceId';
 export { debug, disableDebug, enableDebug } from './logger';
 export { default as RequesterDevices } from './RequesterDevices';
-export { hasAutoResolution, resolution360p, default as resolutionsList } from './resolutionsList';
+export {
+  hasAutoResolution,
+  resolution360p,
+  resolution720p,
+  default as resolutionsList,
+} from './resolutionsList';
 export type { TIdResolution } from './resolutionsList';

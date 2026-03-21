@@ -3,19 +3,17 @@
   "version": "0.0.0",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "react-scripts build",
-    "build:stats": "yarn build --stats",
+    "build": "vite build",
     "deps:check": "ncu",
     "deps:update": "ncu -u",
     "format": "prettier --write \"src/**/*.{js,ts,tsx,json}\"",
-    "lint": "yarn lint:js && yarn lint:ts",
+    "lint": "yarn lint:ts && yarn lint:js",
     "lint:js": "eslint src/. --ext .js,.jsx,.ts,.tsx --max-warnings 0 --cache --cache-strategy=content",
     "lint:ts": "tsc",
     "precommit": "lint-staged",
-    "start": "react-scripts start",
-    "test": "react-scripts test --verbose=false",
-    "test:circular": "madge --circular src/index.tsx",
-    "test:nowatch": "yarn test --watchAll=false"
+    "start": "vite",
+    "test": "jest",
+    "test:circular": "madge --circular src/index.tsx"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -37,24 +35,25 @@
     }
   },
   "dependencies": {
-    "@experiments/components": "^0.0.0",
-    "@experiments/mediastream-api": "^0.0.0",
-    "@experiments/system-devices": "^0.0.0",
-    "@experiments/utils": "^0.0.0",
+    "@experiments/components": "*",
+    "@experiments/mediastream-api": "*",
+    "@experiments/system-devices": "*",
+    "@experiments/utils": "*",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
-    "@testing-library/jest-dom": "^6.1.3",
-    "@testing-library/react": "^14.0.0",
-    "@testing-library/user-event": "^14.4.3",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "prop-types": "^15.8.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "styled-components": "^6.0.7",
-    "web-vitals": "^3.4.0"
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "styled-components": "^6.3.12"
   },
   "devDependencies": {
-    "lint-staged": "14.0.1",
-    "madge": "^6.1.0",
-    "monorepo-react-scripts": "5.0.1-alpha.3"
+    "lint-staged": "16.4.0",
+    "vite": "^7.3.1",
+    "vite-plugin-dts": "^4.5.4",
+    "vite-tsconfig-paths": "^6.1.1",
+    "madge": "^8.0.0"
   }
 }
