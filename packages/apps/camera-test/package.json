@@ -4,6 +4,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "vite build",
+    "cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost'",
     "deps:check": "ncu",
     "deps:update": "ncu -u",
     "format": "prettier --write \"src/**/*.{js,ts,tsx,json}\"",
@@ -35,13 +36,16 @@
     }
   },
   "dependencies": {
+    "@emotion/cache": "^11.14.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@experiments/components": "*",
     "@experiments/mediastream-api": "*",
     "@experiments/system-devices": "*",
     "@experiments/utils": "*",
     "@mui/icons-material": "^7.3.9",
     "@mui/material": "^7.3.9",
-    "@mui/styles": "^7.3.9",
+    "@mui/styles": "^6.5.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
