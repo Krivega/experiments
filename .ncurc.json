@@ -1,7 +1,3 @@
 {
-  "reject": [
-    "@experiments/*",
-    "lerna",
-    "@lerna/filter-options"
-  ]
+  "reject": ["@experiments/*", "eslint"]
 }

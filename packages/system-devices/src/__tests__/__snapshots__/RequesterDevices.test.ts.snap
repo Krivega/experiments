@@ -1,0 +1,138 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`RequesterDevices request: available 2 video devices 1`] = `
+[
+  {
+    "deviceId": "videoinputDeviceId",
+    "groupId": "groupIdvideoinput",
+    "id": "videoinputDeviceIdlabel videoinputvideoinput",
+    "kind": "videoinput",
+    "label": "label videoinput",
+  },
+  {
+    "deviceId": "videoinputDeviceId2",
+    "groupId": "groupIdvideoinput2",
+    "id": "videoinputDeviceId2label videoinput2videoinput",
+    "kind": "videoinput",
+    "label": "label videoinput2",
+  },
+  {
+    "deviceId": "audioinputDeviceId",
+    "groupId": "groupIdaudioinput",
+    "id": "audioinputDeviceIdlabel audioinputaudioinput",
+    "kind": "audioinput",
+    "label": "label audioinput",
+  },
+  {
+    "deviceId": "audiooutputDeviceId",
+    "groupId": "groupIdaudiooutput",
+    "id": "audiooutputDeviceIdlabel audiooutputaudiooutput",
+    "kind": "audiooutput",
+    "label": "label audiooutput",
+  },
+]
+`;
+
+exports[`RequesterDevices request: available all 1`] = `
+[
+  {
+    "deviceId": "videoinputDeviceId",
+    "groupId": "groupIdvideoinput",
+    "id": "videoinputDeviceIdlabel videoinputvideoinput",
+    "kind": "videoinput",
+    "label": "label videoinput",
+  },
+  {
+    "deviceId": "audioinputDeviceId",
+    "groupId": "groupIdaudioinput",
+    "id": "audioinputDeviceIdlabel audioinputaudioinput",
+    "kind": "audioinput",
+    "label": "label audioinput",
+  },
+  {
+    "deviceId": "audiooutputDeviceId",
+    "groupId": "groupIdaudiooutput",
+    "id": "audiooutputDeviceIdlabel audiooutputaudiooutput",
+    "kind": "audiooutput",
+    "label": "label audiooutput",
+  },
+]
+`;
+
+exports[`RequesterDevices request: not available audio 1`] = `
+[
+  {
+    "deviceId": "audioinputDeviceId",
+    "groupId": "groupIdaudioinput",
+    "id": "audioinputDeviceIdlabel audioinputaudioinput",
+    "kind": "audioinput",
+    "label": "label audioinput",
+  },
+  {
+    "deviceId": "audiooutputDeviceId",
+    "groupId": "groupIdaudiooutput",
+    "id": "audiooutputDeviceIdlabel audiooutputaudiooutput",
+    "kind": "audiooutput",
+    "label": "label audiooutput",
+  },
+]
+`;
+
+exports[`RequesterDevices request: not available audio and video 1`] = `
+[
+  {
+    "deviceId": "audiooutputDeviceId",
+    "groupId": "groupIdaudiooutput",
+    "id": "audiooutputDeviceIdlabel audiooutputaudiooutput",
+    "kind": "audiooutput",
+    "label": "label audiooutput",
+  },
+]
+`;
+
+exports[`RequesterDevices request: not available video 1`] = `
+[
+  {
+    "deviceId": "audioinputDeviceId",
+    "groupId": "groupIdaudioinput",
+    "id": "audioinputDeviceIdlabel audioinputaudioinput",
+    "kind": "audioinput",
+    "label": "label audioinput",
+  },
+  {
+    "deviceId": "audiooutputDeviceId",
+    "groupId": "groupIdaudiooutput",
+    "id": "audiooutputDeviceIdlabel audiooutputaudiooutput",
+    "kind": "audiooutput",
+    "label": "label audiooutput",
+  },
+]
+`;
+
+exports[`RequesterDevices request: user not access audio and video 1`] = `
+[
+  {
+    "deviceId": "videoinputDeviceId",
+    "groupId": "groupIdvideoinput",
+    "id": "videoinputDeviceIdlabel videoinputvideoinput",
+    "kind": "videoinput",
+    "label": "label videoinput",
+  },
+  {
+    "deviceId": "audioinputDeviceId",
+    "groupId": "groupIdaudioinput",
+    "id": "audioinputDeviceIdlabel audioinputaudioinput",
+    "kind": "audioinput",
+    "label": "label audioinput",
+  },
+  {
+    "deviceId": "audiooutputDeviceId",
+    "groupId": "groupIdaudiooutput",
+    "id": "audiooutputDeviceIdlabel audiooutputaudiooutput",
+    "kind": "audiooutput",
+    "label": "label audiooutput",
+  },
+]
+`;
+
+exports[`RequesterDevices request: without support 1`] = `[]`;

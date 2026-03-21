@@ -1,37 +1,54 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable no-param-reassign */
-/**
- * resolveSetConstraints
- * @param {Object} constraints constraints
- * @returns {Object} constraints
- */
-export const resolveSetConstraints = (constraints) => {
-  return (type) => {
-    return (key, value) => {
+import type {
+  MediaTrackCapabilitiesExtended,
+  TKeyMediaTrackCapabilities,
+  TKeyMediaTrackConstraints,
+  TValueMediaTrackConstraints,
+} from './typings';
+
+export const resolveSetConstraints = (constraints: MediaTrackConstraints) => {
+  return (type: 'exact' | 'ideal' | 'max' | 'min') => {
+    return (key: TKeyMediaTrackConstraints, value: TValueMediaTrackConstraints) => {
       if (!value) {
-        return undefined;
+        return;
       }
 
-      if (!constraints[key]) {
-        constraints[key] = {};
-      }
+      // @ts-ignore
+      constraints[key] ??= {};
 
-      return Object.assign(constraints[key], { [type]: value });
+      // @ts-ignore
+      Object.assign(constraints[key], { [type]: value });
     };
   };
 };
-/* eslint-enable no-param-reassign */
 
-/* eslint-disable no-param-reassign */
-/**
- * resolveSetProp
- * @param {Object} obj obj
- * @returns {void}
- */
-export const resolveSetProp = (obj) => {
-  return (key, value) => {
+export const resolveSetProperty = (constraints: MediaTrackConstraints) => {
+  return (key: TKeyMediaTrackConstraints, value: TValueMediaTrackConstraints) => {
     if (value) {
-      obj[key] = value;
+      // @ts-ignore
+      constraints[key] = value;
     }
   };
 };
-/* eslint-enable no-param-reassign */
+
+export const hasCapability = (
+  capabilities: MediaTrackCapabilitiesExtended,
+  key: TKeyMediaTrackCapabilities,
+) => {
+  const capability = capabilities[key];
+
+  if (capability === undefined) {
+    return false;
+  }
+
+  if (typeof capability === 'boolean') {
+    return capability;
+  }
+
+  if (typeof capability === 'string') {
+    return capability !== '';
+  }
+
+  return !!capability;
+};

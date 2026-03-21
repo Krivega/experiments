@@ -2,22 +2,24 @@
 import debounce from 'lodash/debounce';
 import { useEffect, useMemo } from 'react';
 
-const useMemoizedDebounce = <T extends (...args: any) => any>(
-  func: T,
-  delay: number,
-  deps?: any[],
-) => {
-  const resultFunc = useMemo(() => {
-    return debounce<T>(func, delay);
+import type { DependencyList } from 'react';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TFunctionDebounced = { (): any; cancel: () => void };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const useMemoizedDebounce = (function_: () => any, delay: number, deps: DependencyList) => {
+  const resultFunction = useMemo<TFunctionDebounced>(() => {
+    return debounce(function_, delay);
   }, deps);
 
   useEffect(() => {
     return () => {
-      resultFunc.cancel();
+      resultFunction.cancel();
     };
   }, []);
 
-  return resultFunc;
+  return resultFunction;
 };
 
 export default useMemoizedDebounce;

@@ -1,22 +1,21 @@
-import { resolveSetConstraints, resolveSetProp } from './utils';
+import { resolveSetConstraints, resolveSetProperty } from './utils';
 
-const isEmpty = require('lodash/isEmpty');
-
-type TOptionsPrepareConstraints = {
+export type TOptionsPrepareConstraints = {
   audio?: boolean;
   video?: boolean;
   audioDeviceId?: string;
   videoDeviceId?: string;
-  width?: string | number;
-  height?: string | number;
-  maxWidth?: string | number;
-  maxHeight?: string | number;
-  minWidth?: string | number;
-  minHeight?: string | number;
-  aspectRatio?: string | number;
-  mozMediaSource?: any;
-  mediaSource?: any;
+  width?: number | string;
+  height?: number | string;
+  maxWidth?: number | string;
+  maxHeight?: number | string;
+  minWidth?: number | string;
+  minHeight?: number | string;
+  aspectRatio?: number | string;
+  mozMediaSource?: unknown;
+  mediaSource?: unknown;
   echoCancellation?: boolean;
+  sampleRate?: number;
 };
 
 const prepareConstraints = ({
@@ -34,6 +33,7 @@ const prepareConstraints = ({
   mozMediaSource,
   mediaSource,
   echoCancellation,
+  sampleRate,
 }: TOptionsPrepareConstraints): {
   audio: MediaTrackConstraints | boolean;
   video: MediaTrackConstraints | boolean;
@@ -44,19 +44,23 @@ const prepareConstraints = ({
   const setIdealVideoConstraints = resolveSetVideoConstraints('ideal');
   const setMaxVideoConstraints = resolveSetVideoConstraints('max');
   const setMinVideoConstraints = resolveSetVideoConstraints('min');
-  const setPropVideoConstraints = resolveSetProp(videoConstraints);
+  const setPropertyVideoConstraints = resolveSetProperty(videoConstraints);
 
-  let audioConstraints: MediaTrackConstraints | boolean = audioDeviceId ? audio : false;
+  let audioConstraints: MediaTrackConstraints | boolean =
+    audioDeviceId === undefined ? false : audio;
 
-  if (audioDeviceId && audio) {
+  if (audioDeviceId !== undefined && audio) {
     audioConstraints = {
       deviceId: { exact: audioDeviceId },
       echoCancellation,
+      sampleRate,
     };
   }
 
-  setPropVideoConstraints('mozMediaSource', mozMediaSource);
-  setPropVideoConstraints('mediaSource', mediaSource);
+  // @ts-ignore
+  setPropertyVideoConstraints('mozMediaSource', mozMediaSource);
+  // @ts-ignore
+  setPropertyVideoConstraints('mediaSource', mediaSource);
   setExactVideoConstraints('deviceId', videoDeviceId);
   setIdealVideoConstraints('width', width);
   setIdealVideoConstraints('height', height);
@@ -66,7 +70,7 @@ const prepareConstraints = ({
   setMinVideoConstraints('width', minWidth);
   setMinVideoConstraints('height', minHeight);
 
-  if (isEmpty(videoConstraints)) {
+  if (Object.keys(videoConstraints).length === 0) {
     videoConstraints = true;
   }
 

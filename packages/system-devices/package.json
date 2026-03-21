@@ -3,10 +3,19 @@
   "version": "0.0.0",
   "private": true,
   "license": "UNLICENSED",
-  "main": "src/index.ts",
-  "files": [
-    "dist"
-  ],
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./testUtils": {
+      "import": "./src/testUtils.ts",
+      "default": "./src/testUtils.ts"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "deps:check": "ncu",
     "deps:update": "ncu -u",
@@ -36,13 +45,14 @@
     }
   },
   "dependencies": {
-    "@experiments/mediastream-api": "^0.0.0",
-    "@experiments/utils": "^0.0.0",
-    "@krivega/cancelable-promise": "^0.5.0",
-    "lodash": "^4.17.21"
+    "@experiments/mediastream-api": "*",
+    "@experiments/utils": "*",
+    "debug": "^4.4.3",
+    "@krivega/cancelable-promise": "^1.1.4",
+    "webrtc-mock": "^1.2.1"
   },
   "devDependencies": {
-    "lint-staged": "14.0.1"
-  },
-  "main:src": "src/index.ts"
+    "lint-staged": "16.4.0",
+    "@types/debug": "^4.1.13"
+  }
 }

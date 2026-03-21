@@ -3,10 +3,21 @@
   "version": "0.0.0",
   "private": true,
   "license": "UNLICENSED",
-  "main": "src/index.ts",
-  "files": [
-    "dist"
-  ],
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./doMock": {
+      "import": "./src/doMock.ts",
+      "default": "./src/doMock.ts"
+    },
+    "./testUtils": {
+      "import": "./src/testUtils.ts",
+      "default": "./src/testUtils.ts"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "deps:check": "ncu",
     "deps:update": "ncu -u",
@@ -36,10 +47,15 @@
     }
   },
   "dependencies": {
-    "stats-js": "^1.0.1"
+    "@krivega/cancelable-promise": "^1.1.4",
+    "copy-to-clipboard": "^3.3.3",
+    "jest-canvas-mock": "^2.5.2",
+    "jwt-decode": "^4.0.0",
+    "webrtc-mock": "^1.2.1",
+    "whatwg-fetch": "^3.6.20"
   },
   "devDependencies": {
-    "lint-staged": "14.0.1"
-  },
-  "main:src": "src/index.ts"
+    "jest-extended": "^7.0.0",
+    "lint-staged": "16.4.0"
+  }
 }

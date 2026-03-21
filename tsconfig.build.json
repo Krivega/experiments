@@ -9,7 +9,10 @@
       "react-dom",
       "offscreencanvas",
       "dom-mediacapture-transform",
-      "audioworklet"
+      "audioworklet",
+      "wicg-file-system-access",
+      "jest",
+      "jest-extended"
     ],
     "allowJs": true,
     "checkJs": true,

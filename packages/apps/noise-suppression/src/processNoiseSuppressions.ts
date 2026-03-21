@@ -3,7 +3,7 @@ import NoiseSuppressionEffect, { enableDebug } from './noiseSuppression';
 
 enableDebug();
 
-const workletUrl = getPathWithPublic(`@vinteo/noise-suppression/noiseSuppressorWorklet.es.js`);
+const workletUrl = getPathWithPublic(`@experiments/noise-suppression/noiseSuppressorWorklet.es.js`);
 
 const noiseSuppressionEffect = new NoiseSuppressionEffect(workletUrl);
 

@@ -1,10 +1,11 @@
+import * as React from 'react';
+
 import type { DependencyList, EffectCallback } from 'react';
-import { useEffect, useRef } from 'react';
 
-const useNonInitialEffect = (effect: EffectCallback, deps?: DependencyList) => {
-  const initialRender = useRef(true);
+const useNoneInitialEffect = (effect: EffectCallback, deps?: DependencyList) => {
+  const initialRender = React.useRef(true);
 
-  useEffect(() => {
+  React.useEffect(() => {
     let effectReturns: ReturnType<EffectCallback> = () => {};
 
     if (initialRender.current) {
@@ -14,9 +15,8 @@ const useNonInitialEffect = (effect: EffectCallback, deps?: DependencyList) => {
     }
 
     return effectReturns;
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 };
 
-export default useNonInitialEffect;
+export default useNoneInitialEffect;

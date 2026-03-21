@@ -1,21 +1,11 @@
-import repeatedCalls from 'repeated-calls';
+import stopTrack from './stopTrack';
 
-const stopTracksMediaStream = (mediaStream: MediaStream) => {
+const stopTracksMediaStream = async (mediaStream: MediaStream): Promise<void> => {
   return Promise.all(
-    mediaStream.getTracks().map((track) => {
-      const stopTrack = () => {
-        track.stop();
-      };
-      const isEndedTrack = () => {
-        return track.readyState === 'ended';
-      };
-
-      return repeatedCalls({
-        targetFunction: stopTrack,
-        isComplete: isEndedTrack,
-      });
+    mediaStream.getTracks().map(async (track: MediaStreamTrack) => {
+      return stopTrack(track);
     }),
-  );
+  ).then(() => {});
 };
 
 export default stopTracksMediaStream;

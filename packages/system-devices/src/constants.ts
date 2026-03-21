@@ -1,3 +1,9 @@
-export const VIDEO_KIND = 'videoinput';
-export const AUDIO_INPUT_KIND = 'audioinput';
-export const AUDIO_OUTPUT_KIND = 'audiooutput';
+export const VIDEO_KIND = 'videoinput' as MediaDeviceKind;
+export const AUDIO_INPUT_KIND = 'audioinput' as MediaDeviceKind;
+export const AUDIO_OUTPUT_KIND = 'audiooutput' as MediaDeviceKind;
+export const ID_AUTO = 'auto';
+export const ID_CIF = 'CIF';
+export const ID_360P = '360p';
+export const ID_720P = '720p';
+export const ID_1080P = '1080p';
+export const ID_4K = '4k';

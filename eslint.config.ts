@@ -73,4 +73,6 @@ export default defineConfig([
   createPackageConfig('packages/system-devices', [jestConfig]),
   createPackageConfig('packages/video-processor', [jestConfig]),
   createPackageConfig('packages/utils', [jestConfig]),
+  createPackageConfig('packages/timeout-requester', [jestConfig]),
+  createPackageConfig('packages/audio-utils', [jestConfig]),
 ]);

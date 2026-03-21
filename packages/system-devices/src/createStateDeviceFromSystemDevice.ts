@@ -1,11 +1,23 @@
-const generateIdDeviceFromSystemDevice = (device) => {
+export type TMediaDeviceInfoWithID = MediaDeviceInfo & { id: string };
+
+const generateIdDeviceFromSystemDevice = (device: MediaDeviceInfo): string => {
   return `${device.deviceId}${device.label}${device.kind}`;
 };
 
-const createStateDeviceFromSystemDevice = (systemDevice) => {
-  return {
+const createStateDeviceFromSystemDevice = (
+  systemDevice: MediaDeviceInfo,
+): TMediaDeviceInfoWithID => {
+  const device = {
     ...systemDevice,
     id: generateIdDeviceFromSystemDevice(systemDevice),
+  };
+
+  return {
+    ...device,
+
+    toJSON() {
+      return device;
+    },
   };
 };
 

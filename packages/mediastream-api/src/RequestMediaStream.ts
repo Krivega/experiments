@@ -1,110 +1,75 @@
-import { getCancelableMediaStream } from './index';
+import { CancelableRequest } from '@krivega/cancelable-promise';
+
+import getMediaStream from './getMediaStream';
 import stopTracksMediaStream from './stopTracksMediaStream';
 
+import type prepareConstraints from './prepareConstraints';
+
+const onCancelMediaStreamRequest = (basePromise: Promise<MediaStream>) => {
+  basePromise.then(stopTracksMediaStream).catch((error: unknown) => {
+    // eslint-disable-next-line no-console
+    console.log('basePromise.then ~ error:', error);
+  });
+};
+
+const createCancelableMediaStreamRequester = (
+  moduleName = 'createCancelableMediaStreamRequester',
+) => {
+  const cancelableRequest = new CancelableRequest(getMediaStream, {
+    moduleName,
+    afterCancelRequest: onCancelMediaStreamRequest,
+  });
+
+  return cancelableRequest;
+};
+
 export default class RequestMediaStream {
-  _mediaStream?: MediaStream;
+  private readonly cancelableMediaStreamRequester: ReturnType<
+    typeof createCancelableMediaStreamRequester
+  >;
 
-  _requested: boolean;
-
-  _requestObj?: ReturnType<typeof getCancelableMediaStream>;
-
-  /**
-   * @constructor
-   */
-  constructor() {
-    this._requested = false;
+  public constructor() {
+    this.cancelableMediaStreamRequester = createCancelableMediaStreamRequester();
   }
 
-  request = async (constraints, options) => {
-    this.requested = true;
-    this.cancelRequest();
+  public get requested() {
+    return this.cancelableMediaStreamRequester.requested;
+  }
 
-    await this.stopMediaStream();
-
-    this.requestObj = getCancelableMediaStream(constraints, options);
-
-    const mediaStream = await this.requestObj;
-
-    this.requested = false;
-    this.mediaStream = mediaStream;
+  public request = async (
+    constraints: Parameters<typeof prepareConstraints>[0] = {},
+    options = {},
+  ): Promise<MediaStream> => {
+    const mediaStream = await this.cancelableMediaStreamRequester.request({
+      options,
+      optionsConstraints: constraints,
+    });
 
     return mediaStream;
   };
 
-  /**
-   * cancelRequest
-   * @returns {void}
-   */
-  cancelRequest() {
-    const request = this.requestObj;
-
-    if (request) {
-      request.cancel();
-    }
-  }
-
-  /**
-   * stopMediaStream
-   * @returns {Promise|function} stopMediaStream
-   */
-  stopMediaStream = () => {
-    const { mediaStream } = this;
-
-    if (!mediaStream) {
-      return Promise.resolve();
-    }
-
-    return stopTracksMediaStream(mediaStream);
+  public requestAudioTrack = async (
+    constraints = {},
+    options = {},
+  ): Promise<MediaStreamAudioTrack> => {
+    return this.request(constraints, options).then((mediaStream: MediaStream) => {
+      return mediaStream.getAudioTracks()[0];
+    });
   };
 
-  /**
-   * mediaStream setter
-   * @param {Object} mediaStream mediaStream
-   * @returns {void}
-   */
-  set mediaStream(mediaStream) {
-    this._mediaStream = mediaStream;
-  }
+  public requestVideoTrack = async (
+    constraints = {},
+    options = {},
+  ): Promise<MediaStreamVideoTrack> => {
+    return this.request(constraints, options).then((mediaStream: MediaStream) => {
+      return mediaStream.getVideoTracks()[0];
+    });
+  };
 
-  /**
-   * mediaStream getter
-   * @returns {Object} mediaStream mediaStream
-   */
-  get mediaStream() {
-    return this._mediaStream;
-  }
-
-  /**
-   * requestObj setter
-   * @param {Object} request request
-   * @returns {void}
-   */
-  set requestObj(request) {
-    this._requestObj = request;
-  }
-
-  /**
-   * requestObj getter
-   * @returns {Object} requestObj requestObj
-   */
-  get requestObj() {
-    return this._requestObj;
-  }
-
-  /**
-   * requested setter
-   * @param {boolean} requested requested
-   * @returns {void}
-   */
-  set requested(requested) {
-    this._requested = requested;
-  }
-
-  /**
-   * requested getter
-   * @returns {boolean} true if request is active
-   */
-  get requested() {
-    return this._requested;
+  public cancelRequest() {
+    this.cancelableMediaStreamRequester.cancelRequest();
   }
 }
+
+export { isCanceledError as hasCanceledErrorRequestMediaStream } from '@krivega/cancelable-promise';
+export type { TErrorCanceled } from '@krivega/cancelable-promise';

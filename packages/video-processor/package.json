@@ -36,10 +36,10 @@
     }
   },
   "dependencies": {
-    "@experiments/components": "^0.0.0",
-    "@experiments/mediastream-api": "^0.0.0",
-    "@experiments/system-devices": "^0.0.0",
-    "@experiments/utils": "^0.0.0",
+    "@experiments/components": "*",
+    "@experiments/mediastream-api": "*",
+    "@experiments/system-devices": "*",
+    "@experiments/utils": "*",
     "@mediapipe/camera_utils": "0.3.1675466862",
     "@mediapipe/control_utils": "0.6.1675466023",
     "@mediapipe/drawing_utils": "0.3.1675466124",
@@ -49,6 +49,7 @@
     "@tensorflow/tfjs-converter": "3.19.0",
     "@tensorflow/tfjs-core": "3.19.0",
     "lodash": "^4.17.21",
+    "debug": "^4.4.3",
     "request-animation-runner": "^0.3.3"
   },
   "devDependencies": {

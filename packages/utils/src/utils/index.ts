@@ -1,0 +1,11 @@
+export { default as capitalize } from './capitalize';
+export { deleteCookie, getCookie, setCookie } from './cookie';
+export * as devicesResolvers from './devicesResolvers';
+export { default as getErrorMessage } from './getErrorMessage';
+export { default as getSubstringInsideSquareBrackets } from './getSubstringInsideSquareBrackets';
+export { default as hasInteractiveActiveElement } from './hasInteractiveActiveElement';
+export { default as isNumericString } from './isNumericString';
+export { default as removeDeprecatedSymbols } from './removeDeprecatedSymbols';
+export { default as replaceUnderscoresWithSpaces } from './replaceUnderscoresWithSpaces';
+export { default as splitArray } from './splitArray';
+export { default as trimTextWhenStartsWithSpace } from './trimTextWhenStartsWithSpace';
