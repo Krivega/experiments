@@ -1,5 +1,12 @@
 import { ID_1080P, ID_360P, ID_4K, ID_720P, ID_AUTO, ID_CIF } from './constants';
 
+export type TResolution = {
+  id: string;
+  width: number;
+  height: number;
+  aspectRatio: number;
+};
+
 const resolutionAuto = {
   id: ID_AUTO,
   width: 1280,

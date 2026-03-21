@@ -1,13 +1,13 @@
 import { getMediaStreamOrigin } from '@experiments/mediastream-api';
 import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
 
-const requestMediaStream = ({
+const requestMediaStream = async ({
   mediaStream,
   setMediaStream,
   setIsLoading,
   setTrackSettings,
   onSuccess = () => {},
-  onFail = (error: Error) => {},
+  onFail = (_error: Error) => {},
   constraints = {},
 }: {
   mediaStream: MediaStream | null;
@@ -17,18 +17,18 @@ const requestMediaStream = ({
   setMediaStream: (mediaStream: MediaStream) => void;
   setIsLoading: (isLoading: boolean) => void;
   setTrackSettings: (settings: MediaTrackSettings) => void;
-}): Promise<MediaStream | void> => {
+}): Promise<MediaStream | undefined> => {
   setIsLoading(true);
 
   return Promise.resolve()
-    .then(() => {
+    .then(async () => {
       if (mediaStream) {
-        return stopTracksMediaStream(mediaStream);
+        await stopTracksMediaStream(mediaStream);
       }
 
       return undefined;
     })
-    .then(() => {
+    .then(async () => {
       return getMediaStreamOrigin({
         audio: false,
         video: constraints,
@@ -41,8 +41,14 @@ const requestMediaStream = ({
       const settings = resultMediaStream.getVideoTracks()[0].getSettings();
 
       setTrackSettings(settings);
+
+      return resultMediaStream;
     })
-    .catch(onFail)
+    .catch((error: unknown) => {
+      onFail(error as Error);
+
+      return undefined;
+    })
     .finally(() => {
       setIsLoading(false);
     });

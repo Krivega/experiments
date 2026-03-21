@@ -1,8 +1,10 @@
+import List from '@mui/material/List';
 import React from 'react';
-import List from '@material-ui/core/List';
+
 import VideoConstraint from './VideoConstraint';
-import type { TClasses } from '../useStyles';
+
 import type { TVideoConstraints } from '../typings';
+import type { TClasses } from '../useStyles';
 
 type TProps = {
   classes: TClasses;
@@ -24,13 +26,13 @@ const ConstraintsList: React.FC<TProps> = ({
       {Object.entries(videoConstraintsList).map(([constraint, value]) => {
         return (
           <VideoConstraint
-            key={constraint}
-            constraint={constraint}
-            trackSettings={trackSettings}
-            value={value}
             classes={classes}
+            constraint={constraint}
             constraints={constraints}
+            key={constraint}
+            trackSettings={trackSettings}
             updateConstraints={updateConstraints}
+            value={value}
           />
         );
       })}

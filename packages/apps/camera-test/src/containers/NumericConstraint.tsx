@@ -1,7 +1,8 @@
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Slider from '@mui/material/Slider';
 import React, { useState, useEffect, useCallback } from 'react';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Slider from '@material-ui/core/Slider';
+
 import ToggleButton from './ToggleButton';
 
 type TProps = {
@@ -52,24 +53,25 @@ const NumericConstraint: React.FC<TProps> = ({
   trackSettings,
 }) => {
   const [isAdvanced, setIsAdvanced] = useState<boolean>(false);
-  const [sliderValue, setSliderValue] = useState<number>(+value.default.toFixed(3));
+  const defaultRounded = Number(value.default.toFixed(3));
+  const [sliderValue, setSliderValue] = useState<number>(defaultRounded);
 
   useEffect(() => {
     if (Object.keys(constraints).length === 0) {
-      setSliderValue(+value.default.toFixed(3));
+      setSliderValue(defaultRounded);
     }
-  }, [value.default, constraints]);
+  }, [defaultRounded, constraints]);
 
   const defaultMin = value.defaultObj.min;
   const defaultMax = value.defaultObj.max;
   const defaultStep = value.defaultObj.step;
   const isAspectRatio = hasAspectRatio(constraintKey);
   const isFrameRate = hasFrameRate(constraintKey);
-  const min = isAspectRatio ? +defaultMin.toFixed(3) : defaultMin;
+  const min = isAspectRatio ? Number(defaultMin.toFixed(3)) : defaultMin;
   let max = defaultMax;
 
   if (isFrameRate) {
-    max = +defaultMax.toFixed(3);
+    max = Number(defaultMax.toFixed(3));
   }
 
   if (isAspectRatio) {
@@ -81,47 +83,65 @@ const NumericConstraint: React.FC<TProps> = ({
     { value: max, label: `${max}` },
   ];
 
-  const step = defaultStep || getStep(constraintKey);
+  const step = defaultStep ?? getStep(constraintKey);
 
   const resolveHandleChangeNumericConstraint = (constraint: string) => {
     return (advancedSettingKey?: string) => {
-      return (event, val) => {
-        setSliderValue(val);
+      return (_event: Event, value_: number | number[]) => {
+        const nextValue = Array.isArray(value_) ? value_[0] : value_;
 
-        if (val === Math.round(value.defaultObj.min) && !advancedSettingKey) {
-          return updateConstraints({
+        setSliderValue(nextValue);
+
+        if (nextValue === Math.round(value.defaultObj.min) && advancedSettingKey === undefined) {
+          updateConstraints({
             [constraint]: undefined,
           });
+
+          return;
         }
 
-        if (advancedSettingKey && val === Math.round(value.defaultObj.min)) {
+        if (advancedSettingKey !== undefined && nextValue === Math.round(value.defaultObj.min)) {
           let entries: [string, unknown][] = [];
 
-          if (typeof constraints[constraint] === 'object') {
-            entries = Object.entries(constraints[constraint]).filter(([key]) => {
+          const currentUnknown: unknown = constraints[constraint as keyof MediaTrackConstraints];
+
+          if (typeof currentUnknown === 'object' && currentUnknown !== null) {
+            entries = Object.entries(currentUnknown as Record<string, unknown>).filter(([key]) => {
               return key !== advancedSettingKey;
             });
           }
 
           if (entries.length === 0) {
-            return updateConstraints({
+            updateConstraints({
               [constraint]: undefined,
             });
+
+            return;
           }
 
-          return updateConstraints({
+          updateConstraints({
             [constraint]: { ...Object.fromEntries(entries) },
           });
+
+          return;
         }
 
-        if (!advancedSettingKey) {
-          return updateConstraints({
-            [constraint]: val,
+        if (advancedSettingKey === undefined) {
+          updateConstraints({
+            [constraint]: nextValue,
           });
+
+          return;
         }
 
-        return updateConstraints({
-          [constraint]: { ...constraints[constraint], [advancedSettingKey]: val },
+        const baseUnknown: unknown = constraints[constraint as keyof MediaTrackConstraints];
+        const base: Record<string, number> =
+          typeof baseUnknown === 'object' && baseUnknown !== null
+            ? { ...(baseUnknown as Record<string, number>) }
+            : {};
+
+        updateConstraints({
+          [constraint]: { ...base, [advancedSettingKey]: nextValue },
         });
       };
     };
@@ -130,79 +150,85 @@ const NumericConstraint: React.FC<TProps> = ({
   const handleChangeNumericConstraint = resolveHandleChangeNumericConstraint(constraintKey);
 
   const onInactive = useCallback(() => {
-    setSliderValue(+value.default.toFixed(3));
+    setSliderValue(defaultRounded);
     updateConstraints({
       [constraintKey]: undefined,
     });
-  }, [constraintKey, updateConstraints, value.default]);
+  }, [constraintKey, updateConstraints, defaultRounded]);
 
   const onActive = useCallback(() => {
-    if (trackSettings[constraintKey]) {
-      setSliderValue(+trackSettings[constraintKey].toFixed(3));
+    const key = constraintKey as keyof MediaTrackSettings;
+    const raw = trackSettings[key];
+
+    if (typeof raw === 'number') {
+      setSliderValue(Number(raw.toFixed(3)));
     }
 
     updateConstraints({
-      [constraintKey]: trackSettings[constraintKey],
-    });
+      [constraintKey]: raw,
+    } as MediaTrackConstraints);
   }, [constraintKey, trackSettings, updateConstraints]);
 
   return (
     <ToggleButton
-      title={constraintKey}
       disabled={value.disabled}
+      title={constraintKey}
       onActive={onActive}
       onInactive={onInactive}
     >
       <FormControlLabel
         control={
           <Checkbox
+            checked={isAdvanced}
+            color="default"
             disabled={value.disabled}
             size="small"
             onChange={({ target: { checked } }) => {
               setIsAdvanced(checked);
             }}
-            checked={isAdvanced}
-            color="default"
           />
         }
         label="advanced"
       />
+
       {!isAdvanced && (
         <Slider
           aria-label={constraintKey}
-          value={sliderValue}
-          defaultValue={+value.default.toFixed(3)}
-          getAriaValueText={(val) => {
-            return val.toFixed(3);
-          }}
+          defaultValue={defaultRounded}
           disabled={value.disabled}
-          valueLabelDisplay="auto"
-          step={step}
-          min={min}
-          max={max}
+          getAriaValueText={(value_) => {
+            return value_.toFixed(3);
+          }}
           marks={marks}
+          max={max}
+          min={min}
+          step={step}
+          value={sliderValue}
+          valueLabelDisplay="auto"
           onChange={handleChangeNumericConstraint()}
         />
       )}
-      {isAdvanced &&
-        Object.keys(value.defaultObj).map((keyAdvanced) => {
-          return (
-            <Slider
-              key={keyAdvanced}
-              aria-label={keyAdvanced}
-              defaultValue={+value.default.toFixed(3)}
-              getAriaValueText={(val) => {
-                return val.toFixed(3);
-              }}
-              valueLabelDisplay="auto"
-              step={step}
-              min={min}
-              max={max}
-              marks={[{ value: (max - min) / 2, label: keyAdvanced }, ...marks]}
-              onChange={handleChangeNumericConstraint(keyAdvanced)}
-            />
-          );
-        })}
+
+      {isAdvanced
+        ? Object.keys(value.defaultObj).map((keyAdvanced) => {
+            return (
+              <Slider
+                aria-label={keyAdvanced}
+                defaultValue={defaultRounded}
+                getAriaValueText={(value_) => {
+                  return value_.toFixed(3);
+                }}
+                key={keyAdvanced}
+                marks={[{ value: (max - min) / 2, label: keyAdvanced }, ...marks]}
+                max={max}
+                min={min}
+                step={step}
+                valueLabelDisplay="auto"
+                onChange={handleChangeNumericConstraint(keyAdvanced)}
+              />
+            );
+          })
+        : undefined}
     </ToggleButton>
   );
 };

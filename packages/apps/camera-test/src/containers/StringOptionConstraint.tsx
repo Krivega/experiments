@@ -1,9 +1,11 @@
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select, { type SelectChangeEvent } from '@mui/material/Select';
 import React, { useState, useEffect, useCallback } from 'react';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import type { TClasses } from '../useStyles';
+
 import ToggleButton from './ToggleButton';
+
+import type { TClasses } from '../useStyles';
 
 type TProps = {
   trackSettings: MediaTrackSettings;
@@ -27,10 +29,10 @@ const StringOptionConstraint: React.FC<TProps> = ({
   updateConstraints,
   classes,
 }) => {
-  const [val, setVal] = useState<string>(value.default);
-  const renderStringOptionValue = (v: string, idx: number): JSX.Element => {
+  const [selectedValue, setSelectedValue] = useState<string>(value.default);
+  const renderStringOptionValue = (v: string, index: number) => {
     return (
-      <option value={v} key={`${constraintKey}${v}${idx}`}>
+      <option key={`${constraintKey}${v}${index}`} value={v}>
         {v}
       </option>
     );
@@ -38,15 +40,15 @@ const StringOptionConstraint: React.FC<TProps> = ({
 
   useEffect(() => {
     if (Object.keys(constraints).length === 0) {
-      setVal(value.default);
+      setSelectedValue(value.default);
     }
   }, [value.default, constraints]);
 
   const resolveHandleStringConstraints = (constraint: string) => {
-    return ({ target }) => {
-      const { value: targetValue } = target;
+    return (event: SelectChangeEvent) => {
+      const targetValue = event.target.value;
 
-      setVal(targetValue);
+      setSelectedValue(targetValue);
 
       updateConstraints({
         [constraint]: targetValue,
@@ -64,29 +66,30 @@ const StringOptionConstraint: React.FC<TProps> = ({
 
   const onActive = useCallback(() => {
     updateConstraints({
-      [constraintKey]: trackSettings[constraintKey],
-    });
+      [constraintKey]: trackSettings[constraintKey as keyof MediaTrackSettings],
+    } as MediaTrackConstraints);
   }, [constraintKey, trackSettings, updateConstraints]);
 
   return (
     <ToggleButton
-      type="input"
-      title={constraintKey}
       disabled={value.disabled || value.values.length === 0}
+      title={constraintKey}
+      type="input"
       onActive={onActive}
       onInactive={onInactive}
     >
-      <FormControl variant="filled" className={classes.formControl}>
+      <FormControl className={classes.formControl} variant="filled">
         <InputLabel htmlFor={constraintKey}>{constraintKey}</InputLabel>
+
         <Select
           native
           disabled={value.disabled || value.values.length === 0}
-          value={val}
-          onChange={handleStringConstraints}
           inputProps={{
             name: constraintKey,
             id: constraintKey,
           }}
+          value={selectedValue}
+          onChange={handleStringConstraints}
         >
           {value.values.map(renderStringOptionValue)}
         </Select>

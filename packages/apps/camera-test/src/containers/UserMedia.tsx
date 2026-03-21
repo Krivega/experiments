@@ -1,5 +1,6 @@
+import { Media } from '@experiments/components';
 import React from 'react';
-import Media from '@experiments/components/src/Media';
+
 import type { TClasses } from '../useStyles';
 
 type TProps = {
@@ -9,7 +10,7 @@ type TProps = {
 
 const UserMedia: React.FC<TProps> = ({ classes, mediaStream }) => {
   if (!mediaStream) {
-    return null;
+    return undefined;
   }
 
   return (

@@ -13,3 +13,4 @@ export {
   default as resolutionsList,
 } from './resolutionsList';
 export type { TIdResolution } from './resolutionsList';
+export type { TResolution } from './resolutionsList';

@@ -4,42 +4,43 @@ import useNoneInitialEffect from '@experiments/components/src/useNoneInitialEffe
 import { getMediaStream } from '@experiments/mediastream-api';
 import stopTracksMediaStream from '@experiments/mediastream-api/src/stopTracksMediaStream';
 import RequesterDevices from '@experiments/system-devices';
-import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
 import resolutionsListAll, { ID_720P } from '@experiments/system-devices/src/resolutionsList';
 import { getVideoDevices } from '@experiments/utils/src/devicesResolvers';
 import createVideoProcessor from '@experiments/video-processor';
+
+import AppBar from '@mui/material/AppBar';
+import Backdrop from '@mui/material/Backdrop';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import CircularProgress from '@mui/material/CircularProgress';
+import Divider from '@mui/material/Divider';
+import Drawer from '@mui/material/Drawer';
+import Fab from '@mui/material/Fab';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import Select from '@mui/material/Select';
+import Slider from '@mui/material/Slider';
+import Typography from '@mui/material/Typography';
+import { makeStyles } from '@mui/material/styles';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+import React, { useCallback, useEffect, useState } from 'react';
+import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
 import type {
   TArchitecture,
   TModelSelection,
   TProcessVideo,
 } from '@experiments/video-processor/src/typings';
-import AppBar from '@material-ui/core/AppBar';
-import Backdrop from '@material-ui/core/Backdrop';
-import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import Fab from '@material-ui/core/Fab';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import IconButton from '@material-ui/core/IconButton';
-import InputLabel from '@material-ui/core/InputLabel';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Select from '@material-ui/core/Select';
-import Slider from '@material-ui/core/Slider';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import React, { useCallback, useEffect, useState } from 'react';
 
 const useStyles = makeStyles((theme) => {
   return {
     formControl: {
       margin: theme.spacing(1),
-      width: `100%`,
+      width: '100%',
       justifyContent: 'start',
     },
     flex: {
@@ -86,7 +87,7 @@ const getResolutionById = (id: string) => {
   return resolutionById;
 };
 
-const resolveHandleChangeInput = (handler) => {
+const resolveHandleChangeInput = (handler: (value: string) => void) => {
   return ({ target }) => {
     const { value } = target;
 
@@ -100,7 +101,7 @@ const resolveHandleInputChange = (handler) => {
   };
 };
 
-const parseItemDevice = (device) => {
+const parseItemDevice = (device: MediaDeviceInfo) => {
   return {
     label: device.label,
     value: device.deviceId,
@@ -111,7 +112,7 @@ const renderItemDevice = (item, index) => {
   const { label, value } = parseItemDevice(item);
 
   return (
-    <option value={value} key={`${value}${index}`}>
+    <option key={`${value}${index}`} value={value}>
       {label}
     </option>
   );
@@ -121,7 +122,7 @@ const renderItemResolution = (item, index) => {
   const { id, label } = item;
 
   return (
-    <option value={id} key={`${id}${index}`}>
+    <option key={`${id}${index}`} value={id}>
       {label}
     </option>
   );
@@ -256,14 +257,14 @@ const App = () => {
     });
 
     Promise.resolve()
-      .then(() => {
+      .then(async () => {
         if (mediaStreamOriginal) {
           return stopTracksMediaStream(mediaStreamOriginal);
         }
 
         return undefined;
       })
-      .then(() => {
+      .then(async () => {
         return getMediaStream({
           audio: false,
           video: true,
@@ -370,90 +371,102 @@ const App = () => {
       <Backdrop className={classes.backdrop} open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      {isInitialized && (
+
+      {isInitialized ? (
         <>
-          <AppBar position="fixed">
+        <AppBar position="fixed">
             <Button onClick={toggleDrawer}>{open ? 'Close' : 'Open'} Settings</Button>
           </AppBar>
-          <Drawer anchor="right" variant="persistent" open={open} className={classes.drawer}>
+
+          <Drawer anchor="right" className={classes.drawer} open={open} variant="persistent">
             <div className={classes.drawerContent}>
               <IconButton onClick={toggleDrawer}>
                 <ChevronRightIcon />
               </IconButton>
+
               <Divider />
 
               <List>
                 <ListItem>
-                  <FormControl variant="filled" className={classes.formControl}>
+                  <FormControl className={classes.formControl} variant="filled">
                     <InputLabel htmlFor="cam">Cam</InputLabel>
+
                     <Select
                       native
-                      value={videoDeviceId}
-                      onChange={resolveHandleChangeInput(setVideoDeviceFromId)}
                       inputProps={{
                         name: 'cam',
                         id: 'cam',
                       }}
+                      value={videoDeviceId}
+                      onChange={resolveHandleChangeInput(setVideoDeviceFromId)}
                     >
                       {videoDeviceList.map(renderItemDevice)}
                     </Select>
                   </FormControl>
                 </ListItem>
+
                 <ListItem>
-                  <FormControl variant="filled" className={classes.formControl}>
+                  <FormControl className={classes.formControl} variant="filled">
                     <InputLabel htmlFor="resolution">Resolution</InputLabel>
+
                     <Select
                       native
-                      value={resolutionId}
-                      onChange={resolveHandleChangeInput(setResolutionId)}
                       inputProps={{
                         name: 'resolution',
                         id: 'resolution',
                       }}
+                      value={resolutionId}
+                      onChange={resolveHandleChangeInput(setResolutionId)}
                     >
                       {resolutionList.map(renderItemResolution)}
                     </Select>
                   </FormControl>
                 </ListItem>
+
                 <ListItem>
-                  <FormControl variant="filled" className={classes.formControl}>
+                  <FormControl className={classes.formControl} variant="filled">
                     <InputLabel htmlFor="resolution">Architecture</InputLabel>
+
                     <Select
                       native
-                      value={architecture}
-                      onChange={resolveHandleChangeInput(setArchitecture)}
                       inputProps={{
                         name: 'architecture',
                         id: 'architecture',
                       }}
+                      value={architecture}
+                      onChange={resolveHandleChangeInput(setArchitecture)}
                     >
                       <option value="MediaPipe">MediaPipe</option>
+
                       {/* <option value="MediaPipeOptimized">MediaPipe optimized</option> */}
                       {/* <option value="MediaPipeWorker">MediaPipe worker</option> */}
                       <option value="TensorFlow">TensorFlow</option>
                     </Select>
                   </FormControl>
                 </ListItem>
+
                 <ListItem>
-                  <FormControl variant="filled" className={classes.formControl}>
+                  <FormControl className={classes.formControl} variant="filled">
                     <InputLabel htmlFor="outputStride">Model type</InputLabel>
+
                     <Select
                       native
-                      value={modelSelection}
-                      onChange={resolveHandleChangeInput(setModelSelection)}
                       inputProps={{
                         name: 'modelSelection',
                         id: 'modelSelection',
                       }}
+                      value={modelSelection}
+                      onChange={resolveHandleChangeInput(setModelSelection)}
                     >
                       <option value="general">general(best)</option>
+
                       <option value="landscape">landscape(fast)</option>
                     </Select>
                   </FormControl>
                 </ListItem>
+
                 <ListItem>
                   <FormControlLabel
-                    labelPlacement="start"
                     className={classes.formControl}
                     control={
                       <Checkbox
@@ -462,38 +475,44 @@ const App = () => {
                       />
                     }
                     label={<Typography variant="subtitle1">Blur background</Typography>}
+                    labelPlacement="start"
                   />
                 </ListItem>
+
                 <ListItem>
-                  <FormControl variant="filled" className={classes.formControl}>
+                  <FormControl className={classes.formControl} variant="filled">
                     <Typography gutterBottom>Edge blur amount</Typography>
+
                     <Slider
                       marks
-                      valueLabelDisplay="on"
+                      max={20}
                       min={0}
                       step={1}
-                      max={20}
                       value={edgeBlurAmount}
+                      valueLabelDisplay="on"
                       onChange={resolveHandleInputChange(setEdgeBlurAmount)}
                     />
                   </FormControl>
                 </ListItem>
               </List>
+
               <div className={classes.flex}>
-                <Fab variant="extended" color="primary" onClick={resetState}>
+                <Fab color="primary" variant="extended" onClick={resetState}>
                   <RotateLeftIcon className={classes.extendedIcon} />
                   Reset
                 </Fab>
               </div>
             </div>
           </Drawer>
-        </>
-      )}
-      {mediaStreamProcessed && (
-        <div className={classes.video}>
+                       </>
+      ) : null}
+
+      {mediaStreamProcessed ? (
+        (
+<div className={classes.video}>
           <Media mediaStream={mediaStreamProcessed} />
         </div>
-      )}
+) : null}
     </div>
   );
 };

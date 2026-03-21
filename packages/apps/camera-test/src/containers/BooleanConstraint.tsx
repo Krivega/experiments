@@ -1,11 +1,30 @@
+import Box from '@mui/material/Box';
+import Checkbox from '@mui/material/Checkbox';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import Typography from '@mui/material/Typography';
 import React from 'react';
-import Box from '@material-ui/core/Box';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
-import Typography from '@material-ui/core/Typography';
+
 import type { TClasses } from '../useStyles';
+
+const readConstraint = (constraints: MediaTrackConstraints, key: string): unknown => {
+  return constraints[key as keyof MediaTrackConstraints];
+};
+
+const isBooleanSubfieldChecked = (
+  constraints: MediaTrackConstraints,
+  key: string,
+  field: 'exact' | 'ideal',
+): boolean => {
+  const raw = readConstraint(constraints, key);
+
+  if (typeof raw !== 'object' || raw === null) {
+    return false;
+  }
+
+  return Boolean((raw as Record<string, unknown>)[field]);
+};
 
 type TProps = {
   constraintKey: string;
@@ -31,46 +50,64 @@ const BooleanConstraint: React.FC<TProps> = ({
     return ({ target }: React.ChangeEvent<HTMLInputElement>) => {
       const { name, checked } = target;
 
-      if (name === key) {
-        updateConstraints({
-          [key]: checked,
-        });
-      } else if (name === 'exact') {
-        updateConstraints({
-          [key]: { exact: checked },
-        });
-      } else if (name === 'ideal') {
-        updateConstraints({
-          [key]: { ideal: checked },
-        });
+      switch (name) {
+        case key: {
+          updateConstraints({
+            [key]: checked,
+          });
+
+          break;
+        }
+        case 'exact': {
+          updateConstraints({
+            [key]: { exact: checked },
+          });
+
+          break;
+        }
+        case 'ideal': {
+          updateConstraints({
+            [key]: { ideal: checked },
+          });
+
+          break;
+        }
+        default: {
+          break;
+        }
       }
     };
   };
 
   const handleBooleanConstraintsChange = resolveHandleBooleanConstraintsChange(constraintKey);
 
+  const constraintValue = readConstraint(constraints, constraintKey);
+  const showAdvanced =
+    constraintValue !== undefined && constraintValue !== null && constraintValue !== false;
+
   const children = (
     <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
       <FormControlLabel
         control={
           <Checkbox
+            checked={isBooleanSubfieldChecked(constraints, constraintKey, 'exact')}
+            color="default"
             name="exact"
             size="small"
             onChange={handleBooleanConstraintsChange}
-            checked={!!constraints[constraintKey]?.exact}
-            color="default"
           />
         }
         label="exact"
       />
+
       <FormControlLabel
         control={
           <Checkbox
+            checked={isBooleanSubfieldChecked(constraints, constraintKey, 'ideal')}
+            color="default"
             name="ideal"
             size="small"
             onChange={handleBooleanConstraintsChange}
-            checked={!!constraints[constraintKey]?.ideal}
-            color="default"
           />
         }
         label="ideal"
@@ -79,21 +116,22 @@ const BooleanConstraint: React.FC<TProps> = ({
   );
 
   return (
-    <FormControl variant="filled" className={classes.formControl}>
+    <FormControl className={classes.formControl} variant="filled">
       <FormGroup>
         <FormControlLabel
           control={
             <Checkbox
+              checked={constraintValue === true}
+              color="default"
               disabled={value.disabled}
               name={constraintKey}
               onChange={handleBooleanConstraintsChange}
-              checked={constraints[constraintKey] === true}
-              color="default"
             />
           }
           label={<Typography variant="h6">{constraintKey}</Typography>}
         />
-        {!!constraints[constraintKey] && children}
+
+        {showAdvanced ? children : undefined}
       </FormGroup>
     </FormControl>
   );

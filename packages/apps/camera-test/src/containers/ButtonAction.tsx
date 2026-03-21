@@ -1,20 +1,22 @@
+import Fab from '@mui/material/Fab';
 import React from 'react';
-import Fab from '@material-ui/core/Fab';
+
 import type { TClasses } from '../useStyles';
 
 type TProps = {
   classes: TClasses;
   children: React.ReactNode;
   color: 'inherit' | 'primary' | 'secondary' | 'default';
-  icon: JSX.Element;
+  icon: React.ReactNode;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
 const ButtonAction: React.FC<TProps> = ({ classes, onClick, color, children, icon }) => {
   return (
     <div className={classes.flex}>
-      <Fab variant="extended" color={color} onClick={onClick}>
+      <Fab color={color} variant="extended" onClick={onClick}>
         {icon}
+
         {children}
       </Fab>
     </div>

@@ -1,9 +1,10 @@
+import AppBar from '@mui/material/AppBar';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import Icon from '@mui/material/Icon';
 import React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import TvIcon from '@material-ui/icons/Tv';
+
 import ButtonAction from './ButtonAction';
+
 import type { TClasses } from '../useStyles';
 
 type TProps = {
@@ -14,21 +15,22 @@ type TProps = {
 
 const AppBarTop: React.FC<TProps> = ({ classes, requestStream, resetState }) => {
   return (
-    <AppBar position="fixed" className={classes.appBar}>
+    <AppBar className={classes.appBar} position="fixed">
       <ButtonGroup className={classes.buttonGroup}>
         <ButtonAction
           classes={classes}
-          icon={<TvIcon className={classes.extendedIcon} />}
-          onClick={requestStream}
           color="primary"
+          icon={<Icon className={classes.extendedIcon}>Tv</Icon>}
+          onClick={requestStream}
         >
           Request
         </ButtonAction>
+
         <ButtonAction
           classes={classes}
-          icon={<RotateLeftIcon className={classes.extendedIcon} />}
-          onClick={resetState}
           color="default"
+          icon={<Icon className={classes.extendedIcon}>RotateLeft</Icon>}
+          onClick={resetState}
         >
           Reset
         </ButtonAction>

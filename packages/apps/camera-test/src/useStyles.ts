@@ -1,5 +1,6 @@
-import { makeStyles } from '@material-ui/core/styles';
-import type { ClassNameMap } from '@material-ui/styles/withStyles';
+import makeStyles from '@mui/styles/makeStyles';
+
+import type { ClassNameMap } from '@mui/material/styles';
 
 export type TClasses = ClassNameMap<
   | 'card'
@@ -34,10 +35,10 @@ const useStyles = makeStyles((theme) => {
       backgroundColor: 'transparent',
     },
     formControl: {
-      width: `100%`,
+      width: '100%',
     },
     buttonGroup: {
-      width: `100%`,
+      width: '100%',
       justifyContent: 'center',
     },
     flex: {

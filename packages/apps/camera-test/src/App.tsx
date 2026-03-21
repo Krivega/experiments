@@ -1,14 +1,15 @@
 /* eslint-disable react/hook-use-state */
+/* eslint-disable react/jsx-max-depth */
 /* eslint-disable unicorn/no-null */
 /* eslint-disable no-console */
 import { extractVideoTrack } from '@experiments/mediastream-api';
 import { RequesterDevices } from '@experiments/system-devices';
-import Box from '@material-ui/core/Box';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
+import Box from '@mui/material/Box';
+import CssBaseline from '@mui/material/CssBaseline';
+import Drawer from '@mui/material/Drawer';
+import Grid from '@mui/material/Grid';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { NUMBER_CONSTRAINT, STRING_OPTION_CONSTRAINT } from './constants';
@@ -25,6 +26,7 @@ import requestMediaStream from './requestMediaStream';
 import useStyles from './useStyles';
 
 import type { TState } from './defaultState';
+import type { TVideoConstraints } from './typings';
 
 type TSnackBar = {
   isOpen: boolean;
@@ -33,9 +35,63 @@ type TSnackBar = {
 };
 
 const requesterDevices = new RequesterDevices();
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-const storedState = JSON.parse(localStorage.getItem('state') ?? '{}') ?? {};
-const initialState: TState = { ...defaultState, ...storedState } as TState;
+
+const parseStoredState = (): Partial<TState> => {
+  const raw = localStorage.getItem('state');
+
+  if (raw === null) {
+    return {};
+  }
+
+  try {
+    const parsed: unknown = JSON.parse(raw);
+
+    return typeof parsed === 'object' && parsed !== null ? (parsed as Partial<TState>) : {};
+  } catch {
+    return {};
+  }
+};
+
+const initialState: TState = { ...defaultState, ...parseStoredState() };
+
+const readStringOptionValues = (caps: MediaTrackCapabilities, key: string): string[] => {
+  const raw: unknown = caps[key as keyof MediaTrackCapabilities];
+
+  if (Array.isArray(raw)) {
+    return raw.map(String);
+  }
+
+  return [];
+};
+
+const readNumericCapabilityRange = (
+  caps: MediaTrackCapabilities,
+  key: string,
+): { min?: number; max?: number; step?: number } => {
+  const raw: unknown = caps[key as keyof MediaTrackCapabilities];
+
+  if (typeof raw === 'object' && raw !== null && 'min' in raw) {
+    const range = raw as { min?: number; max?: number; step?: number };
+
+    return { min: range.min, max: range.max, step: range.step };
+  }
+
+  return {};
+};
+
+const hasDeviceIdForRequest = (c: MediaTrackConstraints): boolean => {
+  const { deviceId } = c;
+
+  if (deviceId === undefined) {
+    return false;
+  }
+
+  if (typeof deviceId === 'string') {
+    return deviceId.length > 0;
+  }
+
+  return true;
+};
 
 const App = () => {
   const classes = useStyles();
@@ -52,13 +108,12 @@ const App = () => {
 
   const [constraints, setConstraints] = React.useState<MediaTrackConstraints>({});
   const [trackSettings, setTrackSettings] = React.useState<MediaTrackSettings>({});
-  const [availableConstraintsVideoTrack, setAvailableConstraintsVideoTrack] = React.useState<
-    null | object
-  >(null);
+  const [availableConstraintsVideoTrack, setAvailableConstraintsVideoTrack] =
+    React.useState<TVideoConstraints | null>(null);
   const [missingConstraints, setMissingConstraints] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!mediaStream) {
+    if (mediaStream === null) {
       return;
     }
 
@@ -91,15 +146,20 @@ const App = () => {
           return [key, { ...value, disabled: true }];
         })
         .map(([key, value]) => {
-          if (typeof value !== 'string' && typeof key === 'string' && !value?.disabled) {
+          const isDisabled =
+            typeof value === 'object' && 'disabled' in value && Boolean(value.disabled);
+
+          if (typeof value !== 'string' && typeof key === 'string' && !isDisabled) {
             if (value.type === STRING_OPTION_CONSTRAINT) {
-              return [key, { ...value, values: [...trackCapabilities[key]] }];
+              return [key, { ...value, values: readStringOptionValues(trackCapabilities, key) }];
             }
 
             if (value.type === NUMBER_CONSTRAINT && 'defaultObj' in value) {
-              const minValue = trackCapabilities[key]?.min;
-              const maxValue = trackCapabilities[key]?.max;
-              const stepValue = trackCapabilities[key]?.step;
+              const {
+                min: minValue,
+                max: maxValue,
+                step: stepValue,
+              } = readNumericCapabilityRange(trackCapabilities, key);
 
               return [
                 key,
@@ -119,14 +179,19 @@ const App = () => {
 
           return [key, value];
         })
-        .sort(([key, value]) => {
-          if (typeof value !== 'string' && !value.disabled) {
+        .sort(([_key, value]) => {
+          if (
+            typeof value !== 'string' &&
+            typeof value === 'object' &&
+            'disabled' in value &&
+            !value.disabled
+          ) {
             return -1;
           }
 
           return 1;
         }),
-    );
+    ) as TVideoConstraints;
 
     setAvailableConstraintsVideoTrack(availableVideoConstraints);
   }, [mediaStream]);
@@ -142,13 +207,23 @@ const App = () => {
     });
   };
 
-  const onFailRequestMediaStream = (error) => {
+  const onFailRequestMediaStream = (error: Error) => {
+    const maybeOce = error as Error & {
+      constraint?: string;
+      constraints?: MediaTrackConstraints;
+    };
+
+    const constraintLabel =
+      typeof maybeOce.constraint === 'string' ? maybeOce.constraint : '(unknown)';
+    const constraintsJson =
+      maybeOce.constraints === undefined ? '' : JSON.stringify(maybeOce.constraints, undefined, 2);
+
     setSnackbarState((prevState) => {
       return {
         ...prevState,
         isOpen: true,
-        message: `Wrong parameter: ${error.constraint}. Error: ${error.name},
-        Constraints: ${JSON.stringify(error.constraints, null, 2)}`,
+        message: `Wrong parameter: ${constraintLabel}. Error: ${error.name},
+        Constraints: ${constraintsJson}`,
       };
     });
   };
@@ -172,7 +247,7 @@ const App = () => {
   }, [updateConstraints, videoDeviceId]);
 
   useEffect(() => {
-    if (mediaStream || !constraints.deviceId) {
+    if (mediaStream !== null || !hasDeviceIdForRequest(constraints)) {
       return;
     }
 
@@ -202,6 +277,8 @@ const App = () => {
       constraints,
       onSuccess: onSuccessRequestMediaStream,
       onFail: onFailRequestMediaStream,
+    }).catch((error: unknown) => {
+      console.error('🚀 ~ file: App.tsx ~ requestStream ~ error', error);
     });
   }, [mediaStream, constraints]);
 
@@ -247,7 +324,7 @@ const App = () => {
         />
 
         <Grid container className={classes.codes} spacing={2}>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Code
               classes={classes}
               heading="REQUESTED CONSTRAINTS"
@@ -255,7 +332,7 @@ const App = () => {
             />
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Code
               classes={classes}
               heading="TRACK SETTINGS"

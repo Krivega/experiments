@@ -1,3 +1,11 @@
+// it could be your App.tsx file or theme file that is included in your tsconfig.json
+import type { Theme } from '@mui/material/styles';
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
 export type TModelSelection = 'general' | 'landscape';
 export type TArchitecture = 'MediaPipe' | 'MediaPipeOptimized' | 'MediaPipeWorker' | 'TensorFlow';
 

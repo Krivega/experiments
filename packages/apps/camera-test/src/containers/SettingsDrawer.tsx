@@ -1,10 +1,12 @@
+import Container from '@mui/material/Container';
 import React from 'react';
-import Container from '@material-ui/core/Container';
-import Heading from './Heading';
-import type { TClasses } from '../useStyles';
-import type { TVideoConstraints } from '../typings';
-import SettingsDevices from './SettingsDevices';
+
 import ConstraintsList from './ConstraintsList';
+import Heading from './Heading';
+import SettingsDevices from './SettingsDevices';
+
+import type { TVideoConstraints } from '../typings';
+import type { TClasses } from '../useStyles';
 
 type TProps = {
   videoDeviceId: string;
@@ -30,23 +32,25 @@ const SettingsDrawer: React.FC<TProps> = ({
   return (
     <div className={classes.drawer}>
       <SettingsDevices
+        classes={classes}
+        setVideoDeviceFromId={setVideoDeviceFromId}
         videoDeviceId={videoDeviceId}
         videoDeviceList={videoDeviceList}
-        setVideoDeviceFromId={setVideoDeviceFromId}
-        classes={classes}
       />
+
       <Container>
         <Heading>CAMERA SETTINGS</Heading>
       </Container>
-      {videoConstraintsList && (
+
+      {videoConstraintsList ? (
         <ConstraintsList
-          trackSettings={trackSettings}
-          videoConstraintsList={videoConstraintsList}
-          constraints={constraints}
-          updateConstraints={updateConstraints}
           classes={classes}
+          constraints={constraints}
+          trackSettings={trackSettings}
+          updateConstraints={updateConstraints}
+          videoConstraintsList={videoConstraintsList}
         />
-      )}
+      ) : undefined}
     </div>
   );
 };

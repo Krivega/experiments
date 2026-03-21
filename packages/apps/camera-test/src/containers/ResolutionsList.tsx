@@ -1,11 +1,19 @@
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import ListItem from '@mui/material/ListItem';
+import Select from '@mui/material/Select';
 import React from 'react';
-import FormControl from '@material-ui/core/FormControl';
-import ListItem from '@material-ui/core/ListItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import resolveHandleChangeInput from '@experiments/utils/src/resolveHandleChangeInput';
-import type { TResolution } from '@experiments/system-devices/src/resolutionsList';
+
+import type { TResolution } from '@experiments/system-devices';
 import type { TClasses } from '../useStyles';
+
+const resolveHandleChangeInput = (handler: (value: string) => void) => {
+  return ({ target }: { target: { value: string } }) => {
+    const { value } = target;
+
+    handler(value);
+  };
+};
 
 type TProps = {
   resolutionId: string;
@@ -15,11 +23,11 @@ type TProps = {
 };
 
 const renderItemResolution = (item: TResolution, index: number) => {
-  const { id, label } = item;
+  const { id } = item;
 
   return (
-    <option value={id} key={`${id}${index}`}>
-      {label}
+    <option key={`${id}${index}`} value={id}>
+      {id}
     </option>
   );
 };
@@ -32,16 +40,17 @@ const ResolutionsList: React.FC<TProps> = ({
 }) => {
   return (
     <ListItem>
-      <FormControl variant="filled" className={classes.formControl}>
+      <FormControl className={classes.formControl} variant="filled">
         <InputLabel htmlFor="resolution">Resolution</InputLabel>
+
         <Select
           native
-          value={resolutionId}
-          onChange={resolveHandleChangeInput(setResolutionId)}
           inputProps={{
             name: 'resolution',
             id: 'resolution',
           }}
+          value={resolutionId}
+          onChange={resolveHandleChangeInput(setResolutionId)}
         >
           {resolutionList.map(renderItemResolution)}
         </Select>

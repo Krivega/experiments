@@ -1,8 +1,9 @@
+/* eslint-disable react/jsx-max-depth */
+import Box from '@mui/material/Box';
+import Checkbox from '@mui/material/Checkbox';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import React, { useState, useEffect } from 'react';
-import Checkbox from '@material-ui/core/Checkbox';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import Paper from '@material-ui/core/Paper';
 
 const ToggleButton = ({
   type,
@@ -14,6 +15,7 @@ const ToggleButton = ({
 }: {
   type?: string;
   title: string;
+  // eslint-disable-next-line react/boolean-prop-naming
   disabled: boolean;
   children: React.ReactNode;
   onActive: () => void;
@@ -33,7 +35,7 @@ const ToggleButton = ({
 
   const renderContainer = () => {
     if (!value) {
-      return null;
+      return undefined;
     }
 
     let padding = '5px 20px';
@@ -43,7 +45,7 @@ const ToggleButton = ({
     }
 
     return (
-      <Paper variant="outlined" style={{ backgroundColor: '#fafafa', padding }}>
+      <Paper style={{ backgroundColor: '#fafafa', padding }} variant="outlined">
         {children}
       </Paper>
     );
@@ -53,21 +55,23 @@ const ToggleButton = ({
     <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <label htmlFor={id} style={{ cursor: disabled ? 'default' : 'pointer', flexGrow: '1' }}>
-          <Typography variant="h6" color={disabled ? 'textSecondary' : 'textPrimary'}>
+          <Typography color={disabled ? 'textSecondary' : 'textPrimary'} variant="h6">
             {title}
           </Typography>
         </label>
+
         <Checkbox
-          size="small"
+          checked={value}
+          color="default"
+          disabled={disabled}
           id={id}
+          size="small"
           onChange={({ target: { checked } }) => {
             setValue(checked);
           }}
-          checked={value}
-          disabled={disabled}
-          color="default"
         />
       </div>
+
       {renderContainer()}
     </Box>
   );
