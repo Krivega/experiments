@@ -77,4 +77,5 @@ export default defineConfig([
   createPackageConfig('packages/utils', [jestConfig]),
   createPackageConfig('packages/timeout-requester', [jestConfig]),
   createPackageConfig('packages/audio-utils', [jestConfig]),
+  createPackageConfig('packages/noise-suppression', [jestConfig]),
 ]);

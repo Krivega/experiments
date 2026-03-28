@@ -11,7 +11,8 @@
       "packages/video-processor",
       "packages/timeout-requester",
       "packages/utils",
-      "packages/audio-utils"
+      "packages/audio-utils",
+      "packages/noise-suppression"
     ],
     "nohoist": [
       "**/webpack-dev-server",
@@ -28,7 +29,8 @@
       "**/@tensorflow-models",
       "**/@tensorflow-models/**",
       "**/@mediapipe",
-      "**/@mediapipe/**"
+      "**/@mediapipe/**",
+      "**/dtln-rs"
     ]
   },
   "scripts": {
