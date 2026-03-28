@@ -20,8 +20,3 @@ export type TResolveProcessVideo = (params: {
   imageBitmapMask720p: HTMLImageElement;
   imageBitmapMask1080p: HTMLImageElement;
 }) => Promise<TProcessVideo>;
-
-declare module '*.jpg' {
-  const source: string;
-  export default source;
-}
