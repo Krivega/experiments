@@ -21,7 +21,7 @@ const ToggleButton = ({
   onActive: () => void;
   onInactive: () => void;
 }) => {
-  const [value, setValue] = useState<boolean>(false);
+  const [value, setValue] = useState(false);
 
   useEffect(() => {
     if (value) {

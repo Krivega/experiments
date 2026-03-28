@@ -95,11 +95,11 @@ const hasDeviceIdForRequest = (c: MediaTrackConstraints): boolean => {
 
 const App = () => {
   const classes = useStyles();
-  const [isInitialized, setInitialized] = React.useState<boolean>(false);
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [isInitialized, setInitialized] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
   const [videoDeviceList, setVideoDeviceList] = useState<MediaDeviceInfo[]>([]);
-  const [videoDeviceId, setVideoDeviceFromId] = useState<string>(initialState.videoDeviceId);
+  const [videoDeviceId, setVideoDeviceFromId] = useState(initialState.videoDeviceId);
   const [snackbarState, setSnackbarState] = useState<TSnackBar>({
     isOpen: false,
     autoHideDuration: null,

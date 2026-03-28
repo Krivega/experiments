@@ -52,9 +52,9 @@ const NumericConstraint: React.FC<TProps> = ({
   updateConstraints,
   trackSettings,
 }) => {
-  const [isAdvanced, setIsAdvanced] = useState<boolean>(false);
+  const [isAdvanced, setIsAdvanced] = useState(false);
   const defaultRounded = Number(value.default.toFixed(3));
-  const [sliderValue, setSliderValue] = useState<number>(defaultRounded);
+  const [sliderValue, setSliderValue] = useState(defaultRounded);
 
   useEffect(() => {
     if (Object.keys(constraints).length === 0) {

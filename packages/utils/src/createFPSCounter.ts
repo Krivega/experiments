@@ -1,3 +1,6 @@
+/* eslint-disable unicorn/filename-case */
+/* eslint-disable @typescript-eslint/prefer-for-of */
+/* eslint-disable no-underscore-dangle */
 const createFPSCounter = () => {
   const fpsCounter = {
     sampleSize: 60,

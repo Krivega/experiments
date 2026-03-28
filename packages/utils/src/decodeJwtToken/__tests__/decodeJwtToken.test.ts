@@ -8,7 +8,10 @@ describe('decodeJwtToken', () => {
 
     const localeDateString = decodeJwtToken(token);
 
-    expect(localeDateString).toEqual({ expiration: 1_653_308_041, url: 'https://demo.experiments.com' });
+    expect(localeDateString).toEqual({
+      expiration: 1_653_308_041,
+      url: 'https://demo.experiments.com',
+    });
   });
 
   it('by 2 example', () => {
@@ -16,6 +19,9 @@ describe('decodeJwtToken', () => {
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IjJlNGQ4YmI1MTVjNDMxNzJmOWJiNGE3OGQ4MzUwNTE3In0.eyJpc3MiOiJodHRwczpcL1wvZGVtby52aW50ZW8uY29tIiwiYXVkIjoiaHR0cHM6XC9cL2RlbW8udmludGVvLmNvbSIsImp0aSI6IjJlNGQ4YmI1MTVjNDMxNzJmOWJiNGE3OGQ4MzUwNTE3IiwidWlkIjoiOTk5IiwiaWF0IjoxNjUzMzA0NjU5LCJuYmYiOjE2NTMzMDQ2NTksImV4cCI6MTY1MzMwODI1OX0.CHt_3FZ2-Tg2gWaGSRy4otKpBwq3iSkR8UYS9D2pgck';
     const localeDateString = decodeJwtToken(token);
 
-    expect(localeDateString).toEqual({ expiration: 1_653_308_259, url: 'https://demo.experiments.com' });
+    expect(localeDateString).toEqual({
+      expiration: 1_653_308_259,
+      url: 'https://demo.experiments.com',
+    });
   });
 });

@@ -29,7 +29,7 @@ const StringOptionConstraint: React.FC<TProps> = ({
   updateConstraints,
   classes,
 }) => {
-  const [selectedValue, setSelectedValue] = useState<string>(value.default);
+  const [selectedValue, setSelectedValue] = useState(value.default);
   const renderStringOptionValue = (v: string, index: number) => {
     return (
       <option key={`${constraintKey}${v}${index}`} value={v}>

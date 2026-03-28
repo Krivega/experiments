@@ -104,7 +104,7 @@ describe('components', () => {
   });
 
   it('preventDefault', () => {
-    const result = preventDefault<TEventMocked>(eventMocked);
+    const result = preventDefault(eventMocked);
 
     expect(result).toEqual(eventMocked);
     expect(eventMocked.preventDefault).toHaveBeenCalledOnce();
@@ -112,7 +112,7 @@ describe('components', () => {
   });
 
   it('blurCurrentTarget', () => {
-    const result = blurCurrentTarget<TEventMocked>(eventMocked);
+    const result = blurCurrentTarget(eventMocked);
 
     expect(result).toEqual(eventMocked);
     expect(eventMocked.currentTarget.blur).toHaveBeenCalledOnce();

@@ -67,7 +67,6 @@ export default defineConfig([
  
   createPackageConfig('packages/apps/camera-test', [jestConfig, reactConfig]),
   createPackageConfig('packages/apps/noise-suppression', [jestConfig, reactConfig]),
-  createPackageConfig('packages/apps/video-processing', [jestConfig, reactConfig]),
   createPackageConfig('packages/components', [jestConfig, reactConfig]),
   createPackageConfig('packages/mediastream-api', [jestConfig]),
   createPackageConfig('packages/system-devices', [jestConfig]),
