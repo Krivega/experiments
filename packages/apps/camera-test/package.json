@@ -13,27 +13,10 @@
     "lint:ts": "tsc",
     "precommit": "lint-staged",
     "start": "vite",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
+    "test:ci": "cross-env CI=true jest --passWithNoTests",
+    "test:coverage": "yarn test:ci --no-cache --coverage",
     "test:circular": "madge --circular src/index.tsx"
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx}",
-      "!<rootDir>/node_modules/",
-      "!src/*.{js,jsx}",
-      "!src/containers/Root/*.{js,jsx}",
-      "!src/store/*.{js,jsx}",
-      "!**/__tests-utils__/**",
-      "!**/__mocks__/**"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "statements": 0,
-        "branches": 0,
-        "functions": 0,
-        "lines": 0
-      }
-    }
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",

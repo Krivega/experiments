@@ -11,7 +11,10 @@
     "lint": "yarn lint:ts && yarn lint:js",
     "lint:js": "eslint src/. --ext .js,.jsx,.ts,.tsx --max-warnings 0 --cache --cache-strategy=content",
     "lint:ts": "tsc",
-    "start": "yarn init:deps && vite"
+    "start": "yarn init:deps && vite",
+    "test": "jest --passWithNoTests",
+    "test:ci": "cross-env CI=true jest --passWithNoTests",
+    "test:coverage": "yarn test:ci --no-cache --coverage"
   },
   "dependencies": {
     "@experiments/audio-utils": "*",

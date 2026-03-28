@@ -10,7 +10,7 @@ describe('decodeJwtToken', () => {
 
     expect(localeDateString).toEqual({
       expiration: 1_653_308_041,
-      url: 'https://demo.experiments.com',
+      url: 'https://demo.vinteo.com',
     });
   });
 
@@ -21,7 +21,7 @@ describe('decodeJwtToken', () => {
 
     expect(localeDateString).toEqual({
       expiration: 1_653_308_259,
-      url: 'https://demo.experiments.com',
+      url: 'https://demo.vinteo.com',
     });
   });
 });

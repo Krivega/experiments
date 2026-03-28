@@ -1,6 +1,6 @@
 import debug from 'debug';
 
-const NAME = '@vinteo/noise-suppression';
+const NAME = '@experiments/noise-suppression';
 
 const logger = debug(NAME);
 

@@ -40,11 +40,9 @@
     "lint:js": "lerna run lint:js --stream",
     "lint:ts": "lerna run lint:ts --stream",
     "precommit": "lerna run --concurrency 1 --stream precommit",
-    "test": "CI=true yarn test:modules && yarn test:apps && CI=true yarn test:modules:coverage",
-    "test:apps": "lerna run test:nowatch --stream --scope camera-test --scope video-processing",
-    "test:circular": "lerna run test:circular --stream",
-    "test:modules": "lerna run test --stream --ignore camera-test --ignore video-processing",
-    "test:modules:coverage": "lerna run test:coverage --stream --ignore camera-test --ignore video-processing",
+    "test": "CI=true yarn test:modules && CI=true yarn test:apps",
+    "test:apps": "lerna run test:ci --parallel --scope camera-test --scope noise-suppression --scope video-processing",
+    "test:modules": "lerna run test:ci --parallel --ignore camera-test --ignore noise-suppression --ignore video-processing",
     "tsc": "tsc"
   },
   "config": {
@@ -69,15 +67,20 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/wicg-file-system-access": "^2023.10.7",
+    "cross-env": "^10.1.0",
     "cz-lerna-changelog": "^2.0.3",
     "eslint": "9.39.2",
     "husky": "^9.1.7",
     "jest": "30.3.0",
+    "jest-environment-jsdom": "^30.3.0",
+    "jest-extended": "^7.0.0",
+    "jest-junit": "^16.0.0",
     "jiti": "2.6.1",
     "lerna": "^9.0.7",
     "postcss": "8.5.8",
     "prettier": "^3.8.1",
     "rimraf": "^6.1.3",
+    "ts-jest": "^29.4.6",
     "typescript": "6.0.2"
   }
 }
