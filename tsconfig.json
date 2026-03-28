@@ -1,8 +1,5 @@
 {
   "extends": "./tsconfig.build.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-  },
   "exclude": [
     "node_modules",
     "packages/**/node_modules",
@@ -30,6 +27,6 @@
     "public",
     "**/public/*",
     "packages/**/public",
-    "packages/apps/**/public",
-  ],
+    "packages/apps/**/public"
+  ]
 }

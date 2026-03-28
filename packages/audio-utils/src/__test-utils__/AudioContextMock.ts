@@ -1,5 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-
 import { AudioContext } from 'standardized-audio-context-mock';
 import { createAudioContextAudioMediaStreamTrackMock } from 'webrtc-mock';
 

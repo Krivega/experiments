@@ -1,13 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 const doMock = () => {
-  // @ts-expect-error
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  const moduleTimeoutRequester = jest.requireActual<typeof import('@experiments/timeout-requester')>(
-    '@experiments/timeout-requester',
-  );
+  const moduleTimeoutRequester = jest.requireActual<
+    // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+    typeof import('@experiments/timeout-requester')
+  >('@experiments/timeout-requester');
 
   const originalResolveRequesterByTimeout = moduleTimeoutRequester.resolveRequesterByTimeout;
 
@@ -21,7 +16,7 @@ const doMock = () => {
           start(...parametersStart);
 
           resolve(() => {
-            return start(...parametersStart);
+            start(...parametersStart);
           });
         };
 

@@ -51,11 +51,11 @@
     "@experiments/utils": "*",
     "@krivega/cancelable-promise": "^1.1.4",
     "debug": "^4.4.3",
-    "standardized-audio-context-mock": "9.7.24",
+    "standardized-audio-context-mock": "9.7.28",
     "webrtc-mock": "^1.2.1"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.12",
+    "@types/debug": "^4.1.13",
     "jest-extended": "^7.0.0",
     "lint-staged": "16.4.0"
   }
