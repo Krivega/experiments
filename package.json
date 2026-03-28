@@ -39,7 +39,7 @@
     "lint": "lerna run lint --stream",
     "lint:js": "lerna run lint:js --stream",
     "lint:ts": "lerna run lint:ts --stream",
-    "build:demo": "rimraf demoDist && mkdir -p demoDist && cross-env DEMO_APP_SEGMENT=camera-test yarn workspace camera-test build && cp -R packages/apps/camera-test/dist demoDist/camera-test && cross-env DEMO_APP_SEGMENT=noise-suppression yarn workspace noise-suppression build && cp -R packages/apps/noise-suppression/dist demoDist/noise-suppression && cp scripts/gh-pages-index.html demoDist/index.html",
+    "build:demo": "rimraf demoDist && mkdir -p demoDist && cross-env DEMO_APP_SEGMENT=camera-test yarn workspace camera-test build && cp -R packages/apps/camera-test/dist demoDist/camera-test && cross-env DEMO_APP_SEGMENT=noise-suppression yarn workspace noise-suppression build && cp -R packages/apps/noise-suppression/dist demoDist/noise-suppression && cp scripts/gh-pages-index.html demoDist/index.html && cp scripts/custom.css demoDist/custom.css",
     "precommit": "lerna run --concurrency 1 --stream precommit",
     "test": "CI=true yarn test:modules && CI=true yarn test:apps",
     "test:apps": "lerna run test:ci --parallel --scope camera-test --scope noise-suppression --scope video-processing",
