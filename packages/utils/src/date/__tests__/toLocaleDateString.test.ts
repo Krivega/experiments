@@ -1,41 +1,53 @@
 /// <reference types="jest" />
 import { toLocaleDateString } from '..';
 
-const expectedDate = '19.11.2019, 16:13';
+const ruLocale = 'ru';
+
+const ruDateTimeOptions: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+  hour12: false,
+};
 
 describe('toLocaleDateString', () => {
   it('from date', () => {
     const date = new Date(2019, 10, 19, 16, 13, 0);
-    const localeDateString = toLocaleDateString(date, 'ru');
 
-    expect(localeDateString).toBe(expectedDate);
+    expect(toLocaleDateString(date, ruLocale)).toBe(
+      date.toLocaleDateString(ruLocale, ruDateTimeOptions),
+    );
   });
 
   it('from string date', () => {
     const dateString = '19.11.2019, 16:13';
-    const localeDateString = toLocaleDateString(dateString, 'ru');
 
-    expect(localeDateString).toBe(expectedDate);
+    expect(toLocaleDateString(dateString, ruLocale)).toBe(dateString);
   });
 
   it('from number timeStamp', () => {
     const timeStamp = 1_574_169_191_000;
-    const localeDateString = toLocaleDateString(timeStamp, 'ru');
+    const date = new Date(timeStamp);
 
-    expect(localeDateString).toBe(expectedDate);
+    expect(toLocaleDateString(timeStamp, ruLocale)).toBe(
+      date.toLocaleDateString(ruLocale, ruDateTimeOptions),
+    );
   });
 
   it('from string timeStamp', () => {
     const timeStamp = '1574169191000';
-    const localeDateString = toLocaleDateString(timeStamp, 'ru');
+    const date = new Date(Number(timeStamp));
 
-    expect(localeDateString).toBe(expectedDate);
+    expect(toLocaleDateString(timeStamp, ruLocale)).toBe(
+      date.toLocaleDateString(ruLocale, ruDateTimeOptions),
+    );
   });
 
   it('from invalid dateString', () => {
     const dateString = '20:20:41';
-    const localeDateString = toLocaleDateString(dateString, 'ru');
 
-    expect(localeDateString).toBe(dateString);
+    expect(toLocaleDateString(dateString, ruLocale)).toBe(dateString);
   });
 });

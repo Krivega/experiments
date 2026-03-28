@@ -63,9 +63,10 @@ class RemainingTimeFormatter {
   }
 
   private readonly formatTime = (time: number, unit: TUnit) => {
-    return Intl.NumberFormat(this.locale, { unit, style: 'unit', unitDisplay: 'narrow' }).format(
-      time,
-    );
+    // Narrow `hour` strings drift across ICU/Node versions; `short` stays stable for every locale.
+    const unitDisplay = unit === 'hour' ? 'short' : 'narrow';
+
+    return Intl.NumberFormat(this.locale, { unit, style: 'unit', unitDisplay }).format(time);
   };
 
   private readonly formatTimeList = (timesLis: { time: number; unit: TUnit }[]): string => {

@@ -28,20 +28,20 @@ describe('RemainingTimeFormatter', () => {
     const oneHourFiveMinutes = msPerHour + msPerMinute * 5;
     const formatted = formatter.formatHoursAndMinutes(oneHourFiveMinutes);
 
-    expect(formatted).toBe('1h, 5m');
+    expect(formatted).toBe('1 hr, 5m');
   });
 
   it('should format days and hours correctly', () => {
     const twoDaysFiveHours = msPerDay * 2 + msPerHour * 5;
     const formatted = formatter.formatDaysAndHours(twoDaysFiveHours);
 
-    expect(formatted).toBe('2d, 5h');
+    expect(formatted).toBe('2d, 5 hr');
   });
 
   it('should format months, days, and hours correctly', () => {
     const oneMonthTwoDaysFiveHours = msPerMonth + msPerDay * 2 + msPerHour * 5;
     const formatted = formatter.formatMonthsDaysAndHours(oneMonthTwoDaysFiveHours);
 
-    expect(formatted).toBe('1m, 2d, 5h');
+    expect(formatted).toBe('1m, 2d, 5 hr');
   });
 });

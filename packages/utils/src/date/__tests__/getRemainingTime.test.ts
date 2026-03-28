@@ -83,10 +83,10 @@ describe('getRemainingTime', () => {
 
     expect(durationRuHour).toBe('5 ч');
     expect(durationRuHourWithMinutes).toBe('1 ч 5 мин');
-    expect(durationENHourWithMinutes).toBe('1h, 5m');
+    expect(durationENHourWithMinutes).toBe('1 hr, 5m');
     expect(durationDEHourWithMinutes).toBe('1 Std., 5 Min.');
-    expect(durationESHourWithMinutes).toBe('1h y 5min');
-    expect(durationFRHourWithMinutes).toBe('1h et 5min');
+    expect(durationESHourWithMinutes).toBe('1 h y 5min');
+    expect(durationFRHourWithMinutes).toBe('1 h et 5min');
     expect(durationZHHourWithMinutes).toBe('1小时5分钟');
   });
 
@@ -109,10 +109,10 @@ describe('getRemainingTime', () => {
 
     expect(durationRuDaysWithSecondsLessHour).toBe('2 д.');
     expect(durationRuDaysWithSecondsHour).toBe('2 д. 5 ч');
-    expect(durationENdaysWithHours).toBe('2d, 5h');
+    expect(durationENdaysWithHours).toBe('2d, 5 hr');
     expect(durationDEdaysWithHours).toBe('2 T, 5 Std.');
-    expect(durationESdaysWithHours).toBe('2d y 5h');
-    expect(durationFRdaysWithHours).toBe('2j et 5h');
+    expect(durationESdaysWithHours).toBe('2d y 5 h');
+    expect(durationFRdaysWithHours).toBe('2j et 5 h');
     expect(durationZHdaysWithHours).toBe('2天5小时');
   });
 
@@ -138,10 +138,10 @@ describe('getRemainingTime', () => {
 
     expect(durationRuDaysWithSecondsLessHour).toBe('14 д.');
     expect(durationRuDaysWithSecondsHour).toBe('14 д. 5 ч');
-    expect(durationENdaysWithHours).toBe('14d, 5h');
+    expect(durationENdaysWithHours).toBe('14d, 5 hr');
     expect(durationDEdaysWithHours).toBe('14 T, 5 Std.');
-    expect(durationESdaysWithHours).toBe('14d y 5h');
-    expect(durationFRdaysWithHours).toBe('14j et 5h');
+    expect(durationESdaysWithHours).toBe('14d y 5 h');
+    expect(durationFRdaysWithHours).toBe('14j et 5 h');
     expect(durationZHdaysWithHours).toBe('14天5小时');
   });
 
@@ -167,10 +167,10 @@ describe('getRemainingTime', () => {
 
     expect(durationRuDaysWithSecondsLessHour).toBe('2 м.');
     expect(durationRuDaysWithSecondsHour).toBe('2 м. 3 д. 5 ч');
-    expect(durationENdaysWithHours).toBe('2m, 3d, 5h');
+    expect(durationENdaysWithHours).toBe('2m, 3d, 5 hr');
     expect(durationDEdaysWithHours).toBe('2 M, 3 T und 5 Std.');
-    expect(durationESdaysWithHours).toBe('2m, 3d, 5h');
-    expect(durationFRdaysWithHours).toBe('2m., 3j et 5h');
+    expect(durationESdaysWithHours).toBe('2m, 3d, 5 h');
+    expect(durationFRdaysWithHours).toBe('2m., 3j et 5 h');
     expect(durationZHdaysWithHours).toBe('2个月3天5小时');
   });
 
