@@ -35,7 +35,6 @@ const useStyles = makeStyles(
         top: 0,
         left: 0,
         right: 'auto',
-        backgroundColor: 'transparent',
       },
       formControl: {
         width: '100%',

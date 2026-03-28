@@ -1,0 +1,26 @@
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light;
+    --bg: #fff;
+    --accent-bg: #2A2B2E;
+    --text: #2A2B2E;
+    --text-light: #585858;
+    --accent: #3A405A;
+    --accent-hover: #335899;
+    --accent-text: var(--bg);
+    --code: #d81b60;
+    --preformatted: #444;
+    --marked: ##FFCAAF;
+    --disabled: #cccccc;
+  }
+}
+body {
+  font-family: 'Raleway', system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+h1 {
+  letter-spacing: 14px;
+  color: #dddddd;
+}

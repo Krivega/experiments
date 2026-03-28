@@ -1,5 +1,14 @@
 // it could be your App.tsx file or theme file that is included in your tsconfig.json
-import type { Theme } from '@mui/material/styles';
+import type { PaletteColor, PaletteColorOptions, Theme } from '@mui/material/styles';
+
+declare module '@mui/material/styles' {
+  interface Palette {
+    appBar: PaletteColor;
+  }
+  interface PaletteOptions {
+    appBar?: PaletteColorOptions;
+  }
+}
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-empty-interface

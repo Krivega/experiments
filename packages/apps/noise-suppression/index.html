@@ -4,26 +4,36 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway" />
+    <link rel="stylesheet" href="./custom.css" />
 
-    <title>Demo @experiments/noise-suppression</title>
+    <title>NOISE SUPPRESSION</title>
   </head>
   <body>
+    <header>
+      <h1>Noise Suppression</h1>
+    </header>
     <main>
-      <div><select id="audioInputSelect"></select></div>
-      <div>
-        <label>
-          Noise suppression algorithm
-          <select id="noiseSuppressionAlgorithm">
-            <option value="off">Off</option>
-            <option value="rnnoise" selected>Rnnoise</option>
-            <option value="dtln">DTLN</option>
-          </select>
-        </label>
+      <p>
+        <label for="audioInputSelect">Audio input</label>
+        <select id="audioInputSelect"></select>
+      </p>
+      <p>
+        <label for="noiseSuppressionAlgorithm"> Noise suppression algorithm </label>
+        <select id="noiseSuppressionAlgorithm">
+          <option value="off">Off</option>
+          <option value="rnnoise" selected>Rnnoise</option>
+          <option value="dtln">DTLN</option>
+        </select>
+      </p>
+      <p>
         <label
           >Browser echoCancellation <input type="checkbox" id="echoCancellation" checked
         /></label>
+      </p>
+      <p>
         <label>Browser noiseSuppression <input type="checkbox" id="noiseSuppression" /></label>
-      </div>
+      </p>
       <div>
         <button id="start">Start</button>
         <button id="stop">Stop</button>
@@ -40,15 +50,17 @@
         </p>
       </section>
       <section>
-        <p>Selected algorithm: <strong id="selectedAlgorithm">rnnoise</strong></p>
-        <p>Current mode: <strong id="currentMode">idle</strong></p>
-        <p>Input track sampleRate: <strong id="inputSampleRate">unknown</strong></p>
-        <p>Output track sampleRate: <strong id="outputSampleRate">unknown</strong></p>
-        <p>AudioContext sampleRate: <strong id="audioContextSampleRate">unknown</strong></p>
-        <p>Worklet status: <strong id="workletStatus">idle</strong></p>
-        <p>Last ready: <strong id="workletReady">none</strong></p>
-        <p>Last warning: <strong id="workletWarning">none</strong></p>
-        <p>Last error: <strong id="workletError">none</strong></p>
+        <ul>
+          <li><b>Selected algorithm:</b> <mark id="selectedAlgorithm">rnnoise</mark></li>
+          <li><b></b>Current mode:</b> <mark id="currentMode">idle</mark></li>
+          <li><b>Input track sampleRate:</b> <mark id="inputSampleRate">unknown</mark></li>
+          <li><b>Output track sampleRate:</b> <mark id="outputSampleRate">unknown</mark></li>
+          <li><b>AudioContext sampleRate:</b> <mark id="audioContextSampleRate">unknown</mark></li>
+          <li><b>Worklet status:</b> <mark id="workletStatus">idle</mark></li>
+          <li><b>Last ready:</b> <mark id="workletReady">none</mark></li>
+          <li><b>Last warning:</b> <mark id="workletWarning">none</mark></li>
+          <li><b>Last error:</b> <mark id="workletError">none</mark></li>
+        </ul>
       </section>
     </main>
 
