@@ -8,9 +8,14 @@
     "dist"
   ],
   "scripts": {
+    "build": "yarn build:core && yarn build:worklet",
+    "build:core": "vite build",
+    "build:worklet": "yarn copy:dtln-rs && vite build --config vite.worklet.config.ts",
+    "copy:dtln-rs": "cp-cli ./node_modules/dtln-rs/dtln_rs.wasm ./src/workletDtlnRs/dtln_rs.wasm",
     "deps:check": "ncu",
     "deps:update": "ncu -u",
     "format": "prettier --write \"src/**/*.{js,ts,tsx,json}\"",
+    "postinstall": "yarn copy:dtln-rs",
     "lint": "yarn lint:ts && yarn lint:js",
     "lint:js": "eslint src/. --ext .js,.jsx,.ts,.tsx --max-warnings 0 --cache --cache-strategy=content",
     "lint:ts": "tsc",
@@ -43,8 +48,14 @@
   },
   "devDependencies": {
     "@types/debug": "^4.1.13",
+    "cp-cli": "^2.0.0",
     "jest-extended": "^7.0.0",
     "lint-staged": "16.4.0"
+  },
+  "peerDependencies": {
+    "@experiments/audio-utils": "*",
+    "@experiments/mediastream-api": "*",
+    "debug": "^4.4.3"
   },
   "main:src": "src/index.ts"
 }

@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-relative-packages
-import dtlnWasmUrl from '../../node_modules/dtln-rs/dtln_rs.wasm?url';
+import dtlnWasmUrl from './dtln_rs.wasm?url';
 
 export interface DtlnModule {
   dtln_create: () => Promise<number>;

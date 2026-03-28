@@ -1,0 +1,45 @@
+import nodePath from 'node:path';
+
+import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
+import tsConfigPaths from 'vite-tsconfig-paths';
+
+import packageJson from './package.json';
+
+const externalDependencies = Object.keys(packageJson.peerDependencies);
+
+export default defineConfig(() => {
+  return {
+    publicDir: false,
+    plugins: [
+      tsConfigPaths(),
+      dts({
+        include: ['src'],
+        exclude: ['src/setupTests.ts'],
+      }),
+    ],
+    build: {
+      lib: {
+        entry: [nodePath.resolve('src', 'index.ts')],
+        name: 'index',
+        formats: ['es', 'cjs'],
+        fileName: (format, entryName) => {
+          return `${entryName}.${format === 'cjs' ? 'cjs' : 'js'}`;
+        },
+        target: 'esnext',
+      },
+      rollupOptions: {
+        // make sure to externalize deps that shouldn't be bundled
+        // into your library
+        external: externalDependencies,
+      },
+      optimizeDeps: {
+        exclude: externalDependencies,
+      },
+      minify: true,
+      esbuild: {
+        minify: true,
+      },
+    },
+  };
+});

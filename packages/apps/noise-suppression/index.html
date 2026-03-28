@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+
+    <title>Demo @vinteo/noise-suppression</title>
+  </head>
+  <body>
+    <main>
+      <div><select id="audioInputSelect"></select></div>
+      <div>
+        <label>
+          Noise suppression algorithm
+          <select id="noiseSuppressionAlgorithm">
+            <option value="off">Off</option>
+            <option value="rnnoise" selected>Rnnoise</option>
+            <option value="dtln">DTLN</option>
+          </select>
+        </label>
+        <label
+          >Browser echoCancellation <input type="checkbox" id="echoCancellation" checked
+        /></label>
+        <label>Browser noiseSuppression <input type="checkbox" id="noiseSuppression" /></label>
+      </div>
+      <div>
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+      </div>
+      <section>
+        <p>Playback (available after Stop):</p>
+        <p>
+          <label for="playbackOriginal">Original</label><br />
+          <audio id="playbackOriginal" controls></audio>
+        </p>
+        <p>
+          <label for="playbackProcessed">After effect</label><br />
+          <audio id="playbackProcessed" controls></audio>
+        </p>
+      </section>
+      <section>
+        <p>Selected algorithm: <strong id="selectedAlgorithm">rnnoise</strong></p>
+        <p>Current mode: <strong id="currentMode">idle</strong></p>
+        <p>Input track sampleRate: <strong id="inputSampleRate">unknown</strong></p>
+        <p>Output track sampleRate: <strong id="outputSampleRate">unknown</strong></p>
+        <p>AudioContext sampleRate: <strong id="audioContextSampleRate">unknown</strong></p>
+        <p>Worklet status: <strong id="workletStatus">idle</strong></p>
+        <p>Last ready: <strong id="workletReady">none</strong></p>
+        <p>Last warning: <strong id="workletWarning">none</strong></p>
+        <p>Last error: <strong id="workletError">none</strong></p>
+      </section>
+    </main>
+
+    <script type="module" src="src/index.ts"></script>
+  </body>
+</html>

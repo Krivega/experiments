@@ -3,45 +3,26 @@
   "version": "0.0.0",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "react-scripts build",
-    "build:stats": "yarn build --stats",
+    "build": "yarn init:deps && vite build",
     "deps:check": "ncu",
     "deps:update": "ncu -u",
     "format": "prettier --write \"src/**/*.{js,ts,tsx,json}\"",
+    "init:deps": " lerna run build --scope @experiments/noise-suppression   && cp-cli ../../noise-suppression/dist/noiseSuppressorWorkletRnnoise.js public/@experiments/noise-suppression/noiseSuppressorWorkletRnnoise.js && cp-cli ../../noise-suppression/dist/noiseSuppressorWorkletDtln.js public/@experiments/noise-suppression/noiseSuppressorWorkletDtln.js",
     "lint": "yarn lint:ts && yarn lint:js",
     "lint:js": "eslint src/. --ext .js,.jsx,.ts,.tsx --max-warnings 0 --cache --cache-strategy=content",
     "lint:ts": "tsc",
-    "precommit": "lint-staged",
-    "start": "react-scripts start",
-    "test": "react-scripts test --verbose=false",
-    "test:circular": "madge --circular src/index.tsx",
-    "test:nowatch": "yarn test --watchAll=false"
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx}",
-      "!<rootDir>/node_modules/",
-      "!src/*.{js,jsx}",
-      "!src/containers/Root/*.{js,jsx}",
-      "!src/store/*.{js,jsx}",
-      "!**/__tests-utils__/**",
-      "!**/__mocks__/**"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "statements": 0,
-        "branches": 0,
-        "functions": 0,
-        "lines": 0
-      }
-    }
+    "start": "yarn init:deps && vite"
   },
   "dependencies": {
+    "@experiments/audio-utils": "*",
+    "@experiments/noise-suppression": "*",
     "debug": "4.3.4"
   },
   "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
+    "cp-cli": "^2.0.0",
     "lint-staged": "14.0.1",
-    "madge": "^6.1.0",
-    "monorepo-react-scripts": "5.0.1-alpha.3"
+    "vite": "^7.3.1",
+    "vite-tsconfig-paths": "^6.1.1"
   }
 }
