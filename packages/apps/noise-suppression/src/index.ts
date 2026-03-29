@@ -23,6 +23,7 @@ const workletStatusElement = document.querySelector<HTMLElement>('#workletStatus
 const workletReadyElement = document.querySelector<HTMLElement>('#workletReady');
 const workletWarningElement = document.querySelector<HTMLElement>('#workletWarning');
 const workletErrorElement = document.querySelector<HTMLElement>('#workletError');
+const playbackSection = document.querySelector<HTMLElement>('#playback');
 const stopButton = document.querySelector<HTMLButtonElement>('#stop');
 const startButton = document.querySelector<HTMLButtonElement>('#start');
 const playbackOriginal = document.querySelector<HTMLAudioElement>('#playbackOriginal');
@@ -45,7 +46,8 @@ if (
   !stopButton ||
   !startButton ||
   !playbackOriginal ||
-  !playbackProcessed
+  !playbackProcessed ||
+  !playbackSection
 ) {
   throw new Error('Some elements are not exist');
 }
@@ -148,6 +150,7 @@ const resetStatus = () => {
   workletStatusElement.textContent = 'idle';
   setCurrentMode('idle');
   resetProcessorMessages();
+  playbackSection.classList.add('is-disabled');
 };
 
 const getNoiseSuppressionAlgorithm = (): NoiseSuppressionAlgorithm => {
@@ -287,6 +290,7 @@ const handleStopClick = async () => {
   workletStatusElement.textContent = 'stopped';
   setCurrentMode('stopped');
   enableStartButton();
+  playbackSection.classList.remove('is-disabled');
 };
 
 stopButton.addEventListener('click', () => {

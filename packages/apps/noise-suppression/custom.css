@@ -1,17 +1,16 @@
-
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: light;
     --bg: #fff;
-    --accent-bg: #2A2B2E;
-    --text: #2A2B2E;
+    --accent-bg: #2a2b2e;
+    --text: #2a2b2e;
     --text-light: #585858;
-    --accent: #3A405A;
+    --accent: #3a405a;
     --accent-hover: #335899;
     --accent-text: var(--bg);
     --code: #d81b60;
     --preformatted: #444;
-    --marked: ##FFCAAF;
+    --marked: ##ffcaaf;
     --disabled: #cccccc;
   }
 }
@@ -23,4 +22,9 @@ body {
 h1 {
   letter-spacing: 14px;
   color: #dddddd;
+}
+
+.is-disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }

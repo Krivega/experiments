@@ -14,31 +14,33 @@
       <h1>Noise Suppression</h1>
     </header>
     <main>
-      <fieldset>
-        <legend>Audio input</legend>
-        <label for="audioInputSelect">Microphone</label>
-        <select id="audioInputSelect"></select>
-        <label
-          >Browser echoCancellation <input type="checkbox" id="echoCancellation" checked
-        /></label>
-        <label>Browser noiseSuppression <input type="checkbox" id="noiseSuppression" /></label>
-      </fieldset>
-      <fieldset id="noiseSuppressionAlgorithm">
-        <legend>Noise suppression algorithm</legend>
-        <label><input type="radio" name="noiseSuppressionAlgorithm" value="off" />Off</label>
-
-        <label
-          ><input type="radio" name="noiseSuppressionAlgorithm" value="rnnoise" />Rnnoise</label
-        >
-        <label
-          ><input type="radio" name="noiseSuppressionAlgorithm" value="dtln" checked />DTLN</label
-        >
-      </fieldset>
-      <div>
-        <button id="start">Start</button>
-        <button id="stop">Stop</button>
-      </div>
       <section>
+        <fieldset>
+          <legend>Audio input</legend>
+          <label for="audioInputSelect">Microphone</label>
+          <select id="audioInputSelect"></select>
+          <label
+            >Browser echoCancellation <input type="checkbox" id="echoCancellation" checked
+          /></label>
+          <label>Browser noiseSuppression <input type="checkbox" id="noiseSuppression" /></label>
+        </fieldset>
+        <fieldset id="noiseSuppressionAlgorithm">
+          <legend>Noise suppression algorithm</legend>
+          <label><input type="radio" name="noiseSuppressionAlgorithm" value="off" />Off</label>
+
+          <label
+            ><input type="radio" name="noiseSuppressionAlgorithm" value="rnnoise" />Rnnoise</label
+          >
+          <label
+            ><input type="radio" name="noiseSuppressionAlgorithm" value="dtln" checked />DTLN</label
+          >
+        </fieldset>
+        <div>
+          <button id="start">Start</button>
+          <button id="stop">Stop</button>
+        </div>
+      </section>
+      <section id="playback" class="is-disabled">
         <h2>Playback</h2>
         <p>
           <label>
