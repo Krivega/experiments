@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
 
+import { ViewChat, ViewChatCountUnreadMessages, testIds } from './ui';
+import useComposer from './useComposer';
+import useStore from './useStore';
 import {
   ChatCommonModeratorActionsProvider,
   CommonModeratorActions,
@@ -11,21 +14,18 @@ import {
   testIdsChatMessages,
   ChatNewMessageForm,
   testIdsChatNewMessageForm,
-} from '@/features';
-import { withDependencies } from '@/shared/composition';
-import { createMultipleContext, withContextId } from '@/shared/context';
-import { ViewChat, ViewChatCountUnreadMessages, testIds } from './ui';
-import useComposer from './useComposer';
-import useStore from './useStore';
+} from '../../features';
+import { withDependencies } from '../../shared/composition';
+import { createMultipleContext, withContextId } from '../../shared/context';
 
+import type { TFeatures, TPropsView } from './ui';
 import type {
   ICoreApiChatCommonModeratorActions,
   IServerApiChatCommonModeratorActions,
   ICoreApiChatMessages,
   IServerApiChatMessages,
   IServerApiChatNewMessageForm,
-} from '@/features';
-import type { TFeatures, TPropsView } from './ui';
+} from '../../features';
 
 type TContext = TPropsView & {
   features: TFeatures;
@@ -81,6 +81,7 @@ export const ChatProvider = ({
   isPollsEnabled,
 }: TPropsProvider) => {
   const store = useStore({ serverApi, coreApi });
+
   const components = useComponents({ serverApi, coreApi }, contextId);
 
   const { composition: features, propsView } = useComposer(store, components, { isPollsEnabled });

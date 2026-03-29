@@ -1,9 +1,9 @@
 import { Icon, ListItem } from '@experiments/components';
 import { observer } from 'mobx-react';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
-import { ListItemLoader } from '@/shared/ui';
 import testIds from './testIds';
+import { formatMessage, messagesDescriptors } from '../../../../shared/translations';
+import { ListItemLoader } from '../../../../shared/ui';
 
 type TProps = {
   hasLoading: () => boolean;

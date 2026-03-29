@@ -1,7 +1,7 @@
 import { FilterField, IndentationContainer } from '@experiments/components';
 import { useCallback } from 'react';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
+import { formatMessage, messagesDescriptors } from '../../../../../shared/translations';
 
 export type TProps = {
   question: string;

@@ -1,9 +1,9 @@
 import { Icon, LayoutContent, Text } from '@experiments/components';
 import { observer } from 'mobx-react';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
-import { BottomIndent } from '@/shared/ui';
 import testIds from './testIds';
+import { formatMessage, messagesDescriptors } from '../../../../shared/translations';
+import { BottomIndent } from '../../../../shared/ui';
 
 type TProps = {
   EnableChatAction: React.ComponentType;

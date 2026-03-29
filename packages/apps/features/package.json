@@ -1,0 +1,50 @@
+{
+  "name": "features",
+  "version": "0.0.0",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "vite build",
+    "cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost'",
+    "deps:check": "ncu",
+    "deps:update": "ncu -u",
+    "format": "prettier --write \"src/**/*.{js,ts,tsx,json}\"",
+    "lint": "yarn lint:ts && yarn lint:js",
+    "lint:js": "eslint src/. --ext .js,.jsx,.ts,.tsx --max-warnings 0 --cache --cache-strategy=content",
+    "lint:ts": "tsc",
+    "precommit": "lint-staged",
+    "start": "vite",
+    "test": "jest --passWithNoTests",
+    "test:ci": "cross-env CI=true jest --passWithNoTests",
+    "test:circular": "madge --circular src/index.tsx",
+    "test:coverage": "yarn test:ci --no-cache --coverage"
+  },
+  "dependencies": {
+    "@emotion/cache": "^11.14.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@experiments/components": "*",
+    "@experiments/features": "*",
+    "@experiments/mediastream-api": "*",
+    "@experiments/system-devices": "*",
+    "@experiments/utils": "*",
+    "@mui/icons-material": "^7.3.9",
+    "@mui/material": "^7.3.9",
+    "@mui/styles": "^6.5.0",
+    "@mui/system": "^7.3.9",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "prop-types": "^15.8.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.6.0",
+    "styled-components": "^6.3.12"
+  },
+  "devDependencies": {
+    "lint-staged": "16.4.0",
+    "madge": "^8.0.0",
+    "vite": "^7.3.1",
+    "vite-plugin-dts": "^4.5.4",
+    "vite-tsconfig-paths": "^6.1.1"
+  }
+}

@@ -1,4 +1,9 @@
-import type { TParsedPlain, TParsedPoll, TParsedVote, TPollMode } from '@/shared/voteEncoding';
+import type {
+  TParsedPlain,
+  TParsedPoll,
+  TParsedVote,
+  TPollMode,
+} from '../../../../shared/voteEncoding';
 
 export type TFeedItemMessage = {
   type: 'message';

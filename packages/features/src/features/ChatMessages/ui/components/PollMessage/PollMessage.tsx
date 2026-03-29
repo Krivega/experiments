@@ -2,12 +2,12 @@ import { Message, UserAvatar, FieldBox } from '@experiments/components';
 import { dateUtils, uiUtils } from '@experiments/utils';
 import { memo, useCallback } from 'react';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
 import PollBody from './PollBody';
 import PollQuestion from './PollQuestion';
+import { formatMessage, messagesDescriptors } from '../../../../../shared/translations';
 import testIds from '../testIds';
 
-import type { TPollMode } from '@/shared/voteEncoding';
+import type { TPollMode } from '../../../../../shared/voteEncoding';
 
 export type TProps = {
   author: string;

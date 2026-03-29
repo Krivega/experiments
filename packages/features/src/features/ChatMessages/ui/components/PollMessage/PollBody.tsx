@@ -5,7 +5,7 @@ import PollOptionsListSingle from './PollOptionsListSingle';
 import PollResetVoteButton from './PollResetVoteButton';
 import PollResult from './PollResult';
 
-import type { TPollMode } from '@/shared/voteEncoding';
+import type { TPollMode } from '../../../../../shared/voteEncoding';
 
 export type TPollBodyProps = {
   hasResetVote: boolean;

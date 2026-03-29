@@ -1,7 +1,7 @@
 import { AlignContainer } from '@experiments/components';
 
-import { Loader as LoaderUI } from '@/shared/ui';
 import testIds from './testIds';
+import { Loader as LoaderUI } from '../../../../shared/ui';
 
 const Loader = () => {
   return (

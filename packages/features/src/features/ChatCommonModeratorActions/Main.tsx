@@ -1,9 +1,9 @@
 import { usePresenter } from '@experiments/framework';
 
-import { createMultipleContext } from '@/shared/context';
 import { Presenter } from './presenter';
 import { ViewCommonModeratorActions, ViewEnableChat } from './ui';
 import useStore from './useStore';
+import { createMultipleContext } from '../../shared/context';
 
 import type { TPropsView } from './ui';
 

@@ -1,6 +1,6 @@
 import { Button, IndentationContainer } from '@experiments/components';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
+import { formatMessage, messagesDescriptors } from '../../../../../shared/translations';
 
 type TProps = {
   isDisabled: boolean;

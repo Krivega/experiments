@@ -1,5 +1,5 @@
-import type { TApiMethod } from '@/shared/serverApi';
 import type { TInstance } from './@Model';
+import type { TApiMethod } from '../../../shared/serverApi';
 
 export interface IServerApi {
   enableChat: () => TApiMethod;

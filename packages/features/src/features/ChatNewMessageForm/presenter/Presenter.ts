@@ -1,6 +1,6 @@
 import { BasePresenter } from '@experiments/framework';
 
-import type { TPollMode } from '@/shared/voteEncoding';
+import type { TPollMode } from '../../../shared/voteEncoding';
 import type { TStore } from '../store';
 import type { TPropsView } from '../ui';
 

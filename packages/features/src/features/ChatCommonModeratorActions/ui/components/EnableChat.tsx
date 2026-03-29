@@ -1,8 +1,8 @@
 import { Button, LoaderCircle } from '@experiments/components';
 import { observer } from 'mobx-react';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
 import testIds from './testIds';
+import { formatMessage, messagesDescriptors } from '../../../../shared/translations';
 
 type TProps = {
   hasLoading: () => boolean;

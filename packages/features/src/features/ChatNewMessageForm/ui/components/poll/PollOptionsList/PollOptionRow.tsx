@@ -1,6 +1,6 @@
 import { FilterFieldBase, IconButton, IndentationContainer } from '@experiments/components';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
+import { formatMessage, messagesDescriptors } from '../../../../../../shared/translations';
 import testIds from '../../testIds';
 
 type TProps = {

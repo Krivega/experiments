@@ -3,8 +3,8 @@ import { dateUtils, uiUtils } from '@experiments/utils';
 import Linkify from 'linkify-react';
 import { memo, useCallback } from 'react';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
 import testIds from './testIds';
+import { formatMessage, messagesDescriptors } from '../../../../shared/translations';
 
 import type { TMessage } from './types';
 

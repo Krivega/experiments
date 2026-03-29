@@ -1,8 +1,8 @@
 import { Button, IndentationContainer, List } from '@experiments/components';
 import { memo, useCallback, useState } from 'react';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
 import PollOptionVoteMultiple from './PollOptionVoteMultiple';
+import { formatMessage, messagesDescriptors } from '../../../../../shared/translations';
 
 const PollOptionsListMultiple: React.FC<{
   pollId: string;

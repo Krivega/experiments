@@ -1,6 +1,6 @@
 import { Text, Divider } from '@experiments/components';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
+import { formatMessage, messagesDescriptors } from '../../../../../shared/translations';
 
 const Header = () => {
   return (

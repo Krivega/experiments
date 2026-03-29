@@ -2,8 +2,8 @@ import { Fab, LayoutContent, ToggleMenu } from '@experiments/components';
 import { useBoolean } from '@experiments/hooks';
 import { useCallback } from 'react';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
 import { EmojiPicker, Form, PollForm } from './components';
+import { formatMessage, messagesDescriptors } from '../../../shared/translations';
 
 import type { TFields } from './components';
 

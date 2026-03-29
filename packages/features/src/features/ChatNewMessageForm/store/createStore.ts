@@ -3,9 +3,9 @@ import { Store } from '@experiments/framework';
 import { Model } from './@Model';
 import { SendMessage, SendPoll } from './actions';
 
-import type { TPollMode } from '@/shared/voteEncoding';
 import type { TInstance } from './@Model';
 import type { TActionParams, TDependencies } from './types';
+import type { TPollMode } from '../../../shared/voteEncoding';
 
 const createStore = (dependencies: TDependencies) => {
   const store = new Store(

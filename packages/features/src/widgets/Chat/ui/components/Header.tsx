@@ -1,7 +1,7 @@
 import { AsideHeader, Heading } from '@experiments/components';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
 import testIds from './testIds';
+import { formatMessage, messagesDescriptors } from '../../../../shared/translations';
 
 type TProps = {
   children: React.ReactNode;

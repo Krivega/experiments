@@ -1,5 +1,5 @@
-import { ContentRouter } from '@/shared/ui';
 import { Content, Layout, Loader } from './components';
+import { ContentRouter } from '../../../shared/ui';
 
 import type { TFeatures } from './types';
 

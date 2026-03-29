@@ -2,12 +2,12 @@
 import { createFormField, FormValidator, withRememberState } from '@experiments/framework';
 import { types as typesMST } from 'mobx-state-tree';
 
-import { validateIsRequired } from '@/shared/validationRules';
 import { PollModel } from './Poll';
+import { validateIsRequired } from '../../../../../shared/validationRules';
 
 import type { TInstanceModel } from '@experiments/mst-tools';
-import type { TPollMode } from '@/shared/voteEncoding';
 import type { TFieldsState } from './types';
+import type { TPollMode } from '../../../../../shared/voteEncoding';
 
 const BaseModel = typesMST
   .model({

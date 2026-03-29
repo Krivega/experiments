@@ -1,8 +1,8 @@
 import { FieldBox, IndentationContainer, TitleOverline } from '@experiments/components';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
 import PollAddOptionsSection from './PollAddOptionsSection';
 import PollOptionRow from './PollOptionRow';
+import { formatMessage, messagesDescriptors } from '../../../../../../shared/translations';
 
 import type { TPollFields } from '../../types';
 

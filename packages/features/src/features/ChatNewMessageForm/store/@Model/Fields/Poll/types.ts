@@ -1,4 +1,4 @@
-import type { TPollMode } from '@/shared/voteEncoding';
+import type { TPollMode } from '../../../../../../shared/voteEncoding';
 
 export type TPollState = {
   pollQuestion: string;

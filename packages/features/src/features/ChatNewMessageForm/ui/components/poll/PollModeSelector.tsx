@@ -1,6 +1,6 @@
 import { CheckboxWithFormField, FieldBox, IndentationContainer } from '@experiments/components';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
+import { formatMessage, messagesDescriptors } from '../../../../../shared/translations';
 
 export type TProps = {
   isMultiple: boolean;

@@ -1,6 +1,6 @@
 import { FilterFieldBase } from '@experiments/components';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
+import { formatMessage, messagesDescriptors } from '../../../../../../shared/translations';
 
 type TProps = {
   testid: string;

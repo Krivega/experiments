@@ -1,7 +1,7 @@
 import { Button } from '@experiments/components';
 import { memo } from 'react';
 
-import { formatMessage, messagesDescriptors } from '@/shared/translations';
+import { formatMessage, messagesDescriptors } from '../../../../../shared/translations';
 import testIds from '../testIds';
 
 export type TProps = {

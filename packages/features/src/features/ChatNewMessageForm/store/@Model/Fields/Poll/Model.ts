@@ -2,11 +2,11 @@
 import { resolveSetter } from '@experiments/mst-tools';
 import { types as typesMST } from 'mobx-state-tree';
 
-import { encodePoll } from '@/shared/voteEncoding';
+import { encodePoll } from '../../../../../../shared/voteEncoding';
 
 import type { TInstanceModel } from '@experiments/mst-tools';
-import type { TPollMode } from '@/shared/voteEncoding';
 import type { TPollState } from './types';
+import type { TPollMode } from '../../../../../../shared/voteEncoding';
 
 export const MIN_POLL_OPTIONS = 2;
 export const MAX_POLL_OPTIONS = 5;

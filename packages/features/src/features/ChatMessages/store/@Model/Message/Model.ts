@@ -1,8 +1,8 @@
 import { resolveSetter } from '@experiments/mst-tools';
 import { types as typesMST } from 'mobx-state-tree';
 
-import { decodeUriExceptSpace } from '@/shared/parsers';
-import { parseMessageText } from '@/shared/voteEncoding';
+import { decodeUriExceptSpace } from '../../../../../shared/parsers';
+import { parseMessageText } from '../../../../../shared/voteEncoding';
 
 import type { TInitialState, TInstanceModel } from '@experiments/mst-tools';
 import type { TMessageMeta } from '../types';

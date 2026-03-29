@@ -1,6 +1,6 @@
-import type { TDisposer } from '@/shared/reactions';
-import type { TApiMethod } from '@/shared/serverApi';
 import type { TInstance } from './@Model';
+import type { TDisposer } from '../../../shared/reactions';
+import type { TApiMethod } from '../../../shared/serverApi';
 
 export interface IServerApi {
   startChat: () => void;

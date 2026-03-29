@@ -1,5 +1,5 @@
 import type { TFormFieldView } from '@experiments/framework';
-import type { TPollMode } from '@/shared/voteEncoding';
+import type { TPollMode } from '../../../../shared/voteEncoding';
 
 export type TPollFields = {
   getPollQuestion: () => string;

@@ -2,8 +2,8 @@
 import { viewTransform } from '@experiments/mst-tools';
 import { types as typesMST } from 'mobx-state-tree';
 
-import { encodeVote } from '@/shared/voteEncoding';
 import { MessageModel } from './Message';
+import { encodeVote } from '../../../../shared/voteEncoding';
 
 import type { TInstanceModel } from '@experiments/mst-tools';
 import type { TInstanceMessage, TInitialStateMessage } from './Message';
