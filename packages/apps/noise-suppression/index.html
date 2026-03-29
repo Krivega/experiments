@@ -14,45 +14,50 @@
       <h1>Noise Suppression</h1>
     </header>
     <main>
-      <p>
-        <label for="audioInputSelect">Audio input</label>
+      <fieldset>
+        <legend>Audio input</legend>
+        <label for="audioInputSelect">Microphone</label>
         <select id="audioInputSelect"></select>
-      </p>
-      <p>
-        <label for="noiseSuppressionAlgorithm"> Noise suppression algorithm </label>
-        <select id="noiseSuppressionAlgorithm">
-          <option value="off">Off</option>
-          <option value="rnnoise" selected>Rnnoise</option>
-          <option value="dtln">DTLN</option>
-        </select>
-      </p>
-      <p>
         <label
           >Browser echoCancellation <input type="checkbox" id="echoCancellation" checked
         /></label>
-      </p>
-      <p>
         <label>Browser noiseSuppression <input type="checkbox" id="noiseSuppression" /></label>
-      </p>
+      </fieldset>
+      <fieldset id="noiseSuppressionAlgorithm">
+        <legend>Noise suppression algorithm</legend>
+        <label><input type="radio" name="noiseSuppressionAlgorithm" value="off" />Off</label>
+
+        <label
+          ><input type="radio" name="noiseSuppressionAlgorithm" value="rnnoise" />Rnnoise</label
+        >
+        <label
+          ><input type="radio" name="noiseSuppressionAlgorithm" value="dtln" checked />DTLN</label
+        >
+      </fieldset>
       <div>
         <button id="start">Start</button>
         <button id="stop">Stop</button>
       </div>
       <section>
-        <p>Playback (available after Stop):</p>
+        <h2>Playback</h2>
         <p>
-          <label for="playbackOriginal">Original</label><br />
-          <audio id="playbackOriginal" controls></audio>
+          <label>
+            Original<br />
+            <audio id="playbackOriginal" controls></audio>
+          </label>
         </p>
         <p>
-          <label for="playbackProcessed">After effect</label><br />
-          <audio id="playbackProcessed" controls></audio>
+          <label>
+            After effect<br />
+            <audio id="playbackProcessed" controls></audio>
+          </label>
         </p>
       </section>
       <section>
+        <h2>Status</h2>
         <ul>
           <li><b>Selected algorithm:</b> <mark id="selectedAlgorithm">rnnoise</mark></li>
-          <li><b></b>Current mode:</b> <mark id="currentMode">idle</mark></li>
+          <li><b>Current mode:</b> <mark id="currentMode">idle</mark></li>
           <li><b>Input track sampleRate:</b> <mark id="inputSampleRate">unknown</mark></li>
           <li><b>Output track sampleRate:</b> <mark id="outputSampleRate">unknown</mark></li>
           <li><b>AudioContext sampleRate:</b> <mark id="audioContextSampleRate">unknown</mark></li>

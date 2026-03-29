@@ -10,7 +10,7 @@ import processNoiseSuppressions, {
 } from './processNoiseSuppressions';
 
 const audioInputSelect = document.querySelector<HTMLSelectElement>('#audioInputSelect');
-const noiseSuppressionAlgorithmSelect = document.querySelector<HTMLSelectElement>(
+const noiseSuppressionAlgorithmFieldset = document.querySelector<HTMLFieldSetElement>(
   '#noiseSuppressionAlgorithm',
 );
 const selectedAlgorithmElement = document.querySelector<HTMLElement>('#selectedAlgorithm');
@@ -32,7 +32,7 @@ const noiseSuppressionCheckbox = new ConstraintsChecked('noiseSuppression');
 
 if (
   !audioInputSelect ||
-  !noiseSuppressionAlgorithmSelect ||
+  !noiseSuppressionAlgorithmFieldset ||
   !selectedAlgorithmElement ||
   !currentModeElement ||
   !inputSampleRateElement ||
@@ -151,7 +151,15 @@ const resetStatus = () => {
 };
 
 const getNoiseSuppressionAlgorithm = (): NoiseSuppressionAlgorithm => {
-  const selectedAlgorithmValue = noiseSuppressionAlgorithmSelect.value;
+  const checked = noiseSuppressionAlgorithmFieldset.querySelector<HTMLInputElement>(
+    'input[name="noiseSuppressionAlgorithm"]:checked',
+  );
+
+  if (!checked) {
+    throw new Error('No noise suppression algorithm selected');
+  }
+
+  const selectedAlgorithmValue = checked.value;
 
   if (
     selectedAlgorithmValue === 'off' ||
@@ -243,7 +251,11 @@ initDevices(audioInputSelect);
 enableStartButton();
 resetStatus();
 startButton.addEventListener('click', start);
-noiseSuppressionAlgorithmSelect.addEventListener('change', () => {
+noiseSuppressionAlgorithmFieldset.addEventListener('change', ({ target }) => {
+  if (!(target instanceof HTMLInputElement) || target.name !== 'noiseSuppressionAlgorithm') {
+    return;
+  }
+
   const selectedNoiseSuppressionAlgorithm: NoiseSuppressionAlgorithm =
     getNoiseSuppressionAlgorithm();
 

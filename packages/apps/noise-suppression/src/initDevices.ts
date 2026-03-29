@@ -1,7 +1,6 @@
 /* eslint-disable no-alert */
 const initDevices = (audioInputSelect: HTMLSelectElement) => {
   navigator.permissions
-    // @ts-ignore
     .query({ name: 'microphone' })
     .then(async (result) => {
       if (result.state !== 'granted') {
