@@ -1,0 +1,30 @@
+{
+  "name": "@experiments/hooks",
+  "version": "0.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "deps:check": "ncu",
+    "deps:update": "ncu -u",
+    "lint": "yarn lint:ts && yarn lint:js",
+    "lint:js": "eslint src/. --ext .ts,.tsx --max-warnings 0 --cache --cache-strategy=content",
+    "lint:ts": "tsc",
+    "precommit": "lint-staged",
+    "test": "jest --passWithNoTests",
+    "test:ci": "cross-env CI=true jest --passWithNoTests",
+    "test:coverage": "yarn test:ci --no-cache --coverage"
+  },
+  "dependencies": {
+    "react": "^19.2.4"
+  },
+  "main:src": "src/index.ts"
+}

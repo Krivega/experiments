@@ -26,7 +26,7 @@ function createPackageConfig(
   const tsconfigPath = fileURLToPath(new URL(`./${packagePath}/tsconfig.json`, import.meta.url));
 
   return {
-    files: [`${packagePath}/**/*.{js,ts,tsx}`],
+    files: [`${packagePath}/src/**/*.{js,ts,tsx}`],
     extends: extendsConfigs,
     languageOptions: {
       parserOptions: {
@@ -77,4 +77,8 @@ export default defineConfig([
   createPackageConfig('packages/timeout-requester', [jestConfig]),
   createPackageConfig('packages/audio-utils', [jestConfig]),
   createPackageConfig('packages/noise-suppression', [jestConfig]),
+  // createPackageConfig('packages/features', [jestConfig, reactConfig]),
+  createPackageConfig('packages/framework', [jestConfig, reactConfig]),
+  createPackageConfig('packages/mst-tools', [jestConfig]),
+  createPackageConfig('packages/test-utils', [jestConfig]),
 ]);

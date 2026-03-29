@@ -1,0 +1,27 @@
+import {
+  EVENT_NOT_SYNCED,
+  EVENT_SYNC_ERROR,
+  EVENT_SYNC_IN_PROGRESS,
+  EVENT_SYNC_REPEATED,
+  EVENT_SYNCED,
+  NOT_SYNCED,
+  SYNC_ERROR,
+  SYNC_IN_PROGRESS,
+  SYNC_REPEATED,
+  SYNCED,
+} from './syncMachineDeprecated';
+
+export const constants = {
+  EVENT_NOT_SYNCED,
+  EVENT_SYNC_ERROR,
+  EVENT_SYNC_IN_PROGRESS,
+  EVENT_SYNC_REPEATED,
+  EVENT_SYNCED,
+  NOT_SYNCED,
+  SYNC_ERROR,
+  SYNC_IN_PROGRESS,
+  SYNC_REPEATED,
+  SYNCED,
+};
+
+export { default as syncMachineDeprecated } from './syncMachineDeprecated';

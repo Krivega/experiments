@@ -1,0 +1,38 @@
+{
+  "name": "@experiments/test-utils",
+  "version": "0.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "deps:check": "ncu",
+    "deps:update": "ncu -u",
+    "format": "prettier --write \"src/**/*.{js,ts,tsx,json}\"",
+    "lint": "yarn lint:ts && yarn lint:js",
+    "lint:js": "eslint src/. --ext .js,.jsx,.ts,.tsx --max-warnings 0 --cache --cache-strategy=content",
+    "lint:ts": "tsc",
+    "precommit": "lint-staged",
+    "test": "jest --passWithNoTests",
+    "test:ci": "cross-env CI=true jest --passWithNoTests",
+    "test:coverage": "yarn test:ci --no-cache --coverage"
+  },
+  "dependencies": {
+    "debug": "^4.4.3",
+    "events-constructor": "^2.2.1"
+  },
+  "devDependencies": {
+    "jest-extended": "^7.0.0",
+    "lint-staged": "16.4.0"
+  }
+}

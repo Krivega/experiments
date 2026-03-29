@@ -1,0 +1,45 @@
+{
+  "name": "@experiments/mst-tools",
+  "version": "0.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./testUtils": {
+      "import": "./src/testUtils.ts",
+      "default": "./src/testUtils.ts"
+    }
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "deps:check": "ncu",
+    "deps:update": "ncu -u",
+    "format": "prettier --write \"src/**/*.{js,ts,tsx,json}\"",
+    "lint": "yarn lint:ts && yarn lint:js",
+    "lint:js": "eslint src/. --ext .js,.jsx,.ts,.tsx --max-warnings 0 --cache --cache-strategy=content",
+    "lint:ts": "tsc",
+    "precommit": "lint-staged",
+    "test": "jest --passWithNoTests",
+    "test:ci": "cross-env CI=true jest --passWithNoTests",
+    "test:coverage": "yarn test:ci --no-cache --coverage"
+  },
+  "dependencies": {
+    "@krivega/cancelable-promise": "^1.1.4",
+    "debug": "^4.4.3",
+    "mobx": "^6.15.0",
+    "mobx-state-tree": "^7.1.0",
+    "mobx-utils": "^6.1.1"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.13",
+    "jest-extended": "^7.0.0",
+    "lint-staged": "16.4.0"
+  }
+}

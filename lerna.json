@@ -8,7 +8,12 @@
     "packages/timeout-requester",
     "packages/utils",
     "packages/audio-utils",
-    "packages/noise-suppression"
+    "packages/noise-suppression",
+    "packages/features",
+    "packages/hooks",
+    "packages/framework",
+    "packages/mst-tools",
+    "packages/test-utils"
   ],
   "npmClient": "yarn",
   "command": {

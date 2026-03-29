@@ -25,8 +25,14 @@
     "test:coverage": "yarn test:ci --no-cache --coverage"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@experiments/audio-utils": "*",
     "@experiments/utils": "*",
+    "@mui/icons-material": "^7.3.9",
+    "@mui/material": "^7.3.9",
+    "@mui/x-date-pickers": "^7.28.0",
+    "dayjs": "^1.11.13",
     "debug": "^4.4.3",
     "lodash": "^4.17.23",
     "react": "^19.2.4"

@@ -1,0 +1,54 @@
+{
+  "name": "@experiments/framework",
+  "version": "0.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./testUtils": {
+      "import": "./src/testUtils.ts",
+      "default": "./src/testUtils.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "deps:check": "ncu",
+    "deps:update": "ncu -u",
+    "format": "prettier --write \"src/**/*.{js,ts,tsx,json}\"",
+    "lint": "yarn lint:ts && yarn lint:js",
+    "lint:js": "eslint src/. --ext .js,.jsx,.ts,.tsx --max-warnings 0 --cache --cache-strategy=content",
+    "lint:ts": "tsc",
+    "precommit": "lint-staged",
+    "test": "jest --passWithNoTests",
+    "test:ci": "cross-env CI=true jest --passWithNoTests",
+    "test:coverage": "yarn test:ci --no-cache --coverage"
+  },
+  "dependencies": {
+    "@experiments/mst-tools": "*",
+    "@experiments/test-utils": "*",
+    "@experiments/timeout-requester": "*",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/lodash": "^4.17.24",
+    "@xstate/react": "^6.1.0",
+    "debug": "^4.4.3",
+    "lodash": "^4.17.23",
+    "mobx": "^6.15.0",
+    "mobx-state-tree": "^7.1.0",
+    "react": "^19.2.4",
+    "xstate": "^5.30.0"
+  },
+  "devDependencies": {
+    "jest-extended": "^7.0.0",
+    "lint-staged": "16.4.0"
+  }
+}
