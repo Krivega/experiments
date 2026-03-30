@@ -18,6 +18,10 @@ class ConstraintsChecked {
 
     if (supportedConstraints[name] === false || supportedConstraints[name] === undefined) {
       this.checkbox.disabled = true;
+      this.checkbox.title =
+        'Недоступно: браузер не поддерживает этот constraint (getSupportedConstraints)';
+    } else {
+      this.checkbox.title = '';
     }
   }
 
