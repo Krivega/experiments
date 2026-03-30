@@ -11,39 +11,53 @@
   </head>
   <body>
     <header>
-      <h1>Noise Suppression</h1>
+      <h1>NOISE SUPPRESSION</h1>
     </header>
     <main>
       <section>
         <fieldset>
           <legend>Audio input</legend>
-          <label for="audioInputSelect">Microphone</label>
+          <label for="audioInputSelect">Микрофон</label>
           <select id="audioInputSelect"></select>
           <label
-            >Browser echoCancellation
+            >echoCancellation
             <input type="checkbox" id="echoCancellation" checked />
             <br />
             <small
-              >Встроенное подавление эха (WebRTC) на стороне браузера.
+              >Встроенное подавление эха (WebRTC).
               <a
                 href="https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/echoCancellation"
                 target="_blank"
                 rel="noreferrer noopener"
-                >documentation</a
+                >Документация</a
               ></small
             ></label
           >
           <label
-            >Browser noiseSuppression
+            >noiseSuppression
             <input type="checkbox" id="noiseSuppression" />
             <br />
             <small
-              >Встроенное подавление фонового шума (WebRTC) на стороне браузера.
+              >Встроенное подавление фонового шума (WebRTC).
               <a
                 href="https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/noiseSuppression"
                 target="_blank"
                 rel="noreferrer noopener"
-                >documentation</a
+                >Документация</a
+              ></small
+            ></label
+          >
+          <label
+            >autoGainControl (AGC)
+            <input type="checkbox" id="autoGainControl" checked />
+            <br />
+            <small
+              >Автоматическая регулировка усиления микрофона (WebRTC).
+              <a
+                href="https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/autoGainControl"
+                target="_blank"
+                rel="noreferrer noopener"
+                >Документация</a
               ></small
             ></label
           >
@@ -67,7 +81,7 @@
                 href="https://arxiv.org/pdf/1709.08243.pdf"
                 target="_blank"
                 rel="noreferrer noopener"
-                >paper</a
+                >статья</a
               >.
             </p>
             <p>
@@ -77,7 +91,7 @@
                 href="https://www.isca-archive.org/interspeech_2020/westhausen20_interspeech.pdf"
                 target="_blank"
                 rel="noreferrer noopener"
-                >paper</a
+                >статья</a
               >.
             </p>
           </div>

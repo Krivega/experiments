@@ -30,6 +30,7 @@ const playbackOriginal = document.querySelector<HTMLAudioElement>('#playbackOrig
 const playbackProcessed = document.querySelector<HTMLAudioElement>('#playbackProcessed');
 const echoCancellationCheckbox = new ConstraintsChecked('echoCancellation');
 const noiseSuppressionCheckbox = new ConstraintsChecked('noiseSuppression');
+const autoGainControlCheckbox = new ConstraintsChecked('autoGainControl');
 
 if (
   !audioInputSelect ||
@@ -199,6 +200,7 @@ const start = () => {
         deviceId,
         echoCancellation: echoCancellationCheckbox.checked,
         noiseSuppression: noiseSuppressionCheckbox.checked,
+        autoGainControl: autoGainControlCheckbox.checked,
       },
     })
     .then((mediaStream) => {

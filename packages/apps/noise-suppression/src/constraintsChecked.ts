@@ -5,7 +5,7 @@ class ConstraintsChecked {
 
   private readonly checkbox: HTMLInputElement;
 
-  public constructor(name: 'echoCancellation' | 'noiseSuppression') {
+  public constructor(name: 'echoCancellation' | 'noiseSuppression' | 'autoGainControl') {
     this.name = name;
 
     const checkbox = document.querySelector<HTMLInputElement>(`#${name}`);
